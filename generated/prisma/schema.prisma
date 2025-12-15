@@ -1,0 +1,354 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  SALESMAN
+  DRIVER
+  CLEANER
+  IT_STAFF
+}
+
+enum UserStatus {
+  PENDING_APPROVAL // registered, waiting admin
+  ACTIVE
+  SUSPENDED
+  REJECTED
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELED
+}
+
+enum ServiceType {
+  CLEANING
+  IT_SUPPORT
+}
+
+enum ServiceStatus {
+  RECEIVED
+  ASSIGNED
+  IN_PROGRESS
+  RESOLVED
+  CANCELED
+}
+
+enum ServicePriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum AuditEntityType {
+  USER
+  ORDER
+  SERVICE_REQUEST
+  CONTACT_MESSAGE
+  FOOD_ITEM
+  FOOD_CATEGORY
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  STATUS_CHANGE
+  LOGIN
+  LOGOUT
+}
+
+model User {
+  id            Int        @id @default(autoincrement())
+  email         String     @unique
+  passwordHash  String
+  name          String
+  phone         String?
+  role          UserRole   @default(CUSTOMER)
+  status        UserStatus @default(PENDING_APPROVAL)
+  emailVerified DateTime?
+  profileImage  String? // GCS URL
+
+  // addresses
+  addresses Address[]
+
+  // relations
+  orders          Order[]          @relation("CustomerOrders")
+  serviceRequests ServiceRequest[] @relation("CustomerServiceRequests")
+
+  // staff assignments
+  salesmanOrders Order[]             @relation("SalesmanOrders")
+  driverOrders   Order[]             @relation("DriverOrders")
+  staffServices  ServiceAssignment[] // cleaner/IT assignments
+
+  contactMessages    ContactMessage[]
+  handledMessages    ContactMessage[]     @relation("ContactHandledBy")
+  ratings            ServiceRating[]
+  ratedServices      ServiceRating[]      @relation("ServiceStaffRated")
+  sessions           Session[]
+  auditLogs          AuditLog[]           @relation("AuditActor")
+  orderStatusChanges OrderStatusHistory[]
+  deliveryProofs     DeliveryProof[]
+  serviceAssignments ServiceAssignment[]  @relation("ServiceAssignedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Address {
+  id              Int              @id @default(autoincrement())
+  user            User             @relation(fields: [userId], references: [id])
+  userId          Int
+  label           String? // e.g. "Home", "Office"
+  line1           String
+  line2           String?
+  city            String
+  postalCode      String
+  country         String           @default("Sri Lanka")
+  isDefault       Boolean          @default(false)
+  orders          Order[]
+  serviceRequests ServiceRequest[]
+  createdAt       DateTime         @default(now())
+}
+
+model ContactMessage {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String
+  phone       String?
+  subject     String
+  message     String
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      Int?
+  handledBy   User?     @relation("ContactHandledBy", fields: [handledById], references: [id])
+  handledById Int?
+  handledAt   DateTime?
+  status      String    @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED
+  createdAt   DateTime  @default(now())
+}
+
+model FoodCategory {
+  id          Int        @id @default(autoincrement())
+  name        String
+  slug        String     @unique
+  description String?
+  imageUrl    String? // GCS image
+  items       FoodItem[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model FoodItem {
+  id          Int     @id @default(autoincrement())
+  name        String
+  slug        String  @unique
+  description String?
+  price       Decimal @db.Decimal(10, 2)
+  sku         String? @unique
+  stock       Int     @default(0)
+  isActive    Boolean @default(true)
+
+  category   FoodCategory @relation(fields: [categoryId], references: [id])
+  categoryId Int
+
+  mainImageUrl String? // GCS main image
+  images       FoodImage[]
+
+  orderItems OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FoodImage {
+  id         Int      @id @default(autoincrement())
+  foodItem   FoodItem @relation(fields: [foodItemId], references: [id])
+  foodItemId Int
+  url        String // GCS URL
+  position   Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model Order {
+  id          Int    @id @default(autoincrement())
+  orderNumber String @unique // human-friendly ID
+  customer    User   @relation("CustomerOrders", fields: [customerId], references: [id])
+  customerId  Int
+
+  deliveryAddress   Address? @relation(fields: [deliveryAddressId], references: [id])
+  deliveryAddressId Int?
+
+  status        OrderStatus          @default(PENDING)
+  statusHistory OrderStatusHistory[]
+
+  items      OrderItem[]
+  notes      String?
+  imageUrl   String? // user-uploaded order photo (GCS)
+  totalPrice Decimal     @db.Decimal(10, 2)
+
+  // staff
+  salesman   User? @relation("SalesmanOrders", fields: [salesmanId], references: [id])
+  salesmanId Int?
+  driver     User? @relation("DriverOrders", fields: [driverId], references: [id])
+  driverId   Int?
+
+  payment       Payment?
+  deliveryProof DeliveryProof?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  order      Order    @relation(fields: [orderId], references: [id])
+  orderId    Int
+  foodItem   FoodItem @relation(fields: [foodItemId], references: [id])
+  foodItemId Int
+  quantity   Int
+  unitPrice  Decimal  @db.Decimal(10, 2) // snapshot at order time
+  createdAt  DateTime @default(now())
+}
+
+model OrderStatusHistory {
+  id          Int          @id @default(autoincrement())
+  order       Order        @relation(fields: [orderId], references: [id])
+  orderId     Int
+  from        OrderStatus?
+  to          OrderStatus
+  changedAt   DateTime     @default(now())
+  changedBy   User?        @relation(fields: [changedById], references: [id])
+  changedById Int?
+  note        String?
+}
+
+model Payment {
+  id            Int      @id @default(autoincrement())
+  order         Order    @relation(fields: [orderId], references: [id])
+  orderId       Int      @unique
+  amount        Decimal  @db.Decimal(10, 2)
+  currency      String   @default("LKR")
+  provider      String? // e.g. "COD", "Stripe"
+  status        String   @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  transactionId Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model DeliveryProof {
+  id          Int      @id @default(autoincrement())
+  order       Order    @relation(fields: [orderId], references: [id])
+  orderId     Int      @unique
+  photoUrl    String // GCS URL
+  note        String?
+  deliveredAt DateTime @default(now())
+  driver      User?    @relation(fields: [driverId], references: [id])
+  driverId    Int?
+}
+
+model ServiceRequest {
+  id            Int             @id @default(autoincrement())
+  requestNumber String          @unique
+  customer      User            @relation("CustomerServiceRequests", fields: [customerId], references: [id])
+  customerId    Int
+  type          ServiceType
+  status        ServiceStatus   @default(RECEIVED)
+  priority      ServicePriority @default(MEDIUM)
+
+  title       String
+  description String
+  address     Address? @relation(fields: [addressId], references: [id])
+  addressId   Int?
+
+  requestedDate DateTime? // preferred date/time
+  notes         String?
+
+  photos ServicePhoto[]
+
+  assignments ServiceAssignment[]
+  ratings     ServiceRating[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ServiceAssignment {
+  id           Int            @id @default(autoincrement())
+  service      ServiceRequest @relation(fields: [serviceId], references: [id])
+  serviceId    Int
+  staff        User           @relation(fields: [staffId], references: [id])
+  staffId      Int
+  assignedBy   User?          @relation("ServiceAssignedBy", fields: [assignedById], references: [id])
+  assignedById Int?
+  assignedAt   DateTime       @default(now())
+  acceptedAt   DateTime?
+  startedAt    DateTime?
+  completedAt  DateTime?
+  status       ServiceStatus  @default(ASSIGNED)
+  notes        String?
+}
+
+model ServicePhoto {
+  id        Int            @id @default(autoincrement())
+  service   ServiceRequest @relation(fields: [serviceId], references: [id])
+  serviceId Int
+  url       String // GCS URL
+  isBefore  Boolean        @default(true) // true for "BEFORE", false for "AFTER"
+  createdAt DateTime       @default(now())
+}
+
+model ServiceRating {
+  id             Int            @id @default(autoincrement())
+  service        ServiceRequest @relation(fields: [serviceId], references: [id])
+  serviceId      Int
+  customer       User           @relation(fields: [customerId], references: [id])
+  customerId     Int
+  staff          User?          @relation("ServiceStaffRated", fields: [staffId], references: [id])
+  staffId        Int?
+  score          Int // 1–5
+  review         String?
+  wouldRecommend Boolean        @default(false)
+  createdAt      DateTime       @default(now())
+
+  @@unique([serviceId, customerId]) // one rating per customer per service
+}
+
+model AuditLog {
+  id         Int             @id @default(autoincrement())
+  entityType AuditEntityType
+  entityId   Int
+  action     AuditAction
+  actor      User?           @relation("AuditActor", fields: [actorId], references: [id])
+  actorId    Int?
+  ipAddress  String?
+  userAgent  String?
+  details    Json?
+  createdAt  DateTime        @default(now())
+
+  @@index([entityType, entityId])
+  @@index([actorId])
+}
