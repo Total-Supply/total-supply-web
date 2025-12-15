@@ -1,11 +1,9 @@
 import { ChakraProvider } from '@/src/providers/chakra-provider'
 import { SessionProvider } from '@/src/providers/session-provider'
+import '@fontsource-variable/inter'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 
 import './globals.css'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Total Supply',
@@ -19,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="antialiased">
         <SessionProvider>
           <ChakraProvider>{children}</ChakraProvider>
         </SessionProvider>
