@@ -3,7 +3,7 @@ import {
   ServiceStatus,
   UserRole,
   UserStatus,
-} from '@prisma/client'
+} from '@/generated/prisma'
 
 export interface ApiUser {
   id: number

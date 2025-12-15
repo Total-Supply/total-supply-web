@@ -1,4 +1,4 @@
-import { ServicePriority, ServiceStatus, ServiceType } from '@prisma/client'
+import { ServicePriority, ServiceStatus, ServiceType } from '@/generated/prisma'
 import { z } from 'zod'
 
 export const serviceTypeSchema = z.nativeEnum(ServiceType)

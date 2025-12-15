@@ -24,7 +24,7 @@ export function useImageUpload() {
       // Get signed upload URL
       const { data: uploadData } = await apiClient.upload.getUploadUrl({
         filename: file.name,
-        contentType: file.type,
+        contentType: file.type as any,
         fileSize: file.size,
       })
 

@@ -1,6 +1,6 @@
+import { UserRole, UserStatus } from '@/generated/prisma'
 import { ForbiddenError, UnauthorizedError } from '@/src/lib/api/errors'
 import { authOptions } from '@/src/lib/auth'
-import { UserRole, UserStatus } from '@prisma/client'
 import { getServerSession } from 'next-auth'
 import { NextRequest } from 'next/server'
 

@@ -1,6 +1,5 @@
 import { ApiError } from '@/src/lib/api/errors'
 import { ApiResponse } from '@/src/lib/api/response'
-import { Prisma } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 
@@ -23,37 +22,31 @@ export function handleApiError(error: unknown): NextResponse {
   }
 
   // Handle Prisma errors
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-    console.error('Prisma Error Code:', error.code)
-    console.error('Prisma Error Meta:', error.meta)
+  if (error && typeof error === 'object' && 'code' in error) {
+    const prismaError = error as { code: string; meta?: any; message: string }
+    console.error('Prisma Error Code:', prismaError.code)
+    console.error('Prisma Error Meta:', prismaError.meta)
 
-    switch (error.code) {
+    switch (prismaError.code) {
       case 'P2002':
         return ApiResponse.conflict('Resource already exists', {
-          fields: error.meta?.target,
+          fields: prismaError.meta?.target,
         })
       case 'P2025':
         return ApiResponse.notFound('Resource not found')
       case 'P2003':
         return ApiResponse.badRequest('Invalid reference', {
-          field: error.meta?.field_name,
+          field: prismaError.meta?.field_name,
         })
       default:
         return ApiResponse.internalError('Database error', {
-          code: error.code,
+          code: prismaError.code,
           message:
-            process.env.NODE_ENV === 'development' ? error.message : undefined,
+            process.env.NODE_ENV === 'development'
+              ? prismaError.message
+              : undefined,
         })
     }
-  }
-
-  // Handle Prisma Client Initialization Error
-  if (error instanceof Prisma.PrismaClientInitializationError) {
-    console.error('Prisma Initialization Error:', error.message)
-    return ApiResponse.internalError('Database connection failed', {
-      message:
-        process.env.NODE_ENV === 'development' ? error.message : undefined,
-    })
   }
 
   // Handle unknown errors

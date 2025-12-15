@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client'
+import { OrderStatus } from '@/generated/prisma'
 import { z } from 'zod'
 
 export const orderStatusSchema = z.nativeEnum(OrderStatus)

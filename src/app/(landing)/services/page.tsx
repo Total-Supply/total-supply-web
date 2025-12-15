@@ -29,7 +29,7 @@ import { NextPage } from 'next'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FiCalendar, FiCheck, FiMapPin, FiTool } from 'react-icons/fi'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 
 const Services: NextPage = () => {
   const router = useRouter()
@@ -355,4 +355,19 @@ function ServiceRequestForm({ formData, setFormData, onSubmit }: any) {
   )
 }
 
-export default Services
+function ServicesContent() {
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Services</h1>
+      <p>Browse our services</p>
+    </div>
+  )
+}
+
+export default function ServicesPage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading...</div>}>
+      <ServicesContent />
+    </Suspense>
+  )
+}

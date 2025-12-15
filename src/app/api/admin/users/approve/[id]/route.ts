@@ -7,12 +7,13 @@ import { NextRequest } from 'next/server'
 
 async function handler(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   // Require admin authentication
   const authRequest = await requireAdmin(request)
   const adminId = parseInt(authRequest.user.id)
-  const userId = parseInt(params.id)
+  const { id } = await params
+  const userId = parseInt(id)
 
   // Find user
   const user = await prisma.user.findUnique({

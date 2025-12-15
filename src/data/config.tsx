@@ -1,16 +1,49 @@
 import { Button } from '@chakra-ui/react'
 import { Link } from '@saas-ui/react'
-import { NextSeoProps } from 'next-seo'
 import { FaGithub, FaTwitter } from 'react-icons/fa'
 import { FiCheck } from 'react-icons/fi'
+
 import { Logo } from './logo'
+
+interface SEOConfig {
+  title: string
+  description: string
+  titleTemplate?: string
+  openGraph?: {
+    type: string
+    locale: string
+    url: string
+    siteName: string
+    description: string
+  }
+  twitter?: {
+    handle: string
+    site: string
+    cardType: string
+    creator: string
+  }
+}
 
 const siteConfig = {
   logo: Logo,
   seo: {
-    title: 'Saas UI',
-    description: 'The React component library for startups',
-  } as NextSeoProps,
+    title: 'Total Supply',
+    description: 'The complete supply management solution',
+    titleTemplate: '%s | Total Supply',
+    openGraph: {
+      type: 'website',
+      locale: 'en_US',
+      url: 'https://totalsupply.com',
+      siteName: 'Total Supply',
+      description: 'The complete supply management solution',
+    },
+    twitter: {
+      handle: '@totalsupply',
+      site: '@totalsupply',
+      cardType: 'summary_large_image',
+      creator: '@totalsupply',
+    },
+  } as SEOConfig,
   termsUrl: '#',
   privacyUrl: '#',
   header: {

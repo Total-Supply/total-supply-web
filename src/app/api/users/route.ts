@@ -12,7 +12,15 @@ async function handler(request: NextRequest) {
 
   // Validate query parameters
   const searchParams = request.nextUrl.searchParams
-  const query = await validateQuery(searchParams, getUsersQuerySchema)
+  const query = (await validateQuery(searchParams, getUsersQuerySchema)) as {
+    search?: string
+    role?: string
+    status?: string
+    sortBy: string
+    sortOrder: string
+    page: number
+    limit: number
+  }
 
   // Build where clause
   const where: any = {}
@@ -43,7 +51,7 @@ async function handler(request: NextRequest) {
       createdAt: true,
       updatedAt: true,
     },
-    orderBy: { [query.sortBy]: query.sortOrder },
+    orderBy: { [query.sortBy as string]: query.sortOrder },
     skip: (query.page - 1) * query.limit,
     take: query.limit,
   })

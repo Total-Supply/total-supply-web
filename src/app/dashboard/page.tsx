@@ -14,7 +14,7 @@ import {
   SidebarTrigger,
 } from '@/src/components/ui/sidebar'
 
-export default function Page() {
+export default function DashboardPage() {
   return (
     <SidebarProvider>
       <AppSidebar />
