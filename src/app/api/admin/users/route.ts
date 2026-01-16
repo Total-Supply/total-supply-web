@@ -1,3 +1,4 @@
+import { Prisma, UserStatus } from '@/generated/prisma'
 import { ApiResponse } from '@/src/lib/api/response'
 import prisma from '@/src/lib/prisma'
 import { requireAdmin } from '@/src/middleware/auth'
@@ -14,8 +15,13 @@ async function handler(request: NextRequest) {
   const limit = parseInt(searchParams.get('limit') || '10')
 
   // Build where clause
-  const where: any = {}
-  if (status) where.status = status
+  const where: Prisma.UserWhereInput = {}
+  if (status) {
+    where.status = status as UserStatus
+    if (status === 'PENDING_APPROVAL') {
+      where.emailVerified = { not: null }
+    }
+  }
 
   // Get total count
   const total = await prisma.user.count({ where })
@@ -30,6 +36,7 @@ async function handler(request: NextRequest) {
       phone: true,
       role: true,
       status: true,
+      emailVerified: true,
       createdAt: true,
       updatedAt: true,
     },

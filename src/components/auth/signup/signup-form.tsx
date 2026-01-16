@@ -1,0 +1,314 @@
+'use client'
+
+import siteConfig from '@/src/data/config'
+import { useAuth } from '@/src/hooks/useAuth'
+import {
+  Alert,
+  AlertIcon,
+  Badge,
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Link,
+  Stack,
+  Text,
+  VStack,
+  useToast,
+} from '@chakra-ui/react'
+import NextLink from 'next/link'
+
+import { useCallback, useState } from 'react'
+
+type SignupFormProps = {
+  siteKey?: string
+}
+
+export function SignupForm({ siteKey }: SignupFormProps) {
+  const toast = useToast()
+  const { register, isLoading } = useAuth()
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    name: '',
+    termsAccepted: false,
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
+  const getRecaptchaToken = useCallback(async () => {
+    if (!siteKey || typeof window === 'undefined') {
+      return undefined
+    }
+
+    type Grecaptcha = {
+      ready: (cb: () => void) => void
+      execute: (siteKey: string, options: { action: string }) => Promise<string>
+    }
+    const grecaptcha = (window as unknown as { grecaptcha?: Grecaptcha })
+      .grecaptcha
+    if (!grecaptcha?.execute) {
+      return undefined
+    }
+
+    await new Promise<void>((resolve) => grecaptcha.ready(() => resolve()))
+    return grecaptcha.execute(siteKey, { action: 'signup' })
+  }, [siteKey])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setErrors({})
+
+    const nextErrors: Record<string, string> = {}
+    if (formData.password !== formData.confirmPassword) {
+      nextErrors.confirmPassword = 'Passwords do not match'
+    }
+    if (!formData.termsAccepted) {
+      nextErrors.termsAccepted = 'You must accept the terms to continue'
+    }
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors)
+      return
+    }
+
+    try {
+      const recaptchaToken = await getRecaptchaToken()
+      const result = await register({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        termsAccepted: formData.termsAccepted,
+        recaptchaToken,
+      })
+
+      setSuccessMessage(result.message)
+      toast({
+        title: 'Account created',
+        description: result.message,
+        status: 'success',
+        duration: 6000,
+        isClosable: true,
+      })
+    } catch (error: unknown) {
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        (error as { code: string }).code === 'VALIDATION_ERROR' &&
+        'details' in error &&
+        Array.isArray((error as { details: unknown }).details)
+      ) {
+        interface FieldErrorDetail {
+          path?: (string | number)[]
+          field?: string
+          message: string
+        }
+        const fieldErrors: Record<string, string> = {}
+        ;(error as { details: FieldErrorDetail[] }).details.forEach(
+          (err: FieldErrorDetail) => {
+            const field = err.path?.[0] || err.field
+            fieldErrors[field as string] = err.message
+          },
+        )
+        setErrors(fieldErrors)
+      } else {
+        toast({
+          title: 'Registration failed',
+          description:
+            typeof error === 'object' && error !== null && 'message' in error
+              ? (error as { message?: string }).message
+              : 'An unexpected error occurred',
+          status: 'error',
+          duration: 5000,
+        })
+      }
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    })
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: '' })
+    }
+  }
+
+  return (
+    <VStack
+      spacing={{ base: 4, md: 6 }}
+      as="form"
+      onSubmit={handleSubmit}
+      align="stretch"
+    >
+      <Stack spacing={{ base: 2, md: 3 }}>
+        <Stack
+          direction={{ base: 'column', sm: 'row' }}
+          align={{ base: 'flex-start', sm: 'center' }}
+          justify="space-between"
+          spacing={{ base: 2, sm: 4 }}
+        >
+          <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
+            {siteConfig.signup.title}
+          </Text>
+          <Badge
+            colorScheme="primary"
+            variant="subtle"
+            textTransform="uppercase"
+          >
+            Secure
+          </Badge>
+        </Stack>
+        <Text color="muted" fontSize="sm">
+          Create your account to start ordering and track service requests.
+        </Text>
+      </Stack>
+
+      {successMessage && (
+        <Alert status="success" borderRadius="md">
+          <AlertIcon />
+          <Box>
+            <Text fontWeight="600">Check your inbox</Text>
+            <Text fontSize="sm">{successMessage}</Text>
+          </Box>
+        </Alert>
+      )}
+
+      <FormControl isInvalid={!!errors.name} isRequired>
+        <FormLabel>Full Name</FormLabel>
+        <Input
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="John Doe"
+          isDisabled={!!successMessage}
+        />
+        <FormErrorMessage>{errors.name}</FormErrorMessage>
+      </FormControl>
+
+      <FormControl isInvalid={!!errors.email} isRequired>
+        <FormLabel>Email</FormLabel>
+        <Input
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="john@example.com"
+          isDisabled={!!successMessage}
+        />
+        <FormErrorMessage>{errors.email}</FormErrorMessage>
+      </FormControl>
+
+      <FormControl isInvalid={!!errors.password} isRequired>
+        <FormLabel>Password</FormLabel>
+        <Input
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="Create a strong password"
+          isDisabled={!!successMessage}
+        />
+        <FormErrorMessage>{errors.password}</FormErrorMessage>
+      </FormControl>
+
+      {/* <Box
+        borderWidth="1px"
+        borderColor={cardAccent}
+        borderRadius="md"
+        p={{ base: 2, md: 3 }}
+      >
+        <Text fontSize="sm" fontWeight="600" mb="2">
+          Password requirements
+        </Text>
+        <List spacing={1} fontSize={{ base: 'xs', md: 'sm' }}>
+          <ListItem>
+            <ListIcon
+              as={passwordChecks.length ? CheckCircleIcon : WarningIcon}
+              color={passwordChecks.length ? 'green.400' : 'orange.400'}
+            />
+            Minimum 8 characters
+          </ListItem>
+          <ListItem>
+            <ListIcon
+              as={passwordChecks.uppercase ? CheckCircleIcon : WarningIcon}
+              color={passwordChecks.uppercase ? 'green.400' : 'orange.400'}
+            />
+            At least one uppercase letter
+          </ListItem>
+          <ListItem>
+            <ListIcon
+              as={passwordChecks.number ? CheckCircleIcon : WarningIcon}
+              color={passwordChecks.number ? 'green.400' : 'orange.400'}
+            />
+            At least one number
+          </ListItem>
+        </List>
+      </Box> */}
+
+      <FormControl isInvalid={!!errors.confirmPassword} isRequired>
+        <FormLabel>Confirm Password</FormLabel>
+        <Input
+          name="confirmPassword"
+          type="password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          placeholder="Re-enter your password"
+          isDisabled={!!successMessage}
+        />
+        <FormErrorMessage>{errors.confirmPassword}</FormErrorMessage>
+      </FormControl>
+
+      <FormControl isInvalid={!!errors.termsAccepted} isRequired>
+        <Checkbox
+          name="termsAccepted"
+          isChecked={formData.termsAccepted}
+          onChange={handleChange}
+          isDisabled={!!successMessage}
+        >
+          I agree to the{' '}
+          <Link as={NextLink} href={siteConfig.termsUrl} color="primary.500">
+            Terms of Service
+          </Link>{' '}
+          and{' '}
+          <Link as={NextLink} href={siteConfig.privacyUrl} color="primary.500">
+            Privacy Policy
+          </Link>
+          .
+        </Checkbox>
+        <FormErrorMessage>{errors.termsAccepted}</FormErrorMessage>
+      </FormControl>
+
+      {siteKey && (
+        <Text fontSize="xs" color="muted">
+          This site is protected by reCAPTCHA and the Google Privacy Policy and
+          Terms of Service apply.
+        </Text>
+      )}
+
+      <Button
+        type="submit"
+        colorScheme="primary"
+        width="full"
+        isLoading={isLoading}
+        isDisabled={!!successMessage}
+      >
+        Create Account
+      </Button>
+
+      <Text fontSize="sm">
+        Already have an account?{' '}
+        <Link as={NextLink} href="/login" color="primary.500">
+          Log in
+        </Link>
+      </Text>
+    </VStack>
+  )
+}

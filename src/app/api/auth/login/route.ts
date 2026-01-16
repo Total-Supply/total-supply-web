@@ -28,6 +28,7 @@ async function handler(request: NextRequest) {
       passwordHash: true,
       role: true,
       status: true,
+      emailVerified: true,
       profileImage: true,
     },
   })
@@ -44,6 +45,10 @@ async function handler(request: NextRequest) {
   }
 
   // Check account status
+  if (!user.emailVerified) {
+    throw new ForbiddenError('Email not verified')
+  }
+
   if (user.status === 'SUSPENDED') {
     throw new ForbiddenError('Your account has been suspended')
   }

@@ -7,6 +7,7 @@ import { useState } from 'react'
 
 import { Button } from '../ui/button'
 import { Card, CardContent } from '../ui/card'
+import { Checkbox } from '../ui/checkbox'
 import {
   Field,
   FieldDescription,
@@ -22,7 +23,9 @@ export function SignupForm({
 }: React.ComponentProps<'div'>) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [name, setName] = useState('')
+  const [termsAccepted, setTermsAccepted] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
@@ -31,10 +34,25 @@ export function SignupForm({
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/auth/signup', {
+      if (password !== confirmPassword) {
+        alert('Passwords do not match')
+        return
+      }
+
+      if (!termsAccepted) {
+        alert('You must accept the terms to continue')
+        return
+      }
+
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          termsAccepted,
+        }),
       })
 
       if (response.ok) {
@@ -103,12 +121,36 @@ export function SignupForm({
                     <FieldLabel htmlFor="confirm-password">
                       Confirm Password
                     </FieldLabel>
-                    <Input id="confirm-password" type="password" required />
+                    <Input
+                      id="confirm-password"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
                   </Field>
                 </Field>
                 <FieldDescription>
-                  Must be at least 8 characters long.
+                  Must be at least 8 characters, with uppercase and a number.
                 </FieldDescription>
+              </Field>
+              <Field>
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    checked={termsAccepted}
+                    onCheckedChange={(checked) =>
+                      setTermsAccepted(Boolean(checked))
+                    }
+                  />
+                  <div className="space-y-1">
+                    <FieldLabel className="text-sm">
+                      I agree to the Terms of Service and Privacy Policy
+                    </FieldLabel>
+                    <FieldDescription className="text-xs">
+                      This is required to create an account.
+                    </FieldDescription>
+                  </div>
+                </div>
               </Field>
               <Field>
                 <Button type="submit" disabled={isLoading}>

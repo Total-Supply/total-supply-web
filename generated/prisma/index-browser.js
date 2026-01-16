@@ -144,6 +144,22 @@ exports.Prisma.SessionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.EmailVerificationTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.AddressScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -410,6 +426,8 @@ exports.AuditAction = exports.$Enums.AuditAction = {
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
+  EmailVerificationToken: 'EmailVerificationToken',
+  PasswordResetToken: 'PasswordResetToken',
   Address: 'Address',
   ContactMessage: 'ContactMessage',
   FoodCategory: 'FoodCategory',

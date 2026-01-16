@@ -48,6 +48,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid email or password')
         }
 
+        if (!user.emailVerified) {
+          throw new Error('Email not verified')
+        }
+
         if (user.status === 'SUSPENDED') {
           throw new Error('Account suspended')
         }
