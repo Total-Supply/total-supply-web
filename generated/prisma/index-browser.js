@@ -132,6 +132,12 @@ exports.Prisma.UserScalarFieldEnum = {
   status: 'status',
   emailVerified: 'emailVerified',
   profileImage: 'profileImage',
+  marketingOptIn: 'marketingOptIn',
+  unsubscribeToken: 'unsubscribeToken',
+  deletionRequestedAt: 'deletionRequestedAt',
+  deletionScheduledAt: 'deletionScheduledAt',
+  deletedAt: 'deletedAt',
+  dataPurgedAt: 'dataPurgedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -202,6 +208,8 @@ exports.Prisma.FoodItemScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   description: 'description',
+  ingredients: 'ingredients',
+  nutritionInfo: 'nutritionInfo',
   price: 'price',
   sku: 'sku',
   stock: 'stock',
@@ -210,6 +218,13 @@ exports.Prisma.FoodItemScalarFieldEnum = {
   mainImageUrl: 'mainImageUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.FoodItemCategoryScalarFieldEnum = {
+  id: 'id',
+  foodItemId: 'foodItemId',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.FoodImageScalarFieldEnum = {
@@ -280,6 +295,8 @@ exports.Prisma.ServiceRequestScalarFieldEnum = {
   requestNumber: 'requestNumber',
   customerId: 'customerId',
   type: 'type',
+  category: 'category',
+  serviceOfferingId: 'serviceOfferingId',
   status: 'status',
   priority: 'priority',
   title: 'title',
@@ -287,6 +304,19 @@ exports.Prisma.ServiceRequestScalarFieldEnum = {
   addressId: 'addressId',
   requestedDate: 'requestedDate',
   notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ServiceOfferingScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  type: 'type',
+  category: 'category',
+  description: 'description',
+  basePrice: 'basePrice',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -301,14 +331,18 @@ exports.Prisma.ServiceAssignmentScalarFieldEnum = {
   startedAt: 'startedAt',
   completedAt: 'completedAt',
   status: 'status',
-  notes: 'notes'
+  notes: 'notes',
+  timeSpentMinutes: 'timeSpentMinutes',
+  completionNotes: 'completionNotes',
+  solutionSummary: 'solutionSummary',
+  followUpRecommendations: 'followUpRecommendations'
 };
 
 exports.Prisma.ServicePhotoScalarFieldEnum = {
   id: 'id',
   serviceId: 'serviceId',
   url: 'url',
-  isBefore: 'isBefore',
+  type: 'type',
   createdAt: 'createdAt'
 };
 
@@ -390,6 +424,15 @@ exports.ServiceType = exports.$Enums.ServiceType = {
   IT_SUPPORT: 'IT_SUPPORT'
 };
 
+exports.ServiceCategory = exports.$Enums.ServiceCategory = {
+  GENERAL_CLEANING: 'GENERAL_CLEANING',
+  DEEP_CLEAN: 'DEEP_CLEAN',
+  OFFICE_CLEANING: 'OFFICE_CLEANING',
+  MOVE_OUT_CLEANING: 'MOVE_OUT_CLEANING',
+  SANITIZATION: 'SANITIZATION',
+  OTHER: 'OTHER'
+};
+
 exports.ServiceStatus = exports.$Enums.ServiceStatus = {
   RECEIVED: 'RECEIVED',
   ASSIGNED: 'ASSIGNED',
@@ -403,6 +446,12 @@ exports.ServicePriority = exports.$Enums.ServicePriority = {
   MEDIUM: 'MEDIUM',
   HIGH: 'HIGH',
   URGENT: 'URGENT'
+};
+
+exports.ServicePhotoType = exports.$Enums.ServicePhotoType = {
+  BEFORE: 'BEFORE',
+  PROGRESS: 'PROGRESS',
+  AFTER: 'AFTER'
 };
 
 exports.AuditEntityType = exports.$Enums.AuditEntityType = {
@@ -432,6 +481,7 @@ exports.Prisma.ModelName = {
   ContactMessage: 'ContactMessage',
   FoodCategory: 'FoodCategory',
   FoodItem: 'FoodItem',
+  FoodItemCategory: 'FoodItemCategory',
   FoodImage: 'FoodImage',
   Order: 'Order',
   OrderItem: 'OrderItem',
@@ -439,6 +489,7 @@ exports.Prisma.ModelName = {
   Payment: 'Payment',
   DeliveryProof: 'DeliveryProof',
   ServiceRequest: 'ServiceRequest',
+  ServiceOffering: 'ServiceOffering',
   ServiceAssignment: 'ServiceAssignment',
   ServicePhoto: 'ServicePhoto',
   ServiceRating: 'ServiceRating',
