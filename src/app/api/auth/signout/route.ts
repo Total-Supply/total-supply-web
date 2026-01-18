@@ -19,6 +19,10 @@ async function handler(request: NextRequest) {
       actorId: parseInt(userId),
       ipAddress: ip,
       userAgent: request.headers.get('user-agent') || undefined,
+      details: {
+        result: 'SUCCESS',
+        actorName: authRequest.user.name,
+      },
     },
   })
 
@@ -26,3 +30,5 @@ async function handler(request: NextRequest) {
 }
 
 export const POST = withErrorHandler(handler)
+
+

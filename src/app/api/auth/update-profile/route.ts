@@ -44,7 +44,11 @@ async function handler(request: NextRequest) {
       action: 'UPDATE',
       actorId: userId,
       ipAddress: ip,
-      details: { updatedFields: Object.keys(data) },
+      details: {
+        updatedFields: Object.keys(data),
+        result: 'SUCCESS',
+        actorName: authRequest.user.name,
+      },
     },
   })
 
@@ -52,3 +56,5 @@ async function handler(request: NextRequest) {
 }
 
 export const PUT = withErrorHandler(handler)
+
+

@@ -78,6 +78,8 @@ async function handler(request: NextRequest) {
           email: user.email,
           name: user.name,
           isFirstUser,
+          result: 'SUCCESS',
+          actorName: user.name,
         },
       },
     })
@@ -124,3 +126,5 @@ async function handler(request: NextRequest) {
 }
 
 export const POST = withErrorHandler(handler)
+
+

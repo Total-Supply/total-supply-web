@@ -70,6 +70,10 @@ async function handler(request: NextRequest) {
       actorId: user.id,
       ipAddress: ip,
       userAgent: request.headers.get('user-agent') || undefined,
+      details: {
+        result: 'SUCCESS',
+        actorName: user.name,
+      },
     },
   })
 
@@ -80,3 +84,5 @@ async function handler(request: NextRequest) {
 }
 
 export const POST = withErrorHandler(handler)
+
+
