@@ -1,6 +1,9 @@
 import { ApiError } from '@/src/lib/api/errors'
 import { ApiResponse } from '@/src/lib/api/response'
-import { NextResponse } from 'next/server'
+import { authOptions } from '@/src/lib/auth'
+import prisma from '@/src/lib/prisma'
+import { getServerSession } from 'next-auth'
+import { NextRequest, NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 
 export function handleApiError(error: unknown): NextResponse {
@@ -64,6 +67,69 @@ export function handleApiError(error: unknown): NextResponse {
   return ApiResponse.internalError('An unexpected error occurred')
 }
 
+async function logFailureAudit({
+  request,
+  error,
+  response,
+}: {
+  request?: NextRequest
+  error: unknown
+  response?: NextResponse
+}) {
+  if (!request) return
+
+  const method = request.method?.toUpperCase()
+  if (!method || method === 'GET') return
+
+  try {
+    const session = await getServerSession(authOptions)
+    const actorIdRaw = session?.user?.id
+    const actorId = actorIdRaw ? parseInt(actorIdRaw, 10) : null
+
+    let errorCode: string | undefined
+    let errorMessage: string | undefined
+    let statusCode: number | undefined
+
+    if (error instanceof ApiError) {
+      errorCode = error.code
+      errorMessage = error.message
+      statusCode = error.statusCode
+    } else if (error instanceof ZodError) {
+      errorCode = 'VALIDATION_ERROR'
+      errorMessage = 'Validation failed'
+      statusCode = 422
+    } else if (error instanceof Error) {
+      errorMessage = error.message
+    }
+
+    if (!statusCode && response) {
+      statusCode = response.status
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        entityType: 'USER',
+        entityId: actorId ?? 0,
+        action: 'UPDATE',
+        actorId,
+        ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
+        userAgent: request.headers.get('user-agent') || undefined,
+        details: {
+          result: 'FAILURE',
+          actorName: session?.user?.name ?? null,
+          path: request.nextUrl?.pathname,
+          method,
+          errorCode,
+          errorMessage,
+          statusCode,
+        },
+      },
+    })
+  } catch (logError) {
+    console.error('Audit failure log error:', logError)
+  }
+}
+
 export function withErrorHandler<T extends any[], R>(
   handler: (...args: T) => Promise<R>,
 ) {
@@ -71,7 +137,14 @@ export function withErrorHandler<T extends any[], R>(
     try {
       return await handler(...args)
     } catch (error) {
-      return handleApiError(error)
+      const response = handleApiError(error)
+      const request = args.find(
+        (arg) => arg && typeof arg === 'object' && 'method' in arg,
+      ) as NextRequest | undefined
+      await logFailureAudit({ request, error, response })
+      return response
     }
   }
 }
+
+
