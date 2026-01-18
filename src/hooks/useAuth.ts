@@ -42,6 +42,7 @@ export function useAuth() {
       const result = await signIn('credentials', {
         email: data.email,
         password: data.password,
+        rememberMe: data.rememberMe ?? false,
         redirect: false,
       })
 
@@ -87,3 +88,5 @@ export function useAuth() {
     logout,
   }
 }
+
+

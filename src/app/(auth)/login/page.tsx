@@ -2,34 +2,48 @@
 
 import { AuthShell } from '@/src/components/auth/layout/auth-shell'
 import { BackgroundGradient } from '@/src/components/gradients/background-gradient'
+import { Checkbox } from '@/src/components/ui/checkbox'
+import { useToast } from '@/src/hooks/use-toast'
 import { useAuth } from '@/src/hooks/useAuth'
 import {
   Button,
-  Checkbox,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
+  Field,
   HStack,
   Input,
   Link,
   Text,
   VStack,
-  useToast,
 } from '@chakra-ui/react'
 import { NextPage } from 'next'
 import NextLink from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+import { useEffect, useState } from 'react'
 
 const Login: NextPage = () => {
   const router = useRouter()
   const toast = useToast()
   const { login, isLoading } = useAuth()
+  const searchParams = useSearchParams()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    rememberMe: false,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const reason = searchParams.get('reason')
+    if (reason === 'expired') {
+      toast({
+        title: 'Session expired',
+        description: 'Please log in again to continue.',
+        status: 'warning',
+        duration: 4000,
+      })
+      router.replace('/login')
+    }
+  }, [router, searchParams, toast])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -86,7 +100,11 @@ const Login: NextPage = () => {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const { name, type, checked, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value,
+    })
     if (errors[e.target.name]) {
       setErrors({ ...errors, [e.target.name]: '' })
     }
@@ -100,13 +118,13 @@ const Login: NextPage = () => {
         heroSubtitle="Log in to manage orders, service requests, and approvals."
         heroTagline="Secure access with 30-day sessions."
       >
-        <VStack spacing={6} as="form" onSubmit={handleSubmit} align="stretch">
+        <VStack gap={6} as="form" onSubmit={handleSubmit} align="stretch">
           <Text fontSize="2xl" fontWeight="bold">
             Welcome Back
           </Text>
 
-          <FormControl isInvalid={!!errors.email}>
-            <FormLabel>Email</FormLabel>
+          <Field.Root invalid={!!errors.email}>
+            <Field.Label>Email</Field.Label>
             <Input
               name="email"
               type="email"
@@ -114,11 +132,11 @@ const Login: NextPage = () => {
               onChange={handleChange}
               placeholder="john@example.com"
             />
-            <FormErrorMessage>{errors.email}</FormErrorMessage>
-          </FormControl>
+            <Field.ErrorText>{errors.email}</Field.ErrorText>
+          </Field.Root>
 
-          <FormControl isInvalid={!!errors.password}>
-            <FormLabel>Password</FormLabel>
+          <Field.Root invalid={!!errors.password}>
+            <Field.Label>Password</Field.Label>
             <Input
               name="password"
               type="password"
@@ -126,20 +144,33 @@ const Login: NextPage = () => {
               onChange={handleChange}
               placeholder="••••••••"
             />
-            <FormErrorMessage>{errors.password}</FormErrorMessage>
-          </FormControl>
+            <Field.ErrorText>{errors.password}</Field.ErrorText>
+          </Field.Root>
 
           <Button
             type="submit"
             colorScheme="primary"
             width="full"
-            isLoading={isLoading}
+            loading={isLoading}
           >
             Log In
           </Button>
 
           <HStack width="full" justify="space-between">
-            <Checkbox size="sm">Remember me</Checkbox>
+            <Checkbox
+              size="sm"
+              name="rememberMe"
+              checked={formData.rememberMe}
+              onCheckedChange={(details) =>
+                setFormData({
+                  ...formData,
+                  rememberMe: Boolean(details.checked),
+                })
+              }
+            >
+              Remember me
+            </Checkbox>
+
             <Link
               as={NextLink}
               href="/forgot-password"

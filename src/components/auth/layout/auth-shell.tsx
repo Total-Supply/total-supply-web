@@ -2,7 +2,8 @@
 
 import { MotionBox } from '@/src/components/motion/box'
 import { Section } from '@/src/components/section'
-import { Box, Grid, Stack, Text, useColorModeValue } from '@chakra-ui/react'
+import { useColorModeValue } from '@/src/hooks/color-mode'
+import { Box, Grid, Stack, Text } from '@chakra-ui/react'
 
 type AuthShellProps = {
   children: React.ReactNode
@@ -78,7 +79,7 @@ export function AuthShell({
             transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
           />
 
-          <Stack position="relative" spacing={4} maxW="sm">
+          <Stack position="relative" gap={4} maxW="sm">
             <Text fontSize={{ base: 'sm', md: 'md' }} letterSpacing="widest">
               TOTAL SUPPLY
             </Text>

@@ -1,27 +1,25 @@
 'use client'
 
 import siteConfig from '@/src/data/config'
+import { useToast } from '@/src/hooks/use-toast'
 import { useAuth } from '@/src/hooks/useAuth'
 import {
   Alert,
-  AlertIcon,
   Badge,
   Box,
-  Button,
-  Checkbox,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
+  Field,
   Link,
   Stack,
   Text,
   VStack,
-  useToast,
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 
 import { useCallback, useState } from 'react'
+
+import { Button } from '../../ui/button'
+import { Checkbox } from '../../ui/checkbox'
+import { Input } from '../../ui/input'
 
 type SignupFormProps = {
   siteKey?: string
@@ -143,17 +141,17 @@ export function SignupForm({ siteKey }: SignupFormProps) {
 
   return (
     <VStack
-      spacing={{ base: 4, md: 6 }}
+      gap={{ base: 4, md: 6 }}
       as="form"
       onSubmit={handleSubmit}
       align="stretch"
     >
-      <Stack spacing={{ base: 2, md: 3 }}>
+      <Stack gap={{ base: 2, md: 3 }}>
         <Stack
           direction={{ base: 'column', sm: 'row' }}
           align={{ base: 'flex-start', sm: 'center' }}
           justify="space-between"
-          spacing={{ base: 2, sm: 4 }}
+          gap={{ base: 2, sm: 4 }}
         >
           <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
             {siteConfig.signup.title}
@@ -172,17 +170,17 @@ export function SignupForm({ siteKey }: SignupFormProps) {
       </Stack>
 
       {successMessage && (
-        <Alert status="success" borderRadius="md">
-          <AlertIcon />
+        <Alert.Root status="success" borderRadius="md">
+          <Alert.Indicator />
           <Box>
             <Text fontWeight="600">Check your inbox</Text>
             <Text fontSize="sm">{successMessage}</Text>
           </Box>
-        </Alert>
+        </Alert.Root>
       )}
 
-      <FormControl isInvalid={!!errors.name} isRequired>
-        <FormLabel>Full Name</FormLabel>
+      <Field.Root invalid={!!errors.name} required>
+        <Field.Label>Full Name</Field.Label>
         <Input
           name="name"
           value={formData.name}
@@ -190,11 +188,11 @@ export function SignupForm({ siteKey }: SignupFormProps) {
           placeholder="John Doe"
           isDisabled={!!successMessage}
         />
-        <FormErrorMessage>{errors.name}</FormErrorMessage>
-      </FormControl>
+        <Field.ErrorText>{errors.name}</Field.ErrorText>
+      </Field.Root>
 
-      <FormControl isInvalid={!!errors.email} isRequired>
-        <FormLabel>Email</FormLabel>
+      <Field.Root invalid={!!errors.email} required>
+        <Field.Label>Email</Field.Label>
         <Input
           name="email"
           type="email"
@@ -203,11 +201,11 @@ export function SignupForm({ siteKey }: SignupFormProps) {
           placeholder="john@example.com"
           isDisabled={!!successMessage}
         />
-        <FormErrorMessage>{errors.email}</FormErrorMessage>
-      </FormControl>
+        <Field.ErrorText>{errors.email}</Field.ErrorText>
+      </Field.Root>
 
-      <FormControl isInvalid={!!errors.password} isRequired>
-        <FormLabel>Password</FormLabel>
+      <Field.Root invalid={!!errors.password} required>
+        <Field.Label>Password</Field.Label>
         <Input
           name="password"
           type="password"
@@ -216,8 +214,8 @@ export function SignupForm({ siteKey }: SignupFormProps) {
           placeholder="Create a strong password"
           isDisabled={!!successMessage}
         />
-        <FormErrorMessage>{errors.password}</FormErrorMessage>
-      </FormControl>
+        <Field.ErrorText>{errors.password}</Field.ErrorText>
+      </Field.Root>
 
       {/* <Box
         borderWidth="1px"
@@ -228,7 +226,7 @@ export function SignupForm({ siteKey }: SignupFormProps) {
         <Text fontSize="sm" fontWeight="600" mb="2">
           Password requirements
         </Text>
-        <List spacing={1} fontSize={{ base: 'xs', md: 'sm' }}>
+        <List gap={1} fontSize={{ base: 'xs', md: 'sm' }}>
           <ListItem>
             <ListIcon
               as={passwordChecks.length ? CheckCircleIcon : WarningIcon}
@@ -253,8 +251,8 @@ export function SignupForm({ siteKey }: SignupFormProps) {
         </List>
       </Box> */}
 
-      <FormControl isInvalid={!!errors.confirmPassword} isRequired>
-        <FormLabel>Confirm Password</FormLabel>
+      <Field.Root invalid={!!errors.confirmPassword} required>
+        <Field.Label>Confirm Password</Field.Label>
         <Input
           name="confirmPassword"
           type="password"
@@ -263,10 +261,10 @@ export function SignupForm({ siteKey }: SignupFormProps) {
           placeholder="Re-enter your password"
           isDisabled={!!successMessage}
         />
-        <FormErrorMessage>{errors.confirmPassword}</FormErrorMessage>
-      </FormControl>
+        <Field.ErrorText>{errors.confirmPassword}</Field.ErrorText>
+      </Field.Root>
 
-      <FormControl isInvalid={!!errors.termsAccepted} isRequired>
+      <Field.Root invalid={!!errors.termsAccepted} required>
         <Checkbox
           name="termsAccepted"
           isChecked={formData.termsAccepted}
@@ -283,8 +281,8 @@ export function SignupForm({ siteKey }: SignupFormProps) {
           </Link>
           .
         </Checkbox>
-        <FormErrorMessage>{errors.termsAccepted}</FormErrorMessage>
-      </FormControl>
+        <Field.ErrorText>{errors.termsAccepted}</Field.ErrorText>
+      </Field.Root>
 
       {siteKey && (
         <Text fontSize="xs" color="muted">
@@ -297,7 +295,7 @@ export function SignupForm({ siteKey }: SignupFormProps) {
         type="submit"
         colorScheme="primary"
         width="full"
-        isLoading={isLoading}
+        loading={isLoading}
         isDisabled={!!successMessage}
       >
         Create Account

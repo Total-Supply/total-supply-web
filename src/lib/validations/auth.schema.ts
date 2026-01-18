@@ -21,6 +21,7 @@ export const registerSchema = z.object({
 export const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),
+  rememberMe: z.boolean().optional(),
 })
 
 export const changePasswordSchema = z.object({
@@ -71,3 +72,5 @@ export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>
 export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>
 export type ResendVerificationInput = z.infer<typeof resendVerificationSchema>
+
+

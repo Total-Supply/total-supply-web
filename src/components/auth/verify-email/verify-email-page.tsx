@@ -5,9 +5,7 @@ import { PageTransition } from '@/src/components/motion/page-transition'
 import { Section } from '@/src/components/section'
 import {
   Alert,
-  AlertIcon,
   Box,
-  Button,
   Center,
   Input,
   Link,
@@ -18,7 +16,10 @@ import {
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+
 import { useEffect, useState } from 'react'
+
+import { Button } from '../../ui/button'
 
 type VerifyState = 'idle' | 'loading' | 'success' | 'error' | 'expired'
 
@@ -70,10 +71,16 @@ export function VerifyEmailPage() {
         }
 
         setState('success')
-        setMessage(data.message || 'Email verified. Waiting for admin approval.')
-      } catch (error: any) {
+        setMessage(
+          data.message || 'Email verified. Waiting for admin approval.',
+        )
+      } catch (error: unknown) {
         setState('error')
-        setMessage(error.message || 'Verification failed')
+        if (error instanceof Error) {
+          setMessage(error.message || 'Verification failed')
+        } else {
+          setMessage('Verification failed')
+        }
       }
     }
 
@@ -100,8 +107,12 @@ export function VerifyEmailPage() {
       }
 
       setMessage('Verification email sent. Please check your inbox.')
-    } catch (error: any) {
-      setMessage(error.message || 'Unable to resend email')
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setMessage(error.message || 'Unable to resend email')
+      } else {
+        setMessage('Unable to resend email')
+      }
     } finally {
       setIsResending(false)
     }
@@ -112,8 +123,8 @@ export function VerifyEmailPage() {
       <BackgroundGradient zIndex="-1" />
       <Center height="100%" pt="20">
         <PageTransition width="100%">
-          <VStack spacing={6}>
-            <Stack spacing={2} textAlign="center">
+          <VStack gap={6}>
+            <Stack gap={2} textAlign="center">
               <Text fontSize="2xl" fontWeight="bold">
                 Verify your email
               </Text>
@@ -132,16 +143,16 @@ export function VerifyEmailPage() {
             )}
 
             {state === 'success' && (
-              <Alert status="success" borderRadius="md">
-                <AlertIcon />
+              <Alert.Root status="success" borderRadius="md">
+                <Alert.Indicator />
                 <Text fontSize="sm">{message}</Text>
-              </Alert>
+              </Alert.Root>
             )}
 
             {state === 'expired' && (
-              <Alert status="warning" borderRadius="md">
-                <AlertIcon />
-                <VStack align="start" spacing={3}>
+              <Alert.Root status="warning" borderRadius="md">
+                <Alert.Indicator />
+                <VStack align="start" gap={3}>
                   <Text fontSize="sm">{message}</Text>
                   <Box width="100%">
                     <Text fontSize="xs" color="muted" mb="2">
@@ -159,26 +170,33 @@ export function VerifyEmailPage() {
                       size="sm"
                       colorScheme="primary"
                       onClick={handleResend}
-                      isLoading={isResending}
+                      loading={isResending}
                     >
                       Resend link
                     </Button>
                   </Box>
                 </VStack>
-              </Alert>
+              </Alert.Root>
             )}
 
             {state === 'error' && (
-              <Alert status="error" borderRadius="md">
-                <AlertIcon />
+              <Alert.Root status="error" borderRadius="md">
+                <Alert.Indicator />
                 <Text fontSize="sm">{message}</Text>
-              </Alert>
+              </Alert.Root>
             )}
 
-            <Button as={NextLink} href="/login" colorScheme="primary" width="full">
-              Go to login
-            </Button>
-            <Link as={NextLink} href="/signup" fontSize="sm" color="primary.500">
+            <NextLink href="/login" passHref>
+              <Button as="a" colorScheme="primary" width="full">
+                Go to login
+              </Button>
+            </NextLink>
+            <Link
+              as={NextLink}
+              href="/signup"
+              fontSize="sm"
+              color="primary.500"
+            >
               Need to register again?
             </Link>
           </VStack>

@@ -1,32 +1,32 @@
 'use client'
 
-import {
-  Container,
-  HTMLChakraProps,
-  StyleProps,
-  ThemingProps,
-  chakra,
-  omitThemingProps,
-  useStyleConfig,
-} from '@chakra-ui/react'
+import { Box, Container, HTMLChakraProps } from '@chakra-ui/react'
 
-export interface SectionProps
-  extends HTMLChakraProps<'div'>, ThemingProps<'Section'> {
+export interface SectionProps extends HTMLChakraProps<'div'> {
   children: React.ReactNode
-  innerWidth?: StyleProps['width']
+  innerWidth?: string
+  variant?: 'default' | 'hero' | 'feature'
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
-  const { children, innerWidth = 'container.lg', className, ...rest } = props
-  const styles = useStyleConfig('Section', rest)
+  const {
+    children,
+    innerWidth = 'container.lg',
+    variant = 'default',
+    ...rest
+  } = props
 
-  const ownProps = omitThemingProps(rest)
+  const variantStyles = {
+    default: { py: 8, px: 4 },
+    hero: { py: 16, px: 4, bg: 'gray.50' },
+    feature: { py: 12, px: 4, bg: 'blue.50/20' },
+  }
 
   return (
-    <chakra.div __css={styles} {...ownProps}>
+    <Box css={variantStyles[variant]} {...rest}>
       <Container height="full" maxW={innerWidth}>
         {children}
       </Container>
-    </chakra.div>
+    </Box>
   )
 }

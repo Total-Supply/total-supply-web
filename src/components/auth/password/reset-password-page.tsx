@@ -2,20 +2,10 @@
 
 import { AuthShell } from '@/src/components/auth/layout/auth-shell'
 import { BackgroundGradient } from '@/src/components/gradients/background-gradient'
-import {
-  Alert,
-  AlertIcon,
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Link,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Alert, Button, Field, Input, Link, Text, VStack } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+
 import { useEffect, useState } from 'react'
 
 export function ResetPasswordPage() {
@@ -64,8 +54,12 @@ export function ResetPasswordPage() {
 
       setMessage(data.message || 'Password reset successfully.')
       setTimeout(() => router.push('/login'), 1500)
-    } catch (err: any) {
-      setError(err.message || 'Reset failed')
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Reset failed')
+      } else {
+        setError('Reset failed')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -79,7 +73,7 @@ export function ResetPasswordPage() {
         heroSubtitle="Choose a strong password to secure your account."
         heroTagline="Use at least 8 characters with uppercase and a number."
       >
-        <VStack spacing={6} as="form" onSubmit={handleSubmit} align="stretch">
+        <VStack gap={6} as="form" onSubmit={handleSubmit} align="stretch">
           <Text fontSize="2xl" fontWeight="bold">
             Choose a new password
           </Text>
@@ -88,45 +82,45 @@ export function ResetPasswordPage() {
           </Text>
 
           {message && (
-            <Alert status="success" borderRadius="md">
-              <AlertIcon />
+            <Alert.Root status="success" borderRadius="md">
+              <Alert.Indicator />
               <Text fontSize="sm">{message}</Text>
-            </Alert>
+            </Alert.Root>
           )}
 
           {error && (
-            <Alert status="error" borderRadius="md">
-              <AlertIcon />
+            <Alert.Root status="error" borderRadius="md">
+              <Alert.Indicator />
               <Text fontSize="sm">{error}</Text>
-            </Alert>
+            </Alert.Root>
           )}
 
-          <FormControl isInvalid={!!error} isRequired>
-            <FormLabel>New password</FormLabel>
+          <Field.Root invalid={!!error} required>
+            <Field.Label>New password</Field.Label>
             <Input
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Create a strong password"
             />
-          </FormControl>
+          </Field.Root>
 
-          <FormControl isInvalid={!!error} isRequired>
-            <FormLabel>Confirm password</FormLabel>
+          <Field.Root invalid={!!error} required>
+            <Field.Label>Confirm password</Field.Label>
             <Input
               type="password"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
               placeholder="Re-enter your password"
             />
-            <FormErrorMessage>{error}</FormErrorMessage>
-          </FormControl>
+            <Field.ErrorText>{error}</Field.ErrorText>
+          </Field.Root>
 
           <Button
             type="submit"
             colorScheme="primary"
             width="full"
-            isLoading={isLoading}
+            loading={isLoading}
           >
             Reset password
           </Button>
@@ -144,3 +138,6 @@ export function ResetPasswordPage() {
     </>
   )
 }
+
+
+
