@@ -48,7 +48,7 @@ export function CleanerDashboardPage() {
   }, [stats?.chart])
 
   return (
-    <div className="flex flex-col gap-6 p-6 pt-2">
+    <div className="flex flex-col gap-6 px-4 pb-8 pt-4 sm:px-6 lg:px-8">
       <MotionBox
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -95,7 +95,7 @@ export function CleanerDashboardPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-xl border bg-white p-4 shadow-sm lg:col-span-2">
+        <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm lg:col-span-2">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold">Services completed (7d)</p>
@@ -127,7 +127,7 @@ export function CleanerDashboardPage() {
             )}
           </div>
         </div>
-        <div className="rounded-xl border bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
           <p className="text-sm font-semibold">Performance</p>
           <div className="mt-4 space-y-3 text-sm text-muted-foreground">
             <div className="flex items-center justify-between">
@@ -178,7 +178,7 @@ export function CleanerDashboardPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border bg-white shadow-sm">
+      <div className="rounded-xl border border-border/60 bg-card shadow-sm">
         <CleanerServicesPage />
       </div>
     </div>
@@ -195,7 +195,7 @@ function StatCard({
   helper: string
 }) {
   return (
-    <div className="rounded-xl border bg-white p-4 shadow-sm">
+    <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
       <p className="text-xs uppercase text-muted-foreground">{label}</p>
       <p className="mt-2 text-2xl font-semibold">{value}</p>
       <p className="text-xs text-muted-foreground">{helper}</p>

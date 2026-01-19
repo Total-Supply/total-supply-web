@@ -81,7 +81,7 @@ export function AdminOrdersPage() {
   }, [page, search, status, toast])
 
   return (
-    <div className="container mx-auto space-y-6 p-6">
+    <div className="container mx-auto space-y-6 px-4 pb-10 pt-4 sm:px-6 lg:px-8">
       <AdminTableShell
         title="Order management"
         description="Update statuses and upload delivery proof."

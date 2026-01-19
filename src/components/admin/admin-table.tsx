@@ -21,9 +21,9 @@ export function AdminTableShell({
       className={className}
       borderRadius="2xl"
       borderWidth="1px"
-      borderColor="border"
-      bg="card"
-      boxShadow="lg"
+      borderColor="border.muted"
+      bg="bg.panel"
+      boxShadow="md"
     >
       <Card.Header>
         <Flex flexWrap="wrap" align="flex-start" justify="space-between" gap={4}>
@@ -32,7 +32,7 @@ export function AdminTableShell({
               {title}
             </Text>
             {description ? (
-              <Text mt={1} fontSize="sm" color="muted">
+              <Text mt={1} fontSize="sm" color="fg.muted">
                 {description}
               </Text>
             ) : null}
@@ -63,8 +63,8 @@ export function AdminTable({ children, className }: AdminTableProps) {
       overflowX="auto"
       borderRadius="xl"
       borderWidth="1px"
-      borderColor="border"
-      bg="background"
+      borderColor="border.muted"
+      bg="bg.panel"
     >
       <Box as="table" width="full" minW="720px" textAlign="left" fontSize="sm">
         {children}

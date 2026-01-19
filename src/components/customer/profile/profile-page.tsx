@@ -501,7 +501,7 @@ export function CustomerProfilePage() {
                       <>
                         <Button
                           variant="outline"
-                          colorScheme="red"
+                          colorPalette="red"
                           disabled={isDeleting}
                           onClick={deleteDialog.onOpen}
                         >
@@ -539,7 +539,7 @@ export function CustomerProfilePage() {
                                     Cancel
                                   </Button>
                                   <Button
-                                    colorScheme="red"
+                                    colorPalette="red"
                                     onClick={handleDelete}
                                     loading={isDeleting}
                                   >

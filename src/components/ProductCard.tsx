@@ -68,7 +68,7 @@ export function ProductCard({
 
       <VStack p={4} align="start" gap={2}>
         {category && (
-          <Badge colorScheme="primary" fontSize="xs">
+          <Badge colorPalette="primary" fontSize="xs">
             {category}
           </Badge>
         )}
@@ -88,7 +88,7 @@ export function ProductCard({
         </Text>
 
         <Button
-          colorScheme="primary"
+          colorPalette="primary"
           width="full"
           onClick={handleAddToCart}
           isDisabled={stock === 0}

@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/admin/data-retention?token=@data-retention-cron-secret",
+      "schedule": "0 2 * * *"
+    }
+  ]
+}

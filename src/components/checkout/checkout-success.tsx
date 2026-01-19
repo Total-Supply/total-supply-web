@@ -32,7 +32,7 @@ export function CheckoutSuccess() {
           )}
           <Stack gap={3} pt={4}>
             <Button
-              colorScheme="primary"
+              colorPalette="primary"
               onClick={() =>
                 orderNumber
                   ? router.push(`/orders/${orderNumber}`)

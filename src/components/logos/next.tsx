@@ -1,4 +1,4 @@
-import { useColorModeValue } from '@chakra-ui/react'
+
 
 export const NextjsLogo = ({ ...rest }) => {
   return (
@@ -11,3 +11,7 @@ export const NextjsLogo = ({ ...rest }) => {
     </svg>
   )
 }
+
+
+
+

@@ -236,7 +236,7 @@ export default function ServiceRequestDetailPage() {
           </Stack>
         ) : service ? (
           <Stack gap={6} mt={10}>
-            <Box borderWidth="1px" borderRadius="2xl" p={6}>
+            <Box layerStyle="card" p={6}>
               <HStack justify="space-between" align="flex-start">
                 <Stack gap={1}>
                   <Text fontSize="lg" fontWeight="600">
@@ -267,7 +267,7 @@ export default function ServiceRequestDetailPage() {
               </Progress.Root>
             </Box>
 
-            <Box borderWidth="1px" borderRadius="2xl" p={6}>
+            <Box layerStyle="card" p={6}>
               <Text fontSize="lg" fontWeight="600" mb={3}>
                 Status timeline
               </Text>
@@ -311,7 +311,7 @@ export default function ServiceRequestDetailPage() {
             </Box>
 
             {service.staff && (
-              <Box borderWidth="1px" borderRadius="2xl" p={6}>
+              <Box layerStyle="card" p={6}>
                 <Text fontSize="lg" fontWeight="600" mb={3}>
                   Assigned staff
                 </Text>
@@ -372,7 +372,7 @@ export default function ServiceRequestDetailPage() {
               </Box>
             )}
 
-            <Box borderWidth="1px" borderRadius="2xl" p={6}>
+            <Box layerStyle="card" p={6}>
               <Text fontSize="lg" fontWeight="600" mb={3}>
                 Before photos
               </Text>
@@ -407,7 +407,7 @@ export default function ServiceRequestDetailPage() {
             </Box>
 
             {service.status === 'IN_PROGRESS' && (
-              <Box borderWidth="1px" borderRadius="2xl" p={6}>
+              <Box layerStyle="card" p={6}>
                 <Text fontSize="lg" fontWeight="600" mb={3}>
                   Progress photos
                 </Text>
@@ -449,7 +449,7 @@ export default function ServiceRequestDetailPage() {
             )}
 
             {service.status === 'RESOLVED' && (
-              <Box borderWidth="1px" borderRadius="2xl" p={6}>
+              <Box layerStyle="card" p={6}>
                 <Text fontSize="lg" fontWeight="600" mb={3}>
                   After photos
                 </Text>
@@ -519,7 +519,7 @@ export default function ServiceRequestDetailPage() {
             )}
 
             {service.status === 'RESOLVED' && !service.rating && (
-              <Box borderWidth="1px" borderRadius="2xl" p={6}>
+              <Box layerStyle="card" p={6}>
                 <Text fontSize="lg" fontWeight="600" mb={3}>
                   Rate service
                 </Text>
@@ -563,7 +563,7 @@ export default function ServiceRequestDetailPage() {
             )}
 
             {service.type === 'IT_SUPPORT' && (
-              <Box borderWidth="1px" borderRadius="2xl" p={6}>
+              <Box layerStyle="card" p={6}>
                 <Tabs.Root defaultValue="current" variant="enclosed">
                   <Tabs.List>
                     <Tabs.Trigger value="current">Current request</Tabs.Trigger>
@@ -590,12 +590,7 @@ export default function ServiceRequestDetailPage() {
                     <Stack gap={3}>
                       {service.itHistory && service.itHistory.length > 0 ? (
                         service.itHistory.map((entry) => (
-                          <Box
-                            key={entry.id}
-                            borderWidth="1px"
-                            borderRadius="xl"
-                            p={4}
-                          >
+                          <Box key={entry.id} layerStyle="panel" p={4}>
                             <HStack justify="space-between" align="flex-start">
                               <Stack gap={1}>
                                 <Text fontWeight="600">

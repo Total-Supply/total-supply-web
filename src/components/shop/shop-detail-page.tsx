@@ -341,7 +341,7 @@ export function ShopDetailPage() {
                       {item.name}
                     </Text>
                     {item.stock === 0 && (
-                      <Badge colorScheme="red">Sold Out</Badge>
+                      <Badge colorPalette="red">Sold Out</Badge>
                     )}
                   </HStack>
                   <Text color="muted" fontSize="sm">
@@ -368,7 +368,7 @@ export function ShopDetailPage() {
                   </Text>
 
                   <HStack gap={3}>
-                    <Tag.Root colorScheme={item.stock > 0 ? 'green' : 'red'}>
+                    <Tag.Root colorPalette={item.stock > 0 ? 'green' : 'red'}>
                       <Tag.Label>
                         {item.stock > 0 ? 'In stock' : 'Out of stock'}
                       </Tag.Label>
@@ -399,7 +399,7 @@ export function ShopDetailPage() {
                         width="120px"
                       />
                       <Button
-                        colorScheme="primary"
+                        colorPalette="primary"
                         isDisabled={item.stock === 0}
                         onClick={handleAddToCart}
                       >
@@ -517,7 +517,7 @@ export function ShopDetailPage() {
           <HStack justify="space-between">
             <Text fontWeight="600">LKR {Number(item.price).toFixed(2)}</Text>
             <Button
-              colorScheme="primary"
+              colorPalette="primary"
               isDisabled={item.stock === 0}
               onClick={handleAddToCart}
             >

@@ -157,7 +157,7 @@ export function SignupForm({ siteKey }: SignupFormProps) {
             {siteConfig.signup.title}
           </Text>
           <Badge
-            colorScheme="primary"
+            colorPalette="primary"
             variant="subtle"
             textTransform="uppercase"
           >
@@ -293,7 +293,7 @@ export function SignupForm({ siteKey }: SignupFormProps) {
 
       <Button
         type="submit"
-        colorScheme="primary"
+        colorPalette="primary"
         width="full"
         loading={isLoading}
         isDisabled={!!successMessage}

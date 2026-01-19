@@ -298,7 +298,7 @@ export function ServiceRequestForm({
           </Checkbox>
         </Stack>
 
-        <Button colorScheme="primary" onClick={onContinue}>
+        <Button colorPalette="primary" onClick={onContinue}>
           Review request
         </Button>
       </Stack>

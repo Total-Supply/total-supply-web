@@ -30,10 +30,12 @@ export const SectionTitle: React.FC<SectionTitleProps> = (props) => {
 
   return (
     <VStack css={styles} gap={4} {...restProps}>
-      <Heading as="h2">{title}</Heading>
+      <Heading as="h2" textStyle="sectionTitle">
+        {title}
+      </Heading>
 
       {description && (
-        <Box fontSize="sm" color="fg.muted">
+        <Box textStyle="body" color="fg.muted">
           {description}
         </Box>
       )}

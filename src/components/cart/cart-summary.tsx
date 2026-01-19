@@ -62,7 +62,7 @@ export function CartSummary({
           </Text>
         </HStack>
         <Stack gap={3}>
-          <Button colorScheme="primary" onClick={onCheckout}>
+          <Button colorPalette="primary" onClick={onCheckout}>
             Proceed to checkout
           </Button>
           <Button variant="outline" onClick={onContinue}>

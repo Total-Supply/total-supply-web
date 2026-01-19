@@ -33,7 +33,7 @@ const Features = {
         bg: 'primary.400',
       },
       secondaryAction: {
-        colorScheme: 'white',
+        colorPalette: 'white',
       },
     },
     light: ({ colorMode }: any) => ({

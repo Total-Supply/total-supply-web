@@ -327,7 +327,7 @@ export function CheckoutPage() {
             <Text color="muted" fontSize="sm">
               Add items before checking out.
             </Text>
-            <Button colorScheme="primary" onClick={() => router.push('/shop')}>
+            <Button colorPalette="primary" onClick={() => router.push('/shop')}>
               Continue shopping
             </Button>
           </Stack>
@@ -609,7 +609,7 @@ export function CheckoutPage() {
                   Cancel
                 </Button>
                 <Button
-                  colorScheme="primary"
+                  colorPalette="primary"
                   flex="1"
                   onClick={handleConfirmOrder}
                   loading={isPlacing}

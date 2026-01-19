@@ -316,7 +316,7 @@ export function OrderTrackingPage() {
                     </Text>
                   )}
                 </Stack>
-                <Badge colorScheme={statusColor} textTransform="capitalize">
+                <Badge colorPalette={statusColor} textTransform="capitalize">
                   {order.status.toLowerCase()}
                 </Badge>
               </HStack>
@@ -333,7 +333,7 @@ export function OrderTrackingPage() {
                   mt={4}
                   size="sm"
                   variant="outline"
-                  colorScheme="red"
+                  colorPalette="red"
                   onClick={cancelModal.onOpen}
                 >
                   Cancel order
@@ -632,7 +632,7 @@ export function OrderTrackingPage() {
                   Keep order
                 </Button>
                 <Button
-                  colorScheme="red"
+                  colorPalette="red"
                   flex="1"
                   onClick={handleCancel}
                   loading={isCanceling}

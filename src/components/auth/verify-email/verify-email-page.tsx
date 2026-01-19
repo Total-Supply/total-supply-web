@@ -168,7 +168,7 @@ export function VerifyEmailPage() {
                     <Button
                       mt="3"
                       size="sm"
-                      colorScheme="primary"
+                      colorPalette="primary"
                       onClick={handleResend}
                       loading={isResending}
                     >
@@ -187,7 +187,7 @@ export function VerifyEmailPage() {
             )}
 
             <NextLink href="/login" passHref>
-              <Button as="a" colorScheme="primary" width="full">
+              <Button as="a" colorPalette="primary" width="full">
                 Go to login
               </Button>
             </NextLink>

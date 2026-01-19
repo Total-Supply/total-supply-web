@@ -68,7 +68,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     Add fresh items from the catalog to get started.
                   </Text>
                   <Button
-                    colorScheme="primary"
+                    colorPalette="primary"
                     onClick={() => handleNavigate('/shop')}
                   >
                     Browse catalog
@@ -169,7 +169,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       View cart
                     </Button>
                     <Button
-                      colorScheme="primary"
+                      colorPalette="primary"
                       flex="1"
                       onClick={() => handleNavigate('/checkout')}
                     >

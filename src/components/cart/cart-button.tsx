@@ -27,7 +27,7 @@ export function CartButton() {
             position="absolute"
             top="1"
             right="1"
-            colorScheme="primary"
+            colorPalette="primary"
             borderRadius="full"
             px="2"
             fontSize="xs"

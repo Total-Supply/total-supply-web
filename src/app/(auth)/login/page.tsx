@@ -119,7 +119,7 @@ const Login: NextPage = () => {
         heroTagline="Secure access with 30-day sessions."
       >
         <VStack gap={6} as="form" onSubmit={handleSubmit} align="stretch">
-          <Text fontSize="2xl" fontWeight="bold">
+          <Text textStyle="sectionTitle">
             Welcome Back
           </Text>
 
@@ -149,7 +149,7 @@ const Login: NextPage = () => {
 
           <Button
             type="submit"
-            colorScheme="primary"
+            colorPalette="primary"
             width="full"
             loading={isLoading}
           >
@@ -175,7 +175,7 @@ const Login: NextPage = () => {
               as={NextLink}
               href="/forgot-password"
               fontSize="sm"
-              color="primary.500"
+              color="primary.600"
             >
               Forgot password?
             </Link>
@@ -183,7 +183,7 @@ const Login: NextPage = () => {
 
           <Text fontSize="sm">
             Don&apos;t have an account?{' '}
-            <Link as={NextLink} href="/signup" color="primary.500">
+            <Link as={NextLink} href="/signup" color="primary.600">
               Sign up
             </Link>
           </Text>

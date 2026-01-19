@@ -125,7 +125,7 @@ export function CartItemRow({
           LKR {(item.price * item.quantity).toFixed(2)}
         </Text>
 
-        <Button size="sm" variant="ghost" colorScheme="red" onClick={onRemove}>
+        <Button size="sm" variant="ghost" colorPalette="red" onClick={onRemove}>
           Remove
         </Button>
       </Stack>

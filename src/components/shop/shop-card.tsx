@@ -106,7 +106,7 @@ export function ShopCard({ item, onClick, highlight, onAdd }: ShopCardProps) {
             </Box>
           )}
           {item.stock === 0 && (
-            <Badge position="absolute" top={3} right={3} colorScheme="red">
+            <Badge position="absolute" top={3} right={3} colorPalette="red">
               Sold Out
             </Badge>
           )}
@@ -137,7 +137,7 @@ export function ShopCard({ item, onClick, highlight, onAdd }: ShopCardProps) {
             <Button
               size="sm"
               variant={isAdded ? 'solid' : 'outline'}
-              colorScheme={isAdded ? 'green' : 'primary'}
+              colorPalette={isAdded ? 'green' : 'primary'}
               isDisabled={item.stock === 0}
               onClick={handleAdd}
             >

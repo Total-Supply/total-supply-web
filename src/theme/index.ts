@@ -1,63 +1,119 @@
-import { type ThemeConfig, extendTheme } from '@chakra-ui/react'
+import { createSystem, defaultConfig } from '@chakra-ui/react'
 import '@fontsource-variable/inter'
-import { theme as baseTheme } from '@saas-ui/react'
 
 import components from './components'
 import { fontSizes } from './foundations/typography'
 
-const config: ThemeConfig = {
-  initialColorMode: 'dark',
-  useSystemColorMode: false,
-}
+const toTokenScale = (scale: Record<string, string>) =>
+  Object.fromEntries(
+    Object.entries(scale).map(([key, value]) => [key, { value }]),
+  )
 
-export const theme = extendTheme(
-  {
-    config,
-    styles: {
-      global: (props: any) => ({
-        body: {
-          color: 'gray.900',
-          bg: 'white',
-          fontSize: 'lg',
-          _dark: {
-            color: 'white',
-            bg: 'gray.900',
-          },
+export const system = createSystem(defaultConfig, {
+  theme: {
+    textStyles: {
+      pageTitle: {
+        fontSize: { base: '3xl', md: '4xl' },
+        fontWeight: '700',
+        letterSpacing: '-0.02em',
+      },
+      sectionTitle: {
+        fontSize: { base: '2xl', md: '3xl' },
+        fontWeight: '700',
+        letterSpacing: '-0.01em',
+      },
+      eyebrow: {
+        fontSize: 'xs',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: '0.12em',
+        color: 'fg.muted',
+      },
+      body: {
+        fontSize: 'md',
+        lineHeight: '1.7',
+      },
+    },
+    layerStyles: {
+      card: {
+        bg: 'bg.panel',
+        borderWidth: '1px',
+        borderColor: 'border.muted',
+        borderRadius: '2xl',
+        boxShadow: 'sm',
+        transitionProperty: 'common',
+        transitionDuration: 'fast',
+        _hover: {
+          boxShadow: 'md',
+          borderColor: 'border.emphasized',
         },
-      }),
-    },
-    colors: {
-      primary: {
-        50: '#e3f2fd',
-        100: '#bbdefb',
-        200: '#90caf9',
-        300: '#64b5f6',
-        400: '#42a5f5',
-        500: '#2196f3',
-        600: '#1e88e5',
-        700: '#1976d2',
-        800: '#1565c0',
-        900: '#0d47a1',
       },
-      secondary: {
-        50: '#fce4ec',
-        100: '#f8bbd0',
-        200: '#f48fb1',
-        300: '#f06292',
-        400: '#ec407a',
-        500: '#e91e63',
-        600: '#d81b60',
-        700: '#c2185b',
-        800: '#ad1457',
-        900: '#880e4f',
+      panel: {
+        bg: 'bg.panel',
+        borderWidth: '1px',
+        borderColor: 'border.muted',
+        borderRadius: 'xl',
       },
     },
-    fonts: {
-      heading: 'Inter Variable, Inter, sans-serif',
-      body: 'Inter Variable, Inter, sans-serif',
+    tokens: {
+      colors: {
+        primary: toTokenScale({
+          50: '#e3f2fd',
+          100: '#bbdefb',
+          200: '#90caf9',
+          300: '#64b5f6',
+          400: '#42a5f5',
+          500: '#2196f3',
+          600: '#1e88e5',
+          700: '#1976d2',
+          800: '#1565c0',
+          900: '#0d47a1',
+        }),
+        secondary: toTokenScale({
+          50: '#fce4ec',
+          100: '#f8bbd0',
+          200: '#f48fb1',
+          300: '#f06292',
+          400: '#ec407a',
+          500: '#e91e63',
+          600: '#d81b60',
+          700: '#c2185b',
+          800: '#ad1457',
+          900: '#880e4f',
+        }),
+      },
+      fonts: {
+        heading: { value: 'Inter Variable, Inter, sans-serif' },
+        body: { value: 'Inter Variable, Inter, sans-serif' },
+      },
+      fontSizes: toTokenScale(fontSizes),
     },
-    fontSizes,
+    semanticTokens: {
+      colors: {
+        background: {
+          value: { base: '#ffffff', _dark: '#0f172a' },
+        },
+        card: {
+          value: { base: '#ffffff', _dark: '#111827' },
+        },
+        muted: {
+          value: { base: '#64748b', _dark: '#94a3b8' },
+        },
+        mutedForeground: {
+          value: { base: '#94a3b8', _dark: '#cbd5f5' },
+        },
+        border: {
+          value: { base: '#e2e8f0', _dark: '#1f2937' },
+        },
+        accent: {
+          value: { base: '#e2e8f0', _dark: '#1f2937' },
+        },
+      },
+    },
     components,
   },
-  baseTheme,
-)
+  colorMode: {
+    initial: 'dark',
+    useSystem: false,
+  },
+})

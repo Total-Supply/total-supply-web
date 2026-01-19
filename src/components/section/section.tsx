@@ -17,9 +17,17 @@ export const Section: React.FC<SectionProps> = (props) => {
   } = props
 
   const variantStyles = {
-    default: { py: 8, px: 4 },
-    hero: { py: 16, px: 4, bg: 'gray.50' },
-    feature: { py: 12, px: 4, bg: 'blue.50/20' },
+    default: { py: { base: 10, md: 14 }, px: { base: 4, md: 6 } },
+    hero: {
+      py: { base: 16, md: 24 },
+      px: { base: 4, md: 6 },
+      bg: 'bg.subtle',
+    },
+    feature: {
+      py: { base: 12, md: 18 },
+      px: { base: 4, md: 6 },
+      bg: 'bg.muted',
+    },
   }
 
   return (

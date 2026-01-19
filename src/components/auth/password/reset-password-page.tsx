@@ -118,7 +118,7 @@ export function ResetPasswordPage() {
 
           <Button
             type="submit"
-            colorScheme="primary"
+            colorPalette="primary"
             width="full"
             loading={isLoading}
           >

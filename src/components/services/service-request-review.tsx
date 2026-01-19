@@ -104,7 +104,7 @@ export function ServiceRequestReview({
           <Button variant="outline" onClick={onBack}>
             Back
           </Button>
-          <Button colorScheme="primary" onClick={onSubmit} loading={isSubmitting}>
+          <Button colorPalette="primary" onClick={onSubmit} loading={isSubmitting}>
             Request service
           </Button>
         </HStack>

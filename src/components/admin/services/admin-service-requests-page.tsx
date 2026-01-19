@@ -134,7 +134,7 @@ export function AdminServiceRequestsPage() {
   }, [page, priority, search, status, toast, type])
 
   return (
-    <div className="container mx-auto space-y-6 p-6">
+    <div className="container mx-auto space-y-6 px-4 pb-10 pt-4 sm:px-6 lg:px-8">
       <AdminTableShell
         title="Service requests"
         description="Assign staff and track completion."

@@ -49,7 +49,7 @@ export function CheckoutSummary({
             LKR {total.toFixed(2)}
           </Text>
         </HStack>
-        <Button colorScheme="primary" onClick={onPlaceOrder}>
+        <Button colorPalette="primary" onClick={onPlaceOrder}>
           Place order
         </Button>
       </Stack>

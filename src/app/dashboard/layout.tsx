@@ -22,7 +22,7 @@ export default function DashboardLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-border/60 px-4">
+        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between gap-2 border-b border-border/60 bg-background/80 px-4 backdrop-blur sm:px-6">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1 text-foreground" />
             <Separator
@@ -41,7 +41,7 @@ export default function DashboardLayout({
             <DashboardThemeToggle />
           </div>
         </header>
-        <main>{children}</main>
+        <main className="flex-1">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   )

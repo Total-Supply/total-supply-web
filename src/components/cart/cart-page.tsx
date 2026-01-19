@@ -124,7 +124,7 @@ export function CartPage() {
             <Text color="muted" fontSize="sm">
               Browse the catalog to add fresh items.
             </Text>
-            <Button onClick={() => router.push('/shop')} colorScheme="primary">
+            <Button onClick={() => router.push('/shop')} colorPalette="primary">
               Continue shopping
             </Button>
           </Stack>
@@ -188,7 +188,7 @@ export function CartPage() {
           <HStack justify="space-between">
             <Text fontWeight="600">Total: LKR {grandTotal.toFixed(2)}</Text>
             <Button
-              colorScheme="primary"
+              colorPalette="primary"
               onClick={() => router.push('/checkout')}
             >
               Checkout
