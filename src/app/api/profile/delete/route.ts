@@ -8,34 +8,46 @@ async function handler(request: NextRequest) {
   const authRequest = await requireAuth(request)
   const userId = parseInt(authRequest.user.id)
 
-  const anonymizedEmail = `deleted-${userId}@totalsupply.local`
+  const now = new Date()
+  const scheduledAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000)
 
   await prisma.$transaction([
     prisma.session.deleteMany({ where: { userId } }),
-    prisma.address.deleteMany({ where: { userId } }),
     prisma.user.update({
       where: { id: userId },
       data: {
-        email: anonymizedEmail,
-        name: 'Deleted User',
-        phone: null,
-        profileImage: null,
         status: 'SUSPENDED',
+        deletionRequestedAt: now,
+        deletionScheduledAt: scheduledAt,
       },
     }),
     prisma.auditLog.create({
       data: {
         entityType: 'USER',
         entityId: userId,
-        action: 'DELETE',
+        action: 'UPDATE',
         actorId: userId,
         ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
-        details: { anonymizedEmail },
+        details: {
+          deletionRequestedAt: now,
+          deletionScheduledAt: scheduledAt,
+          result: 'SUCCESS',
+          actorName: authRequest.user.name,
+        },
       },
     }),
   ])
 
-  return ApiResponse.success({ id: userId }, 'Account deleted')
+  return ApiResponse.success(
+    {
+      id: userId,
+      deletionRequestedAt: now,
+      deletionScheduledAt: scheduledAt,
+    },
+    'Account deletion scheduled',
+  )
 }
 
 export const POST = withErrorHandler(handler)
+
+

@@ -60,6 +60,8 @@ async function handler(
         to: 'REJECTED',
         action: 'rejected',
         reason: data.reason,
+        result: 'SUCCESS',
+        actorName: authRequest.user.name,
       },
     },
   })
@@ -79,3 +81,5 @@ async function handler(
 }
 
 export const POST = withErrorHandler(handler)
+
+

@@ -8,3 +8,5 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   return ApiResponse.success(null, 'Service created', undefined, 201)
 }
+
+

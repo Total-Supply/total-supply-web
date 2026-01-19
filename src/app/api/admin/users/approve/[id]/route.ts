@@ -63,6 +63,8 @@ async function handler(
         from: user.status,
         to: 'ACTIVE',
         action: 'approved',
+        result: 'SUCCESS',
+        actorName: authRequest.user.name,
       },
     },
   })
@@ -79,3 +81,5 @@ async function handler(
 }
 
 export const POST = withErrorHandler(handler)
+
+

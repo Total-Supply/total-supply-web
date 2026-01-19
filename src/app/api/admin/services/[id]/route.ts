@@ -14,3 +14,5 @@ export async function DELETE(
 ) {
   return ApiResponse.success(null, 'Service deleted')
 }
+
+

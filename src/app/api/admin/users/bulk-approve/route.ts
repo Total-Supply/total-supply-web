@@ -52,6 +52,8 @@ async function handler(request: NextRequest) {
         to: 'ACTIVE',
         action: 'approved',
         bulk: true,
+        result: 'SUCCESS',
+        actorName: authRequest.user.name,
       },
     })),
   })
@@ -75,3 +77,5 @@ async function handler(request: NextRequest) {
 }
 
 export const POST = withErrorHandler(handler)
+
+

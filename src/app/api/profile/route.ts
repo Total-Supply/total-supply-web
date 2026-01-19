@@ -20,6 +20,9 @@ async function getHandler(request: NextRequest) {
       name: true,
       phone: true,
       profileImage: true,
+      marketingOptIn: true,
+      deletionRequestedAt: true,
+      deletionScheduledAt: true,
     },
   })
 
@@ -119,6 +122,8 @@ async function putHandler(request: NextRequest) {
       ipAddress: ip,
       details: {
         updatedFields: ['name', 'phone', 'profileImage', 'addressLine1', 'city', 'postalCode'],
+        result: 'SUCCESS',
+        actorName: authRequest.user.name,
       },
     },
   })
@@ -133,3 +138,5 @@ async function putHandler(request: NextRequest) {
 
 export const GET = withErrorHandler(getHandler)
 export const PUT = withErrorHandler(putHandler)
+
+
