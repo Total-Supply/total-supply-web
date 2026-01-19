@@ -1,6 +1,5 @@
 'use client'
 
-import { ButtonLink } from '@/src/components/button-link'
 import { BackgroundGradient } from '@/src/components/gradients/background-gradient'
 import { Hero } from '@/src/components/hero'
 import { FallInPlace } from '@/src/components/motion/fall-in-place'
@@ -13,12 +12,12 @@ import {
   Heading,
   Icon,
   SimpleGrid,
-  Stack,
   Text,
   VStack,
 } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import { useRouter } from 'next/navigation'
+import type { IconType } from 'react-icons'
 import { FiArrowRight, FiMonitor, FiPackage, FiTool } from 'react-icons/fi'
 
 const Home: NextPage = () => {
@@ -48,14 +47,14 @@ const Home: NextPage = () => {
             }
           >
             <FallInPlace delay={0.8}>
-              <ButtonGroup spacing={4} alignItems="center" pt={8}>
+              <ButtonGroup gap={4} alignItems="center" pt={8}>
                 <Button
                   colorScheme="primary"
                   size="lg"
                   onClick={() => router.push('/shop')}
-                  rightIcon={<Icon as={FiArrowRight} />}
                 >
                   Order Now
+                  <Icon as={FiArrowRight} ms="2" />
                 </Button>
                 <Button
                   size="lg"
@@ -72,7 +71,7 @@ const Home: NextPage = () => {
 
       {/* Services Section */}
       <Container maxW="container.xl" py={20}>
-        <VStack spacing={4} textAlign="center" mb={12}>
+        <VStack gap={4} textAlign="center" mb={12}>
           <Heading size="xl">Our Services</Heading>
           <Text fontSize="lg" color="gray.600" maxW="2xl">
             We provide comprehensive solutions for all your business and
@@ -80,7 +79,7 @@ const Home: NextPage = () => {
           </Text>
         </VStack>
 
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+        <SimpleGrid columns={{ base: 1, md: 3 }} gap={10}>
           <ServiceCard
             icon={FiPackage}
             title="Food Supply"
@@ -110,7 +109,7 @@ const Home: NextPage = () => {
       {/* Featured Products Section */}
       <Box bg="gray.50" py={20}>
         <Container maxW="container.xl">
-          <VStack spacing={4} textAlign="center" mb={12}>
+          <VStack gap={4} textAlign="center" mb={12}>
             <Heading size="xl">Featured Products</Heading>
             <Text fontSize="lg" color="gray.600">
               Check out our most popular items
@@ -126,9 +125,9 @@ const Home: NextPage = () => {
               colorScheme="primary"
               size="lg"
               onClick={() => router.push('/shop')}
-              rightIcon={<Icon as={FiArrowRight} />}
             >
               View All Products
+              <Icon as={FiArrowRight} ms="2" />
             </Button>
           </Box>
         </Container>
@@ -149,7 +148,7 @@ const Home: NextPage = () => {
           <Text fontSize="lg" mb={8}>
             Join thousands of satisfied customers today
           </Text>
-          <ButtonGroup spacing={4}>
+          <ButtonGroup gap={4}>
             <Button
               size="lg"
               bg="white"
@@ -177,7 +176,7 @@ const Home: NextPage = () => {
 }
 
 interface ServiceCardProps {
-  icon: any
+  icon: IconType
   title: string
   description: string
   onClick: () => void
@@ -198,7 +197,7 @@ function ServiceCard({
       borderRadius="xl"
       borderWidth="1px"
       align="start"
-      spacing={4}
+      gap={4}
       transition="all 0.3s"
       _hover={{ transform: 'translateY(-4px)', shadow: 'xl' }}
     >
