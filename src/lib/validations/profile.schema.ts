@@ -12,4 +12,11 @@ export const profileUpdateSchema = z.object({
   postalCode: z.string().min(1, 'Postal code is required').max(20),
 })
 
+export const profileMarketingSchema = z.object({
+  marketingOptIn: z.boolean(),
+})
+
 export type ProfileUpdateInput = z.infer<typeof profileUpdateSchema>
+export type ProfileMarketingInput = z.infer<typeof profileMarketingSchema>
+
+

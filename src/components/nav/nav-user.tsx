@@ -1,12 +1,9 @@
 'use client'
 
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  Settings,
 } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
@@ -25,6 +22,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '../ui/sidebar'
+import { useAuth } from '@/src/hooks/useAuth'
 
 export function NavUser({
   user,
@@ -36,6 +34,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { logout } = useAuth()
 
   return (
     <SidebarMenu>
@@ -78,27 +77,17 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+                <Settings />
+                Settings
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(event) => {
+                event.preventDefault()
+                logout()
+              }}
+            >
               <LogOut />
               Log out
             </DropdownMenuItem>
@@ -108,3 +97,5 @@ export function NavUser({
     </SidebarMenu>
   )
 }
+
+

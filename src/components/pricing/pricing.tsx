@@ -40,24 +40,22 @@ export const Pricing: React.FC<PricingProps> = (props) => {
       <Box zIndex="2" pos="relative">
         <SectionTitle title={title} description={description}></SectionTitle>
 
-        <SimpleGrid columns={[1, null, 3]} spacing={4}>
+        <SimpleGrid columns={[1, null, 3]} gap={4}>
           {plans?.map((plan) => (
             <PricingBox
               key={plan.id}
               title={plan.title}
               description={plan.description}
               price={plan.price}
-              sx={
-                plan.isRecommended
-                  ? {
+              {...(plan.isRecommended
+                ? {
+                    borderColor: 'primary.500',
+                    _dark: {
                       borderColor: 'primary.500',
-                      _dark: {
-                        borderColor: 'primary.500',
-                        bg: 'blackAlpha.300',
-                      },
-                    }
-                  : {}
-              }
+                      bg: 'blackAlpha.300',
+                    },
+                  }
+                : {})}
             >
               <PricingFeatures>
                 {plan.features.map((feature, i) =>
@@ -85,13 +83,7 @@ const PricingFeatures: React.FC<React.PropsWithChildren<object>> = ({
   children,
 }) => {
   return (
-    <VStack
-      align="stretch"
-      justifyContent="stretch"
-      spacing="4"
-      mb="8"
-      flex="1"
-    >
+    <VStack align="stretch" justifyContent="stretch" gap="4" mb="8" flex="1">
       {children}
     </VStack>
   )
@@ -145,7 +137,7 @@ const PricingBox: React.FC<PricingBoxProps> = (props) => {
       <Box fontSize="2xl" fontWeight="bold" py="4">
         {price}
       </Box>
-      <VStack align="stretch" justifyContent="stretch" spacing="4" flex="1">
+      <VStack align="stretch" justifyContent="stretch" gap="4" flex="1">
         {children}
       </VStack>
     </VStack>

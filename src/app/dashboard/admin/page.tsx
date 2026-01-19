@@ -1,3 +1,5 @@
+import { DataRetentionCard } from '@/src/components/admin/data-retention-card'
+
 export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto p-6">
@@ -15,6 +17,9 @@ export default function AdminDashboardPage() {
           <h2 className="text-lg font-semibold mb-2">Total Services</h2>
           <p className="text-3xl font-bold">0</p>
         </div>
+      </div>
+      <div className="mt-6">
+        <DataRetentionCard />
       </div>
     </div>
   )

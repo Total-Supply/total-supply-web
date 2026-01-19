@@ -1,44 +1,39 @@
-import {
-  Box,
-  Card,
-  CardProps,
-  Grid,
-  GridItem,
-  GridItemProps,
-  Heading,
-  useTheme,
-} from '@chakra-ui/react'
-import { transparentize } from '@chakra-ui/theme-tools'
+import { Box, Card, Grid, GridItem, GridItemProps, Heading } from '@chakra-ui/react'
+import type { ComponentProps } from 'react'
 
 import { Section, SectionProps } from '../section'
 import { Testimonial, TestimonialProps } from '../testimonials'
 
 export interface HighlightBoxProps
-  extends GridItemProps, Omit<CardProps, 'title'> {}
+  extends GridItemProps, Omit<ComponentProps<typeof Card.Root>, 'title'> {}
 
 export const HighlightsItem: React.FC<HighlightBoxProps> = (props) => {
   const { children, title, ...rest } = props
   return (
-    <GridItem
-      as={Card}
+    <Card.Root
+      as={GridItem}
       borderRadius="md"
       p="8"
       flex="1 0"
+      display="flex"
+      flexDirection="column"
       alignItems="flex-start"
-      spacing="8"
+      gap="8"
       overflow="hidden"
       position="relative"
       bg="white"
       _dark={{ bg: 'gray.800' }}
       {...rest}
     >
-      {title && (
-        <Heading fontSize="3xl" mb="8">
-          {title}
-        </Heading>
-      )}
-      {children}
-    </GridItem>
+      <Card.Body>
+        {title && (
+          <Heading fontSize="3xl" mb="8">
+            {title}
+          </Heading>
+        )}
+        {children}
+      </Card.Body>
+    </Card.Root>
   )
 }
 
@@ -53,7 +48,6 @@ export const HighlightsTestimonialItem: React.FC<
     gradient = ['primary.500', 'secondary.500'],
     ...rest
   } = props
-  const theme = useTheme()
   return (
     <HighlightsItem
       justifyContent="center"
@@ -62,11 +56,8 @@ export const HighlightsTestimonialItem: React.FC<
       {...rest}
     >
       <Box
-        bgGradient={`linear(to-br, ${transparentize(
-          gradient[0],
-          0.8,
-        )(theme)}, ${transparentize(gradient[1], 0.8)(theme)})`}
-        opacity="1"
+        bgGradient={`linear(to-br, ${gradient[0]}, ${gradient[1]})`}
+        opacity="0.2"
         position="absolute"
         inset="0px"
         pointerEvents="none"
@@ -113,3 +104,5 @@ export const Highlights: React.FC<SectionProps> = (props) => {
     </Section>
   )
 }
+
+

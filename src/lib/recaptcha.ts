@@ -5,10 +5,7 @@ type RecaptchaVerification = {
   'error-codes'?: string[]
 }
 
-export async function verifyRecaptcha(
-  token: string | undefined,
-  ip?: string,
-) {
+export async function verifyRecaptcha(token: string | undefined, ip?: string) {
   const secret =
     process.env.RECAPTCHA_SECRET_KEY || process.env.RECAPTCHA_SECRET
 
@@ -29,13 +26,16 @@ export async function verifyRecaptcha(
     body.append('remoteip', ip)
   }
 
-  const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+  const response = await fetch(
+    'https://www.google.com/recaptcha/api/siteverify',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body,
     },
-    body,
-  })
+  )
 
   const data = (await response.json()) as RecaptchaVerification
   const minScore = Number(process.env.RECAPTCHA_MIN_SCORE || 0.5)

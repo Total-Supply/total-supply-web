@@ -1,4 +1,5 @@
 import siteConfig from '@/src/data/config'
+import { useColorModeValue } from '@/src/hooks/color-mode'
 import useRouteChanged from '@/src/hooks/use-route-changed'
 import {
   Box,
@@ -11,7 +12,6 @@ import {
   LinkProps,
   Stack,
   useBreakpointValue,
-  useColorModeValue,
   useUpdateEffect,
 } from '@chakra-ui/react'
 import { usePathname } from 'next/navigation'
@@ -151,10 +151,11 @@ export const MobileNavButton = React.forwardRef(
         fontSize="20px"
         color={useColorModeValue('gray.800', 'inherit')}
         variant="ghost"
-        icon={<AiOutlineMenu />}
         {...props}
         aria-label="Open menu"
-      />
+      >
+        <AiOutlineMenu />
+      </IconButton>
     )
   },
 )

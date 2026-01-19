@@ -40,13 +40,13 @@ export function ImageUploader({
     try {
       const url = await uploadImage(file)
       onUploadComplete?.(url)
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error)
     }
   }
 
   return (
-    <VStack spacing={4} align="stretch">
+    <VStack gap={4} align="stretch">
       <Input
         ref={fileInputRef}
         type="file"
@@ -57,14 +57,20 @@ export function ImageUploader({
 
       <Button
         onClick={() => fileInputRef.current?.click()}
-        isLoading={isUploading}
+        loading={isUploading}
         loadingText="Uploading..."
-        isDisabled={isUploading}
+        disabled={isUploading}
       >
         Choose Image
       </Button>
 
-      {isUploading && <Progress value={progress} size="sm" />}
+      {isUploading && (
+        <Progress.Root value={progress} size="sm">
+          <Progress.Track>
+            <Progress.Range />
+          </Progress.Track>
+        </Progress.Root>
+      )}
 
       {error && (
         <Text color="red.500" fontSize="sm">

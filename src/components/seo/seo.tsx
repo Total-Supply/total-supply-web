@@ -47,7 +47,20 @@ export function generateMetadata({
       description: seoDescription,
       images: ogImage ? [ogImage] : [],
       siteName: siteConfig.seo.openGraph?.siteName,
-      type: siteConfig.seo.openGraph?.type as any,
+      type: siteConfig.seo.openGraph?.type as
+        | 'article'
+        | 'website'
+        | 'book'
+        | 'profile'
+        | 'music.song'
+        | 'music.album'
+        | 'music.playlist'
+        | 'music.radio_station'
+        | 'video.movie'
+        | 'video.episode'
+        | 'video.tv_show'
+        | 'video.other'
+        | undefined,
     },
     twitter: {
       card: 'summary_large_image',

@@ -25,8 +25,13 @@ axiosInstance.interceptors.request.use(
         // Get session token if available
         const session = await getSession()
         if (session?.user) {
-          // Add any auth tokens if needed in future
-          config.headers.set('X-User-ID', (session.user as any).id)
+          // Define a type for the user object with an 'id' property
+          type SessionUserWithId = {
+            id: string
+            [key: string]: unknown
+          }
+          const user = session.user as SessionUserWithId
+          config.headers.set('X-User-ID', user.id)
         }
       } catch (error) {
         // Silently fail if session is not available
@@ -50,7 +55,17 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     // Handle errors globally
     if (error.response) {
-      const data = error.response.data as any
+      type ErrorResponseData = {
+        error?: {
+          message?: string
+          code?: string
+          details?: unknown
+        }
+        message?: string
+        code?: string
+        details?: unknown
+      }
+      const data = error.response.data as ErrorResponseData
 
       // Format error for consistent handling
       const formattedError = {

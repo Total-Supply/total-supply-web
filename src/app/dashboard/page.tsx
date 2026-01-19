@@ -1,55 +1,34 @@
-import { AppSidebar } from '@/src/components/nav/app-sidebar'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/src/components/ui/breadcrumb'
-import { Separator } from '@/src/components/ui/separator'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/src/components/ui/sidebar'
+import { authOptions } from '@/src/lib/auth'
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
 
-export default function DashboardPage() {
-  return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator
-              orientation="vertical"
-              className="mr-2 data-[orientation=vertical]:h-4"
-            />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
-  )
+const roleRedirects: Record<string, string> = {
+  ADMIN: '/dashboard/admin',
+  SALESMAN: '/dashboard/salesman',
+  DRIVER: '/dashboard/driver',
+  CLEANER: '/dashboard/cleaner',
+  IT_STAFF: '/dashboard/it',
+  CUSTOMER: '/dashboard/profile',
+}
+
+type UserWithRole = {
+  role?: keyof typeof roleRedirects | string
+  [key: string]: unknown
+}
+
+export default async function DashboardPage() {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user) {
+    redirect('/login')
+  }
+
+  const user = session.user as UserWithRole
+  const role = user.role || 'CUSTOMER'
+
+  if (role !== 'ADMIN') {
+    redirect(roleRedirects[role] || '/dashboard/profile')
+  }
+
+  redirect('/dashboard/admin')
 }

@@ -21,7 +21,13 @@ import * as React from 'react'
  */
 type CustomToasterProps = ChakraToasterProps & {
   toaster: ReturnType<typeof createToaster>
-  children?: (toast: any) => React.ReactElement
+  children?: (toast: {
+    id: string | number
+    type?: string
+    title?: React.ReactNode
+    description?: React.ReactNode
+    closable?: boolean
+  }) => React.ReactElement
 }
 
 const ChakraToaster = ChakraToasterBase as React.FC<CustomToasterProps>
@@ -36,8 +42,12 @@ export function AppToaster() {
   return (
     <Portal>
       <ChakraToaster toaster={toaster}>
-        {(toast: any) => (
-          <Toast.Root width={{ md: 'sm' }} insetInline={{ mdDown: '4' }}>
+        {(toast) => (
+          <Toast.Root
+            key={toast.id ?? String(toast.type ?? toast.title ?? 'toast')}
+            width={{ md: 'sm' }}
+            insetInline={{ mdDown: '4' }}
+          >
             {toast.type === 'loading' ? (
               <Spinner size="sm" />
             ) : (

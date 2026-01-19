@@ -25,13 +25,20 @@ export type UseToastOptions = {
   render?: () => ReactNode
 }
 
+let toastIdCounter = 0
+
+function getToastId() {
+  toastIdCounter += 1
+  return `toast-${Date.now()}-${toastIdCounter}`
+}
+
 export function useToast() {
   return useCallback((options: UseToastOptions) => {
     const { id, title, description, status, duration, isClosable, render } =
       options
 
     return toaster.create({
-      id: id ? String(id) : undefined,
+      id: id ? String(id) : getToastId(),
       title,
       description,
       type: status,
