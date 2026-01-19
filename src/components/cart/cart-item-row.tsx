@@ -1,7 +1,16 @@
 'use client'
 
-import { Box, Button, HStack, Image, NumberInput, Stack, Text } from '@chakra-ui/react'
 import { useColorModeValue } from '@/src/hooks/color-mode'
+import {
+  Box,
+  Button,
+  HStack,
+  Image,
+  NumberInput,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
+
 type CartItem = {
   id: number
   name: string
@@ -25,9 +34,14 @@ export function CartItemRow({
 }: CartItemRowProps) {
   const cardBg = useColorModeValue('whiteAlpha.900', 'gray.900')
   const cardBorder = useColorModeValue('whiteAlpha.300', 'whiteAlpha.200')
-  const maxQuantity = item.stock && item.stock > 0 ? Math.min(100, item.stock) : 100
-  const isOutOfStock = item.stock !== undefined && item.stock !== null && item.stock <= 0
-  const isOverLimit = item.stock !== undefined && item.stock !== null && item.quantity > item.stock
+  const maxQuantity =
+    item.stock && item.stock > 0 ? Math.min(100, item.stock) : 100
+  const isOutOfStock =
+    item.stock !== undefined && item.stock !== null && item.stock <= 0
+  const isOverLimit =
+    item.stock !== undefined &&
+    item.stock !== null &&
+    item.quantity > item.stock
 
   return (
     <Stack
@@ -48,7 +62,13 @@ export function CartItemRow({
         bg="gray.100"
       >
         {item.image ? (
-          <Image src={item.image} alt={item.name} w="full" h="full" objectFit="cover" />
+          <Image
+            src={item.image}
+            alt={item.name}
+            w="full"
+            h="full"
+            objectFit="cover"
+          />
         ) : (
           <Box
             w="full"
@@ -87,7 +107,7 @@ export function CartItemRow({
           size="sm"
           min={1}
           max={maxQuantity}
-          value={item.quantity}
+          value={item.quantity.toString()}
           disabled={isOutOfStock}
           onValueChange={(details) =>
             onQuantityChange(details.valueAsNumber || 1)
@@ -112,8 +132,3 @@ export function CartItemRow({
     </Stack>
   )
 }
-
-
-
-
-
