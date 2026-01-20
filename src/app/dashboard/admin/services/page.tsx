@@ -1,5 +1,5 @@
-import { AdminServiceRequestsPage } from '@/src/components/admin/services/admin-service-requests-page'
+import { redirect } from 'next/navigation'
 
-export default function AdminServicesRoute() {
-  return <AdminServiceRequestsPage />
+export default function AdminCatalogIndexPage() {
+  redirect('/dashboard/admin/services/requests')
 }
