@@ -1,25 +1,22 @@
 'use client'
 
 import { BackgroundGradient } from '@/src/components/gradients/background-gradient'
-import { MotionBox } from '@/src/components/motion/box'
-import { AppSelect } from '@/src/components/ui/app-select'
+import { OrdersPagination } from '@/src/components/orders/orders-pagination'
+import { ServiceFilters } from '@/src/components/services/service-filters'
+import { ServiceRequestCard } from '@/src/components/services/service-request-card'
+import { ServiceRequestsEmptyState } from '@/src/components/services/service-requests-empty-state'
+import { ServiceRequestsHeader } from '@/src/components/services/service-requests-header'
 import {
-  Badge,
-  Box,
-  Container,
-  HStack,
-  SimpleGrid,
-  Stack,
-  Table,
-  Text,
-  useBreakpointValue,
-} from '@chakra-ui/react'
+  ServiceRequestsCardSkeleton,
+  ServiceRequestsTableSkeleton,
+} from '@/src/components/services/service-requests-skeleton'
+import { ServiceRequestsTable } from '@/src/components/services/service-requests-table'
+import { ServiceStats } from '@/src/components/services/service-stats'
+import { useToast } from '@/src/hooks/use-toast'
+import { Container, Stack, useBreakpointValue } from '@chakra-ui/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-import { useEffect, useState } from 'react'
-
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
+import { useEffect, useMemo, useState } from 'react'
 
 type ServiceSummary = {
   id: number
@@ -51,7 +48,10 @@ const TYPE_OPTIONS = ['ALL', 'CLEANING', 'IT_SUPPORT']
 
 export function ServiceRequestsPage() {
   const router = useRouter()
+  const toast = useToast()
   const searchParams = useSearchParams()
+  const isMobile = useBreakpointValue({ base: true, md: false })
+
   const statusParam = searchParams.get('status') || 'ALL'
   const priorityParam = searchParams.get('priority') || 'ALL'
   const typeParam = searchParams.get('type') || 'ALL'
@@ -66,7 +66,21 @@ export function ServiceRequestsPage() {
   const [page, setPage] = useState(pageParam)
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
-  const isMobile = useBreakpointValue({ base: true, md: false })
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const serviceStats = useMemo(() => {
+    return {
+      total: items.length,
+      received: items.filter((r) => r.status === 'RECEIVED').length,
+      inProgress: items.filter((r) =>
+        ['ASSIGNED', 'IN_PROGRESS'].includes(r.status),
+      ).length,
+      resolved: items.filter((r) => r.status === 'RESOLVED').length,
+    }
+  }, [items])
+
+  const hasFilters =
+    status !== 'ALL' || priority !== 'ALL' || type !== 'ALL' || search
 
   useEffect(() => {
     setStatus(statusParam)
@@ -87,212 +101,140 @@ export function ServiceRequestsPage() {
     router.replace(query ? `/services/requests?${query}` : '/services/requests')
   }, [status, priority, type, search, page, router])
 
-  useEffect(() => {
-    const load = async () => {
+  const loadRequests = async (showLoading = true) => {
+    if (showLoading) {
       setIsLoading(true)
-      try {
-        const params = new URLSearchParams({
-          page: String(pageParam),
-          limit: '10',
-        })
-        if (statusParam !== 'ALL') params.set('status', statusParam)
-        if (priorityParam !== 'ALL') params.set('priority', priorityParam)
-        if (typeParam !== 'ALL') params.set('type', typeParam)
-        if (searchParam) params.set('search', searchParam)
-        const response = await fetch(
-          `/api/service-requests?${params.toString()}`,
-        )
-        const data = (await response.json()) as ServiceResponse
-        if (!response.ok) {
-          throw new Error(data as unknown as string)
-        }
-        setItems(data.data || [])
-        setTotalPages(data.meta?.totalPages || 1)
-      } catch (error) {
-        console.error('Failed to load service requests', error)
-      } finally {
+    }
+    try {
+      const params = new URLSearchParams({
+        page: String(pageParam),
+        limit: '10',
+      })
+      if (statusParam !== 'ALL') params.set('status', statusParam)
+      if (priorityParam !== 'ALL') params.set('priority', priorityParam)
+      if (typeParam !== 'ALL') params.set('type', typeParam)
+      if (searchParam) params.set('search', searchParam)
+
+      const response = await fetch(`/api/service-requests?${params.toString()}`)
+      const data = (await response.json()) as ServiceResponse
+      if (!response.ok) {
+        throw new Error(data as unknown as string)
+      }
+      setItems(data.data || [])
+      setTotalPages(data.meta?.totalPages || 1)
+    } catch (error) {
+      toast({
+        title: 'Failed to load service requests',
+        status: 'error',
+        duration: 2500,
+      })
+    } finally {
+      if (showLoading) {
         setIsLoading(false)
       }
     }
-    load()
+  }
+
+  useEffect(() => {
+    loadRequests()
   }, [statusParam, priorityParam, typeParam, searchParam, pageParam])
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    setIsLoading(true)
+    await loadRequests(false)
+    setIsRefreshing(false)
+    setIsLoading(false)
+    toast({
+      title: 'Requests refreshed',
+      status: 'success',
+      duration: 2000,
+    })
+  }
 
   const handleView = (id: number) => {
     router.push(`/services/${id}`)
   }
 
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    setPage(1)
+  }
+
+  const handleTypeChange = (value: string) => {
+    setType(value)
+    setPage(1)
+  }
+
+  const handlePriorityChange = (value: string) => {
+    setPriority(value)
+    setPage(1)
+  }
+
+  const handleStatusChange = (value: string) => {
+    setStatus(value)
+    setPage(1)
+  }
+
+  const emptyState = !isLoading && items.length === 0
+
   return (
     <Stack gap={10}>
       <BackgroundGradient height="240px" />
       <Container maxW="container.xl" pt={{ base: 8, md: 12 }} pb={16}>
-        <Stack gap={3}>
-          <MotionBox
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Text fontSize={{ base: '2xl', md: '3xl' }} fontWeight="bold">
-              My Service Requests
-            </Text>
-          </MotionBox>
-          <Text color="muted">Track cleaning and IT support bookings.</Text>
-        </Stack>
+        <Stack gap={6}>
+          <ServiceRequestsHeader
+            onRefresh={handleRefresh}
+            isRefreshing={isRefreshing}
+          />
 
-        <Stack gap={4} mt={8}>
-          <SimpleGrid columns={{ base: 1, md: 4 }} gap={4}>
-            <Input
-              placeholder="Search request number"
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value)
-                setPage(1)
-              }}
-            />
-            <AppSelect
-              value={type}
-              onChange={(value) => {
-                setType(value)
-                setPage(1)
-              }}
-              options={TYPE_OPTIONS.map((option) => ({
-                label: option.replace(/_/g, ' '),
-                value: option,
-              }))}
-            />
-            <AppSelect
-              value={priority}
-              onChange={(value) => {
-                setPriority(value)
-                setPage(1)
-              }}
-              options={PRIORITY_OPTIONS.map((option) => ({
-                label: option.replace(/_/g, ' '),
-                value: option,
-              }))}
-            />
-            <AppSelect
-              value={status}
-              onChange={(value) => {
-                setStatus(value)
-                setPage(1)
-              }}
-              options={STATUS_OPTIONS.map((option) => ({
-                label: option.replace(/_/g, ' '),
-                value: option,
-              }))}
-            />
-          </SimpleGrid>
-
-          {isLoading ? (
-            <Box
-              borderWidth="1px"
-              borderRadius="2xl"
-              borderStyle="dashed"
-              py={12}
-            >
-              <Text textAlign="center">Loading requests...</Text>
-            </Box>
-          ) : items.length === 0 ? (
-            <Box
-              borderWidth="1px"
-              borderRadius="2xl"
-              borderStyle="dashed"
-              py={12}
-            >
-              <Text textAlign="center">No service requests yet.</Text>
-            </Box>
-          ) : isMobile ? (
-            <Stack gap={4}>
-              {items.map((item) => (
-                <Box
-                  key={item.id}
-                  borderWidth="1px"
-                  borderRadius="2xl"
-                  p={4}
-                  cursor="pointer"
-                  onClick={() => handleView(item.id)}
-                >
-                  <HStack justify="space-between">
-                    <Text fontWeight="600">{item.requestNumber}</Text>
-                    <Badge textTransform="capitalize">
-                      {item.status.toLowerCase().replace(/_/g, ' ')}
-                    </Badge>
-                  </HStack>
-                  <Text fontSize="sm" color="muted" mt={1}>
-                    {new Date(item.createdAt).toLocaleDateString()}
-                  </Text>
-                  <Text fontSize="sm" color="muted" mt={2}>
-                    {item.type.replace(/_/g, ' ')} · {item.priority}
-                  </Text>
-                  <Button size="sm" variant="outline" mt={3}>
-                    View request
-                  </Button>
-                </Box>
-              ))}
-            </Stack>
-          ) : (
-            <Box borderWidth="1px" borderRadius="2xl" overflow="hidden">
-              <Table.Root>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.ColumnHeader>Request #</Table.ColumnHeader>
-                    <Table.ColumnHeader>Date</Table.ColumnHeader>
-                    <Table.ColumnHeader>Type</Table.ColumnHeader>
-                    <Table.ColumnHeader>Priority</Table.ColumnHeader>
-                    <Table.ColumnHeader>Status</Table.ColumnHeader>
-                    <Table.ColumnHeader>Action</Table.ColumnHeader>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {items.map((item) => (
-                    <Table.Row key={item.id}>
-                      <Table.Cell>{item.requestNumber}</Table.Cell>
-                      <Table.Cell>
-                        {new Date(item.createdAt).toLocaleDateString()}
-                      </Table.Cell>
-                      <Table.Cell>{item.type.replace(/_/g, ' ')}</Table.Cell>
-                      <Table.Cell>{item.priority}</Table.Cell>
-                      <Table.Cell textTransform="capitalize">
-                        {item.status.toLowerCase().replace(/_/g, ' ')}
-                      </Table.Cell>
-                      <Table.Cell>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleView(item.id)}
-                        >
-                          View
-                        </Button>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table.Root>
-            </Box>
+          {!isLoading && !emptyState && (
+            <ServiceStats stats={serviceStats} isLoading={isLoading} />
           )}
 
-          {items.length > 0 && (
-            <HStack justify="space-between">
-              <Button
-                variant="outline"
-                onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-                isDisabled={page <= 1}
-              >
-                Previous
-              </Button>
-              <Text fontSize="sm" color="muted">
-                Page {page} of {totalPages}
-              </Text>
-              <Button
-                variant="outline"
-                onClick={() =>
-                  setPage((prev) => Math.min(totalPages, prev + 1))
-                }
-                isDisabled={page >= totalPages}
-              >
-                Next
-              </Button>
-            </HStack>
+          <ServiceFilters
+            search={search}
+            type={type}
+            priority={priority}
+            status={status}
+            onSearchChange={handleSearchChange}
+            onTypeChange={handleTypeChange}
+            onPriorityChange={handlePriorityChange}
+            onStatusChange={handleStatusChange}
+            typeOptions={TYPE_OPTIONS}
+            priorityOptions={PRIORITY_OPTIONS}
+            statusOptions={STATUS_OPTIONS}
+          />
+
+          {isLoading ? (
+            isMobile ? (
+              <ServiceRequestsCardSkeleton />
+            ) : (
+              <ServiceRequestsTableSkeleton />
+            )
+          ) : emptyState ? (
+            <ServiceRequestsEmptyState hasFilters={!!hasFilters} />
+          ) : isMobile ? (
+            <div className="space-y-4">
+              {items.map((item, index) => (
+                <ServiceRequestCard
+                  key={item.id}
+                  request={item}
+                  onView={handleView}
+                  index={index}
+                />
+              ))}
+            </div>
+          ) : (
+            <ServiceRequestsTable requests={items} onView={handleView} />
+          )}
+
+          {!emptyState && !isLoading && (
+            <OrdersPagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           )}
         </Stack>
       </Container>
