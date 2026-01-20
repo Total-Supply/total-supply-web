@@ -1,15 +1,9 @@
-import { UserApprovalTable } from '@/src/components/admin/user-approval-table'
+import { UsersManagement } from '@/src/components/admin/users/users-management'
 
 export default function AdminUsersPage() {
   return (
-    <div className="container mx-auto space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-bold">User approvals</h1>
-        <p className="text-sm text-slate-500">
-          Review new registrations and approve access to the platform.
-        </p>
-      </div>
-      <UserApprovalTable />
+    <div className="container mx-auto space-y-6 px-4 pb-10 pt-6 sm:px-6 lg:px-10">
+      <UsersManagement />
     </div>
   )
 }
