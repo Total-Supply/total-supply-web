@@ -1,7 +1,7 @@
 'use client'
 
+import { MotionBox } from '@/src/components/motion/box'
 import { Button } from '@/src/components/ui/button'
-import { Card, Flex, Stack, Text } from '@chakra-ui/react'
 
 import { useState } from 'react'
 
@@ -48,32 +48,27 @@ export function DataRetentionCard() {
   }
 
   return (
-    <Card.Root borderRadius="xl" borderWidth="1px">
-      <Card.Body>
-        <Stack gap={2}>
-          <Text fontSize="lg" fontWeight="semibold">
-            Privacy & retention
-          </Text>
-          <Text fontSize="sm" color="muted">
-            Runs daily via cron. Use this to trigger the job manually.
-          </Text>
-        </Stack>
-        <Flex flexWrap="wrap" align="center" gap={3} mt={4}>
-          <Button onClick={handleRun} disabled={isRunning}>
-            {isRunning ? 'Running...' : 'Run retention job'}
-          </Button>
-          {message ? (
-            <Text fontSize="sm" color="green.600">
-              {message}
-            </Text>
-          ) : null}
-          {error ? (
-            <Text fontSize="sm" color="red.600">
-              {error}
-            </Text>
-          ) : null}
-        </Flex>
-      </Card.Body>
-    </Card.Root>
+    <MotionBox
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="rounded-sm border border-border/70 bg-card/80 p-6 shadow-[0_30px_90px_-50px_rgba(6,7,24,0.85)]"
+    >
+      <div className="space-y-3">
+        <p className="text-lg font-semibold text-foreground">
+          Privacy & retention
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Runs daily via cron. Use this to trigger the job manually.
+        </p>
+      </div>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <Button onClick={handleRun} disabled={isRunning}>
+          {isRunning ? 'Running...' : 'Run retention job'}
+        </Button>
+        {message ? <p className="text-sm text-emerald-400">{message}</p> : null}
+        {error ? <p className="text-sm text-red-400">{error}</p> : null}
+      </div>
+    </MotionBox>
   )
 }

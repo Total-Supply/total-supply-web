@@ -1,11 +1,14 @@
-import { Box, Card, Flex, Stack, Text } from '@chakra-ui/react'
-import type { ReactNode } from 'react'
+import { MotionBox } from '@/src/components/motion/box'
+import { Skeleton } from '@/src/components/ui/skeleton'
+import { cn } from '@/src/lib/utils'
+
+import * as React from 'react'
 
 type AdminTableShellProps = {
-  title: string
+  title?: string
   description?: string
-  actions?: ReactNode
-  children: ReactNode
+  actions?: React.ReactNode
+  children: React.ReactNode
   className?: string
 }
 
@@ -17,61 +20,75 @@ export function AdminTableShell({
   className,
 }: AdminTableShellProps) {
   return (
-    <Card.Root
-      className={className}
-      borderRadius="2xl"
-      borderWidth="1px"
-      borderColor="border.muted"
-      bg="bg.panel"
-      boxShadow="md"
+    <MotionBox
+      initial={{ opacity: 0, scale: 0.96, y: 8 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      className={cn(
+        'space-y-6 rounded-sm border border-border/70 bg-card/80 p-6 shadow-[0_25px_80px_-40px_rgba(11,14,37,0.9)] backdrop-blur',
+        className,
+      )}
     >
-      <Card.Header>
-        <Flex flexWrap="wrap" align="flex-start" justify="space-between" gap={4}>
-          <Box>
-            <Text fontSize="xl" fontWeight="semibold">
-              {title}
-            </Text>
-            {description ? (
-              <Text mt={1} fontSize="sm" color="fg.muted">
-                {description}
-              </Text>
+      {(title || description || actions) && (
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-1">
+            {title ? (
+              <p className="text-lg font-semibold text-foreground">{title}</p>
             ) : null}
-          </Box>
+            {description ? (
+              <p className="text-sm text-muted-foreground">{description}</p>
+            ) : null}
+          </div>
           {actions ? (
-            <Flex flexWrap="wrap" gap={2}>
-              {actions}
-            </Flex>
+            <div className="flex flex-wrap gap-2">{actions}</div>
           ) : null}
-        </Flex>
-      </Card.Header>
-      <Card.Body>
-        <Stack gap={4}>{children}</Stack>
-      </Card.Body>
-    </Card.Root>
+        </div>
+      )}
+      <div className="space-y-6">{children}</div>
+    </MotionBox>
   )
 }
 
 type AdminTableProps = {
-  children: ReactNode
+  children: React.ReactNode
   className?: string
 }
 
 export function AdminTable({ children, className }: AdminTableProps) {
   return (
-    <Box
-      className={className}
-      overflowX="auto"
-      borderRadius="xl"
-      borderWidth="1px"
-      borderColor="border.muted"
-      bg="bg.panel"
+    <div
+      className={cn(
+        'overflow-x-auto rounded-sm border border-border/60 bg-card/50 shadow-inner',
+        className,
+      )}
     >
-      <Box as="table" width="full" minW="720px" textAlign="left" fontSize="sm">
+      <table className="min-w-[720px] w-full text-left text-sm">
         {children}
-      </Box>
-    </Box>
+      </table>
+    </div>
   )
 }
 
+type AdminTableSkeletonProps = {
+  columns?: number
+  rows?: number
+}
 
-
+export function AdminTableSkeleton({
+  columns = 5,
+  rows = 3,
+}: AdminTableSkeletonProps) {
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, rowIndex) => (
+        <tr key={`skeleton-row-${rowIndex}`} className="border-t border-border/60">
+          {Array.from({ length: columns }).map((_, colIndex) => (
+            <td key={`skeleton-${rowIndex}-${colIndex}`} className="px-4 py-3">
+              <Skeleton className="h-4 w-full rounded-md" />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  )
+}

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 import * as React from 'react'
 
@@ -36,7 +37,6 @@ const navMain = [
     title: 'Overview',
     url: '/dashboard',
     icon: LayoutDashboard,
-    isActive: true,
     roles: ['ADMIN', 'SALESMAN', 'DRIVER', 'CLEANER', 'IT_STAFF'],
   },
   {
@@ -45,14 +45,8 @@ const navMain = [
     icon: ShoppingBasket,
     roles: ['ADMIN'],
     items: [
-      {
-        title: 'All Orders',
-        url: '/dashboard/admin/orders',
-      },
-      {
-        title: 'Order Tracking',
-        url: '/orders',
-      },
+      { title: 'All Orders', url: '/dashboard/admin/orders', roles: ['ADMIN'] },
+      { title: 'Order Tracking', url: '/orders', roles: ['ADMIN'] },
     ],
   },
   {
@@ -64,6 +58,7 @@ const navMain = [
       {
         title: 'Assigned Queue',
         url: '/dashboard/salesman',
+        roles: ['SALESMAN'],
       },
     ],
   },
@@ -76,14 +71,17 @@ const navMain = [
       {
         title: 'Service Requests',
         url: '/dashboard/admin/services',
+        roles: ['ADMIN'],
       },
       {
         title: 'Service Offerings',
         url: '/dashboard/admin/services/offerings',
+        roles: ['ADMIN'],
       },
       {
         title: 'Customer Requests',
         url: '/services/requests',
+        roles: ['ADMIN'],
       },
     ],
   },
@@ -93,14 +91,8 @@ const navMain = [
     icon: Wrench,
     roles: ['IT_STAFF'],
     items: [
-      {
-        title: 'My IT Services',
-        url: '/dashboard/it',
-      },
-      {
-        title: 'Tickets',
-        url: '/dashboard/it/tickets',
-      },
+      { title: 'My IT Services', url: '/dashboard/it', roles: ['IT_STAFF'] },
+      { title: 'Tickets', url: '/dashboard/it/tickets', roles: ['IT_STAFF'] },
     ],
   },
   {
@@ -112,11 +104,9 @@ const navMain = [
       {
         title: 'Approval Queue',
         url: '/dashboard/admin/users',
+        roles: ['ADMIN'],
       },
-      {
-        title: 'All Users',
-        url: '/dashboard/admin/users',
-      },
+      { title: 'All Users', url: '/dashboard/admin/users', roles: ['ADMIN'] },
     ],
   },
   {
@@ -128,10 +118,12 @@ const navMain = [
       {
         title: 'Items',
         url: '/dashboard/admin/catalog/items',
+        roles: ['ADMIN'],
       },
       {
         title: 'Categories',
         url: '/dashboard/admin/catalog/categories',
+        roles: ['ADMIN'],
       },
     ],
   },
@@ -144,6 +136,7 @@ const navMain = [
       {
         title: 'Dashboard',
         url: '/dashboard/admin/analytics',
+        roles: ['ADMIN'],
       },
     ],
   },
@@ -156,6 +149,7 @@ const navMain = [
       {
         title: 'All Logs',
         url: '/dashboard/admin/audit-logs',
+        roles: ['ADMIN'],
       },
     ],
   },
@@ -182,47 +176,94 @@ const navSecondary = [
   },
 ]
 
+interface NavItem {
+  title: string
+  url: string
+  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>
+  roles: string[]
+  items?: NavItem[]
+}
+
+function computeActive(pathname: string, item: NavItem) {
+  if (pathname === item.url) return true
+  if (pathname.startsWith(item.url + '/')) return true
+  if (item.items?.some((child: NavItem) => pathname === child.url)) return true
+  return false
+}
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session, status } = useSession()
-  if (status !== 'authenticated') {
-    return null
+  const pathname = usePathname()
+
+  // Move hooks above conditional return
+  const role = (session?.user as { role?: string })?.role || 'CUSTOMER'
+
+  const user = {
+    name: session?.user?.name || 'Total Supply User',
+    email: session?.user?.email || 'support@totalsupply.com',
+    avatar: session?.user?.image || '/images/logo/logo.png',
   }
 
-  const role = (session.user as { role?: string })?.role || 'CUSTOMER'
-  const user = {
-    name: session.user?.name || 'Total Supply User',
-    email: session.user?.email || 'support@totalsupply.com',
-    avatar: session.user?.image || '/images/logo/logo.png',
-  }
-  const filteredMain = navMain.filter((item) => item.roles?.includes(role))
-  const filteredSecondary = navSecondary.filter((item) =>
-    item.roles?.includes(role),
-  )
+  const filteredMain = React.useMemo(() => {
+    return navMain
+      .filter((item) => item.roles?.includes(role))
+      .map((item) => ({
+        ...item,
+        isActive: computeActive(pathname, item),
+      }))
+  }, [pathname, role])
+
+  const filteredSecondary = React.useMemo(() => {
+    return navSecondary.filter((item) => item.roles?.includes(role))
+  }, [role])
+
+  if (status !== 'authenticated') return null
 
   return (
     <Sidebar variant="inset" {...props}>
-      <SidebarHeader>
+      {/* Header */}
+      <SidebarHeader className="py-3">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton
+              size="lg"
+              asChild
+              className="group gap-3 rounded-2xl px-3 py-2.5 transition-all duration-200 hover:bg-sidebar-accent/50"
+            >
               <Link href="/dashboard">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <ShoppingBasket className="size-4" />
+                {/* Brand Icon */}
+                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105 group-hover:rotate-[2deg]">
+                  <ShoppingBasket className="size-4 transition-transform duration-200 group-hover:scale-110" />
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Total Supply</span>
-                  <span className="truncate text-xs">Admin Console</span>
+
+                {/* Text */}
+                <div className="grid flex-1 text-left leading-tight">
+                  <span className="truncate text-[13px] font-semibold tracking-tight">
+                    Total Supply
+                  </span>
+                  <span className="truncate text-[11px] text-sidebar-foreground/70">
+                    Admin Console
+                  </span>
                 </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={filteredMain} />
-        <NavSecondary items={filteredSecondary} className="mt-auto" />
+
+      {/* Content */}
+      <SidebarContent className="px-1">
+        <div className="px-2">
+          <NavMain items={filteredMain} />
+        </div>
+
+        <div className="mt-auto px-2 pb-2">
+          <NavSecondary items={filteredSecondary} className="pt-3" />
+        </div>
       </SidebarContent>
-      <SidebarFooter>
+
+      {/* Footer */}
+      <SidebarFooter className="border-t border-sidebar-border/60 px-2 py-2">
         <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
