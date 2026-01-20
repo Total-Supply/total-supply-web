@@ -60,7 +60,10 @@ async function handler(request: NextRequest) {
           },
         ],
       }))
-      where.AND = [...(where.AND || []), ...andFilters]
+      where.AND = [
+        ...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []),
+        ...andFilters,
+      ]
     }
   }
 
