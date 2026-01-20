@@ -1,57 +1,42 @@
+'use client'
+
 import { Checkbox as ChakraCheckbox } from '@chakra-ui/react'
 
-import * as React from 'react'
+import { forwardRef } from 'react'
 
-export interface CheckboxProps extends Omit<
-  ChakraCheckbox.RootProps,
-  'checked' | 'disabled' | 'onChange'
-> {
-  isChecked?: boolean
+export interface CheckboxProps {
   checked?: boolean
-  isDisabled?: boolean
+  defaultChecked?: boolean
+  onCheckedChange?: (checked: boolean) => void
   disabled?: boolean
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+  className?: string
   children?: React.ReactNode
 }
 
-export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
   function Checkbox(props, ref) {
-    const {
-      isChecked,
-      checked,
-      isDisabled,
-      disabled,
-      onChange,
-      children,
-      ...rest
-    } = props
+    const { checked, onCheckedChange, disabled, className, children, ...rest } =
+      props
 
     return (
       <ChakraCheckbox.Root
-        checked={isChecked ?? checked}
-        disabled={isDisabled ?? disabled}
-        onCheckedChange={
-          onChange
-            ? (details) => {
-                // Create a synthetic event for compatibility
-                const syntheticEvent = {
-                  target: {
-                    name: props.name,
-                    type: 'checkbox',
-                    checked: details.checked,
-                  },
-                } as React.ChangeEvent<HTMLInputElement>
-                onChange(syntheticEvent)
-              }
-            : undefined
+        checked={checked}
+        onCheckedChange={(details) =>
+          onCheckedChange?.(Boolean(details.checked))
         }
+        disabled={disabled}
+        className={className}
         {...rest}
       >
         <ChakraCheckbox.HiddenInput ref={ref} />
-        <ChakraCheckbox.Control>
+        <ChakraCheckbox.Control className="transition-all duration-200 hover:scale-110">
           <ChakraCheckbox.Indicator />
         </ChakraCheckbox.Control>
-        {children && <ChakraCheckbox.Label>{children}</ChakraCheckbox.Label>}
+        {children && (
+          <ChakraCheckbox.Label className="ml-2">
+            {children}
+          </ChakraCheckbox.Label>
+        )}
       </ChakraCheckbox.Root>
     )
   },
