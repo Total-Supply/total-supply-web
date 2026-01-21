@@ -18,9 +18,9 @@ import { NextPage } from 'next'
 import NextLink from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
-const Login: NextPage = () => {
+const LoginContent: NextPage = () => {
   const router = useRouter()
   const toast = useToast()
   const { login, isLoading } = useAuth()
@@ -188,5 +188,11 @@ const Login: NextPage = () => {
     </>
   )
 }
+
+const Login = () => (
+  <Suspense>
+    <LoginContent />
+  </Suspense>
+)
 
 export default Login
