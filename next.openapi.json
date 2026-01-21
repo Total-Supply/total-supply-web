@@ -1,0 +1,17 @@
+{
+  "apiFolder": "src/app/api",
+  "schemaType": ["zod"],
+  "schemaFiles": [],
+  "outputPath": "public/openapi.json",
+  "title": "Total Supply API",
+  "version": "1.0.0",
+  "description": "Comprehensive API documentation for Total Supply platform",
+  "baseUrl": "http://localhost:3000",
+  "docPath": "/api-docs",
+  "ui": "scalar",
+  "responseSets": {
+    "auth": ["401", "403", "500"],
+    "common": ["400", "500"]
+  },
+  "defaultResponseSet": "common"
+}

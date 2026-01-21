@@ -1,0 +1,1490 @@
+{
+  "apiFolder": "src/app/api",
+  "outputPath": "public/openapi.json",
+  "title": "Total Supply API",
+  "version": "1.0.0",
+  "description": "Comprehensive API documentation for Total Supply platform",
+  "baseUrl": "http://localhost:3000",
+  "docPath": "/api-docs",
+  "openapi": "3.0.0",
+  "paths": {
+    "/addresses": {
+      "get": {
+        "operationId": "get-addresses",
+        "summary": "",
+        "description": "",
+        "tags": ["Addresses"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/analytics": {
+      "get": {
+        "operationId": "get-admin-analytics",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/audit-logs": {
+      "get": {
+        "operationId": "get-admin-audit-logs",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/data-retention": {
+      "post": {
+        "operationId": "post-admin-data-retention",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services": {
+      "get": {
+        "operationId": "get-admin-services",
+        "summary": "GET /api/admin/services",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-services",
+        "summary": "POST /api/admin/services",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "operationId": "get-admin-users",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/catalog/categories": {
+      "get": {
+        "operationId": "get-admin-catalog-categories",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-catalog-categories",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/catalog/items": {
+      "get": {
+        "operationId": "get-admin-catalog-items",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-catalog-items",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/offerings": {
+      "get": {
+        "operationId": "get-admin-services-offerings",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-services-offerings",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/{id}": {
+      "put": {
+        "operationId": "put-admin-services-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-services-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/bulk-approve": {
+      "post": {
+        "operationId": "post-admin-users-bulk-approve",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/catalog/categories/{id}": {
+      "get": {
+        "operationId": "get-admin-catalog-categories-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-admin-catalog-categories-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-catalog-categories-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/catalog/items/{id}": {
+      "get": {
+        "operationId": "get-admin-catalog-items-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-admin-catalog-items-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-catalog-items-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/offerings/{id}": {
+      "get": {
+        "operationId": "get-admin-services-offerings-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-admin-services-offerings-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-services-offerings-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/approve/{id}": {
+      "post": {
+        "operationId": "post-admin-users-approve-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/reject/{id}": {
+      "post": {
+        "operationId": "post-admin-users-reject-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Admin"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "operationId": "post-auth-forgot-password",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "post-auth-login",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "get-auth-me",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "post-auth-register",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/resend-verification": {
+      "post": {
+        "operationId": "post-auth-resend-verification",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "post-auth-reset-password",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/signout": {
+      "post": {
+        "operationId": "post-auth-signout",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/update-profile": {
+      "put": {
+        "operationId": "put-auth-update-profile",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/verify-email": {
+      "post": {
+        "operationId": "post-auth-verify-email",
+        "summary": "",
+        "description": "",
+        "tags": ["Auth"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/contact": {
+      "post": {
+        "operationId": "post-contact",
+        "summary": "",
+        "description": "",
+        "tags": ["Contact"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/cron/data-retention": {
+      "post": {
+        "operationId": "post-cron-data-retention",
+        "summary": "",
+        "description": "",
+        "tags": ["Cron"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/bookings": {
+      "get": {
+        "operationId": "get-customer-bookings",
+        "summary": "",
+        "description": "",
+        "tags": ["Customer"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-customer-bookings",
+        "summary": "",
+        "description": "",
+        "tags": ["Customer"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/orders": {
+      "get": {
+        "operationId": "get-customer-orders",
+        "summary": "",
+        "description": "",
+        "tags": ["Customer"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-customer-orders",
+        "summary": "",
+        "description": "",
+        "tags": ["Customer"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/profile": {
+      "get": {
+        "operationId": "get-customer-profile",
+        "summary": "",
+        "description": "",
+        "tags": ["Customer"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "operationId": "put-customer-profile",
+        "summary": "",
+        "description": "",
+        "tags": ["Customer"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/food-categories": {
+      "get": {
+        "operationId": "get-food-categories",
+        "summary": "",
+        "description": "",
+        "tags": ["Food-categories"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/food-items": {
+      "get": {
+        "operationId": "get-food-items",
+        "summary": "",
+        "description": "",
+        "tags": ["Food-items"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/food-items/{slug}": {
+      "get": {
+        "operationId": "get-food-items-{slug}",
+        "summary": "",
+        "description": "",
+        "tags": ["Food-items"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "operationId": "post-orders",
+        "summary": "",
+        "description": "",
+        "tags": ["Orders"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "get": {
+        "operationId": "get-orders",
+        "summary": "",
+        "description": "",
+        "tags": ["Orders"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/orders/{orderNumber}": {
+      "get": {
+        "operationId": "get-orders-{orderNumber}",
+        "summary": "",
+        "description": "",
+        "tags": ["Orders"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-orders-{orderNumber}",
+        "summary": "",
+        "description": "",
+        "tags": ["Orders"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/orders/{orderNumber}/cancel": {
+      "post": {
+        "operationId": "post-orders-{orderNumber}-cancel",
+        "summary": "",
+        "description": "",
+        "tags": ["Orders"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "operationId": "get-profile",
+        "summary": "",
+        "description": "",
+        "tags": ["Profile"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "operationId": "put-profile",
+        "summary": "",
+        "description": "",
+        "tags": ["Profile"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile/delete": {
+      "post": {
+        "operationId": "post-profile-delete",
+        "summary": "",
+        "description": "",
+        "tags": ["Profile"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile/export": {
+      "get": {
+        "operationId": "get-profile-export",
+        "summary": "",
+        "description": "",
+        "tags": ["Profile"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile/marketing": {
+      "put": {
+        "operationId": "put-profile-marketing",
+        "summary": "",
+        "description": "",
+        "tags": ["Profile"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile/restore": {
+      "post": {
+        "operationId": "post-profile-restore",
+        "summary": "",
+        "description": "",
+        "tags": ["Profile"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/service-requests": {
+      "post": {
+        "operationId": "post-service-requests",
+        "summary": "",
+        "description": "",
+        "tags": ["Service-requests"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "get": {
+        "operationId": "get-service-requests",
+        "summary": "",
+        "description": "",
+        "tags": ["Service-requests"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/service-requests/{id}": {
+      "get": {
+        "operationId": "get-service-requests-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Service-requests"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-service-requests-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Service-requests"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-service-requests-{id}",
+        "summary": "",
+        "description": "",
+        "tags": ["Service-requests"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/services/offerings": {
+      "get": {
+        "operationId": "get-services-offerings",
+        "summary": "",
+        "description": "",
+        "tags": ["Services"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services": {
+      "get": {
+        "operationId": "get-staff-cleaner-services",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/stats": {
+      "get": {
+        "operationId": "get-staff-cleaner-stats",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/driver/deliveries": {
+      "get": {
+        "operationId": "get-staff-driver-deliveries",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/driver/stats": {
+      "get": {
+        "operationId": "get-staff-driver-stats",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/services": {
+      "get": {
+        "operationId": "get-staff-it-services",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/stats": {
+      "get": {
+        "operationId": "get-staff-it-stats",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/orders": {
+      "get": {
+        "operationId": "get-staff-salesman-orders",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/stats": {
+      "get": {
+        "operationId": "get-staff-salesman-stats",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services/{id}/accept": {
+      "post": {
+        "operationId": "post-staff-cleaner-services-{id}-accept",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services/{id}/complete": {
+      "post": {
+        "operationId": "post-staff-cleaner-services-{id}-complete",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services/{id}/progress": {
+      "post": {
+        "operationId": "post-staff-cleaner-services-{id}-progress",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services/{id}/start": {
+      "post": {
+        "operationId": "post-staff-cleaner-services-{id}-start",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/driver/deliveries/{orderNumber}/accept": {
+      "post": {
+        "operationId": "post-staff-driver-deliveries-{orderNumber}-accept",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/driver/deliveries/{orderNumber}/confirm": {
+      "post": {
+        "operationId": "post-staff-driver-deliveries-{orderNumber}-confirm",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/services/{id}/accept": {
+      "post": {
+        "operationId": "post-staff-it-services-{id}-accept",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/services/{id}/complete": {
+      "post": {
+        "operationId": "post-staff-it-services-{id}-complete",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/services/{id}/progress": {
+      "post": {
+        "operationId": "post-staff-it-services-{id}-progress",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/orders/{orderNumber}/accept": {
+      "post": {
+        "operationId": "post-staff-salesman-orders-{orderNumber}-accept",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/orders/{orderNumber}/decline": {
+      "post": {
+        "operationId": "post-staff-salesman-orders-{orderNumber}-decline",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/orders/{orderNumber}/prepare": {
+      "post": {
+        "operationId": "post-staff-salesman-orders-{orderNumber}-prepare",
+        "summary": "",
+        "description": "",
+        "tags": ["Staff"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/test-db": {
+      "get": {
+        "operationId": "get-test-db",
+        "summary": "",
+        "description": "",
+        "tags": ["Test-db"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/unsubscribe": {
+      "get": {
+        "operationId": "get-unsubscribe",
+        "summary": "",
+        "description": "",
+        "tags": ["Unsubscribe"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "operationId": "post-upload",
+        "summary": "",
+        "description": "",
+        "tags": ["Upload"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "get-users",
+        "summary": "",
+        "description": "",
+        "tags": ["Users"],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "",
+      "description": "API server"
+    }
+  ],
+  "components": {
+    "schemas": {},
+    "responses": {}
+  }
+}

@@ -14,7 +14,9 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:seed": "prisma db seed",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "api-docs:generate": "next-openapi-gen generate",
+    "api-docs:watch": "next-openapi-gen generate --watch"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.31.0",
@@ -66,6 +68,8 @@
     "react-redux": "^9.2.0",
     "react-remove-scroll": "^2.6.0",
     "redux": "^5.0.1",
+    "swagger-ui-dist": "^5.31.0",
+    "swagger-ui-react": "^5.31.0",
     "tailwind-merge": "^3.4.0",
     "velite": "^0.3.1",
     "zod": "^4.3.5"
@@ -80,8 +84,10 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19",
+    "@types/swagger-ui-react": "^5.18.0",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.3",
+    "next-openapi-gen": "^0.9.4",
     "prettier": "^3.8.0",
     "prisma": "^7.2.0",
     "tailwindcss": "^4.1.18",
