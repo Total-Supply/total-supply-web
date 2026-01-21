@@ -84,8 +84,8 @@ export function ShopFilters({
           {categories.map((category) => (
             <Checkbox
               key={category.id}
-              isChecked={selected.includes(category.slug)}
-              onChange={() => onToggle(category.slug)}
+              checked={selected.includes(category.slug)}
+              onCheckedChange={() => onToggle(category.slug)}
             >
               <HStack gap={2}>
                 <Text>{category.name}</Text>

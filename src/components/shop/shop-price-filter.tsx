@@ -82,7 +82,6 @@ export function ShopPriceFilter({
           min={rangeMin}
           max={rangeMax}
           value={[minValue, maxValue]}
-          aria-label={['min price', 'max price']}
           onValueChange={(details) => {
             const [min, max] = details.value as number[]
             onChange(min, max)
@@ -92,7 +91,10 @@ export function ShopPriceFilter({
             <Slider.Track>
               <Slider.Range />
             </Slider.Track>
-            <Slider.Thumbs />
+
+            {/* two thumbs = range */}
+            <Slider.Thumb index={0} />
+            <Slider.Thumb index={1} />
           </Slider.Control>
         </Slider.Root>
       )}

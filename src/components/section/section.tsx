@@ -1,10 +1,16 @@
 'use client'
 
-import { Box, Container, HTMLChakraProps } from '@chakra-ui/react'
+import { Box, Container, type HTMLChakraProps } from '@chakra-ui/react'
 
-export interface SectionProps extends HTMLChakraProps<'div'> {
+import * as React from 'react'
+
+export interface SectionProps extends HTMLChakraProps<'section'> {
   children: React.ReactNode
-  innerWidth?: string
+  /**
+   * Chakra Container maxW supports tokens like "container.lg"
+   * and also numeric values (e.g. 1200).
+   */
+  innerWidth?: string | number
   variant?: 'default' | 'hero' | 'feature'
 }
 
@@ -16,7 +22,7 @@ export const Section: React.FC<SectionProps> = (props) => {
     ...rest
   } = props
 
-  const variantStyles = {
+  const variantStyles: Record<NonNullable<SectionProps['variant']>, HTMLChakraProps<'section'>> = {
     default: { py: { base: 10, md: 14 }, px: { base: 4, md: 6 } },
     hero: {
       py: { base: 16, md: 24 },
@@ -31,7 +37,7 @@ export const Section: React.FC<SectionProps> = (props) => {
   }
 
   return (
-    <Box css={variantStyles[variant]} {...rest}>
+    <Box as="section" css={variantStyles[variant]} {...rest}>
       <Container height="full" maxW={innerWidth}>
         {children}
       </Container>

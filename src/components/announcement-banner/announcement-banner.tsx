@@ -32,7 +32,7 @@ export const AnnouncementBanner: React.FC<AnnouncementBannerProps> = (
   return (
     <Flex position="absolute" zIndex="10" top="100px" width="100%">
       <Container maxW="container.2xl" px="8">
-        <FallInPlace delay={1.4} translateY="-100px">
+        <FallInPlace delay={1.4}>
           <LinkBox maxW="400px" mx="auto">
             <Card.Root
               borderRadius="full"

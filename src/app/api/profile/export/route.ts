@@ -1,9 +1,9 @@
 import prisma from '@/src/lib/prisma'
 import { requireAuth } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
+import JSZip from 'jszip'
 import { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import JSZip from 'jszip'
 
 async function handler(request: NextRequest) {
   const authRequest = await requireAuth(request)
@@ -103,8 +103,9 @@ async function handler(request: NextRequest) {
   zip.file('service-requests.json', JSON.stringify(serviceRequests, null, 2))
 
   const buffer = await zip.generateAsync({ type: 'nodebuffer' })
+  const uint8Array = new Uint8Array(buffer)
 
-  return new NextResponse(buffer, {
+  return new NextResponse(uint8Array, {
     headers: {
       'Content-Type': 'application/zip',
       'Content-Disposition': 'attachment; filename="total-supply-data.zip"',
@@ -113,5 +114,3 @@ async function handler(request: NextRequest) {
 }
 
 export const GET = withErrorHandler(handler)
-
-

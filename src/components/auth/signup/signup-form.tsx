@@ -186,7 +186,7 @@ export function SignupForm({ siteKey }: SignupFormProps) {
           value={formData.name}
           onChange={handleChange}
           placeholder="John Doe"
-          isDisabled={!!successMessage}
+          disabled={!!successMessage}
         />
         <Field.ErrorText>{errors.name}</Field.ErrorText>
       </Field.Root>
@@ -266,10 +266,17 @@ export function SignupForm({ siteKey }: SignupFormProps) {
 
       <Field.Root invalid={!!errors.termsAccepted} required>
         <Checkbox
-          name="termsAccepted"
-          isChecked={formData.termsAccepted}
-          onChange={handleChange}
-          isDisabled={!!successMessage}
+          checked={formData.termsAccepted}
+          onCheckedChange={(checked: boolean) =>
+            handleChange({
+              target: {
+                name: 'termsAccepted',
+                checked,
+                type: 'checkbox',
+              },
+            } as unknown as React.ChangeEvent<HTMLInputElement>)
+          }
+          disabled={!!successMessage}
         >
           I agree to the{' '}
           <Link as={NextLink} href={siteConfig.termsUrl} color="primary.500">

@@ -1,15 +1,15 @@
-import { createSystem, defaultConfig } from '@chakra-ui/react'
+import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react'
 import '@fontsource-variable/inter'
 
-import components from './components'
 import { fontSizes } from './foundations/typography'
 
-const toTokenScale = (scale: Record<string, string>) =>
-  Object.fromEntries(
-    Object.entries(scale).map(([key, value]) => [key, { value }]),
-  )
+// If you truly have recipe overrides, export them from src/theme/recipes.ts (optional).
+// import { recipes, slotRecipes } from './recipes'
 
-export const system = createSystem(defaultConfig, {
+const toTokenScale = (scale: Record<string, string>) =>
+  Object.fromEntries(Object.entries(scale).map(([k, v]) => [k, { value: v }]))
+
+const config = defineConfig({
   theme: {
     textStyles: {
       pageTitle: {
@@ -34,6 +34,7 @@ export const system = createSystem(defaultConfig, {
         lineHeight: '1.7',
       },
     },
+
     layerStyles: {
       card: {
         bg: 'bg.panel',
@@ -55,6 +56,7 @@ export const system = createSystem(defaultConfig, {
         borderRadius: 'xl',
       },
     },
+
     tokens: {
       colors: {
         primary: toTokenScale({
@@ -82,38 +84,30 @@ export const system = createSystem(defaultConfig, {
           900: '#880e4f',
         }),
       },
+
       fonts: {
         heading: { value: 'Inter Variable, Inter, sans-serif' },
         body: { value: 'Inter Variable, Inter, sans-serif' },
       },
+
       fontSizes: toTokenScale(fontSizes),
     },
+
     semanticTokens: {
       colors: {
-        background: {
-          value: { base: '#ffffff', _dark: '#0f172a' },
-        },
-        card: {
-          value: { base: '#ffffff', _dark: '#111827' },
-        },
-        muted: {
-          value: { base: '#64748b', _dark: '#94a3b8' },
-        },
-        mutedForeground: {
-          value: { base: '#94a3b8', _dark: '#cbd5f5' },
-        },
-        border: {
-          value: { base: '#e2e8f0', _dark: '#1f2937' },
-        },
-        accent: {
-          value: { base: '#e2e8f0', _dark: '#1f2937' },
-        },
+        background: { value: { base: '#ffffff', _dark: '#0f172a' } },
+        card: { value: { base: '#ffffff', _dark: '#111827' } },
+        muted: { value: { base: '#64748b', _dark: '#94a3b8' } },
+        mutedForeground: { value: { base: '#94a3b8', _dark: '#cbd5f5' } },
+        border: { value: { base: '#e2e8f0', _dark: '#1f2937' } },
+        accent: { value: { base: '#e2e8f0', _dark: '#1f2937' } },
       },
     },
-    components,
-  },
-  colorMode: {
-    initial: 'dark',
-    useSystem: false,
+
+    // ✅ Chakra v3 uses these keys (ONLY if you have overrides)
+    // recipes,
+    // slotRecipes,
   },
 })
+
+export const system = createSystem(defaultConfig, config)

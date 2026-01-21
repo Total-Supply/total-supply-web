@@ -1,21 +1,14 @@
 'use client'
 
 import { cn } from '@/src/lib/utils'
+import { Box, Card, Field, Stack, Text } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
 
 import { useState } from 'react'
 
-import {
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  Divider,
-  Field,
-  Input,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { Button } from '../ui/button'
+import { Checkbox } from '../ui/checkbox'
+import { Input } from '../ui/input'
 
 export function SignupForm({
   className,
@@ -158,11 +151,11 @@ export function SignupForm({
                 </Button>
 
                 <Stack direction="row" align="center" gap={3}>
-                  <Divider />
+                  <Box flex="1" height="1px" bg="gray.200" />
                   <Text fontSize="xs" color="muted" whiteSpace="nowrap">
                     Or continue with
                   </Text>
-                  <Divider />
+                  <Box flex="1" height="1px" bg="gray.200" />
                 </Stack>
 
                 <Stack direction="row" gap={3} justify="center">
@@ -197,9 +190,9 @@ export function SignupForm({
 
                 <Text fontSize="sm" textAlign="center">
                   Already have an account?{' '}
-                  <Box as="a" href="/login" color="primary.500">
-                    Sign in
-                  </Box>
+                  <Text as="span" color="primary.500">
+                    <a href="/login">Sign in</a>
+                  </Text>
                 </Text>
               </Stack>
             </Box>
@@ -215,13 +208,23 @@ export function SignupForm({
       </Card.Root>
       <Text fontSize="xs" textAlign="center" color="muted">
         By clicking continue, you agree to our{' '}
-        <Box as="a" href="/terms">
-          Terms of Service
-        </Box>{' '}
+        <Text as="span">
+          <a
+            href="/terms"
+            style={{ color: 'inherit', textDecoration: 'underline' }}
+          >
+            Terms of Service
+          </a>
+        </Text>{' '}
         and{' '}
-        <Box as="a" href="/privacy">
-          Privacy Policy
-        </Box>
+        <Text as="span">
+          <a
+            href="/privacy"
+            style={{ color: 'inherit', textDecoration: 'underline' }}
+          >
+            Privacy Policy
+          </a>
+        </Text>
         .
       </Text>
     </div>

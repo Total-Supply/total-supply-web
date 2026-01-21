@@ -1,5 +1,7 @@
+'use client'
+
 import { useColorModeValue } from '@/src/hooks/color-mode'
-import { Box, BoxProps, Container, Flex } from '@chakra-ui/react'
+import { Box, type BoxProps, Container, Flex } from '@chakra-ui/react'
 import { useScroll } from 'framer-motion'
 
 import * as React from 'react'
@@ -7,12 +9,15 @@ import * as React from 'react'
 import { Logo } from './logo'
 import Navigation from './navigation'
 
-export const Header = (props: Omit<BoxProps, 'children'>) => {
-  const ref = React.useRef<HTMLHeadingElement>(null)
+export type HeaderProps = Omit<BoxProps, 'children'>
+
+export const Header = (props: HeaderProps) => {
+  const ref = React.useRef<HTMLElement>(null)
   const [y, setY] = React.useState(0)
   const [height, setHeight] = React.useState(0)
 
   const { scrollY } = useScroll()
+
   React.useEffect(() => {
     if (ref.current) {
       setHeight(ref.current.getBoundingClientRect().height)
@@ -37,9 +42,9 @@ export const Header = (props: Omit<BoxProps, 'children'>) => {
       borderColor="whiteAlpha.100"
       transitionProperty="common"
       transitionDuration="normal"
-      bg={y > height ? bg : ''}
-      boxShadow={y > height ? 'md' : ''}
-      borderBottomWidth={y > height ? '1px' : ''}
+      bg={y > height ? bg : undefined}
+      boxShadow={y > height ? 'md' : undefined}
+      borderBottomWidth={y > height ? '1px' : undefined}
       {...props}
     >
       <Container
@@ -50,13 +55,12 @@ export const Header = (props: Omit<BoxProps, 'children'>) => {
         <Flex width="full" align="center" justify="space-between">
           <Logo
             onClick={(e) => {
-              if (window.location.pathname === '/') {
+              if (
+                typeof window !== 'undefined' &&
+                window.location.pathname === '/'
+              ) {
                 e.preventDefault()
-
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth',
-                })
+                window.scrollTo({ top: 0, behavior: 'smooth' })
               }
             }}
           />

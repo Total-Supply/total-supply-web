@@ -119,9 +119,7 @@ const Login: NextPage = () => {
         heroTagline="Secure access with 30-day sessions."
       >
         <VStack gap={6} as="form" onSubmit={handleSubmit} align="stretch">
-          <Text textStyle="sectionTitle">
-            Welcome Back
-          </Text>
+          <Text textStyle="sectionTitle">Welcome Back</Text>
 
           <Field.Root invalid={!!errors.email}>
             <Field.Label>Email</Field.Label>
@@ -158,13 +156,11 @@ const Login: NextPage = () => {
 
           <HStack width="full" justify="space-between">
             <Checkbox
-              size="sm"
-              name="rememberMe"
               checked={formData.rememberMe}
-              onCheckedChange={(details) =>
+              onCheckedChange={(checked) =>
                 setFormData({
                   ...formData,
-                  rememberMe: Boolean(details.checked),
+                  rememberMe: Boolean(checked),
                 })
               }
             >

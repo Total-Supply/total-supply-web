@@ -103,7 +103,7 @@ const navMain = [
     items: [
       {
         title: 'Approval Queue',
-        url: '/dashboard/admin/users',
+        url: '/dashboard/admin/users/approvals',
         roles: ['ADMIN'],
       },
       { title: 'All Users', url: '/dashboard/admin/users', roles: ['ADMIN'] },

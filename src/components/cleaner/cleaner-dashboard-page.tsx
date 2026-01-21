@@ -3,6 +3,7 @@
 import { CleanerServicesPage } from '@/src/components/cleaner/cleaner-services-page'
 import { MotionBox } from '@/src/components/motion/box'
 import { Button } from '@/src/components/ui/button'
+import { useIsMobile } from '@/src/hooks/use-mobile'
 import { Badge } from '@chakra-ui/react'
 import Link from 'next/link'
 
@@ -20,6 +21,11 @@ type CleanerStats = {
 }
 
 export function CleanerDashboardPage() {
+  const cardClassName =
+    'rounded-2xl border border-border/60 bg-card/90 p-4 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-border/80 hover:shadow-md'
+  const labelClassName =
+    'text-[11px] font-semibold uppercase tracking-wide text-muted-foreground'
+  const isMobile = useIsMobile()
   const [stats, setStats] = useState<CleanerStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -46,13 +52,37 @@ export function CleanerDashboardPage() {
     if (!stats?.chart?.length) return 1
     return Math.max(...stats.chart.map((entry) => entry.count), 1)
   }, [stats?.chart])
+  const chartHeight = isMobile ? 90 : 120
+
+  const statCards = [
+    {
+      label: 'Completed today',
+      value: isLoading ? '...' : String(stats?.completedToday ?? 0),
+      helper: 'Resolved since midnight',
+    },
+    {
+      label: 'Pending',
+      value: isLoading ? '...' : String(stats?.pendingCount ?? 0),
+      helper: 'Assigned or in progress',
+    },
+    {
+      label: 'Completed this month',
+      value: isLoading ? '...' : String(stats?.completedMonth ?? 0),
+      helper: 'Rolling 30 days',
+    },
+    {
+      label: 'Completion rate',
+      value: isLoading ? '...' : `${stats?.completionRate ?? 0}%`,
+      helper: 'Resolved vs assigned',
+    },
+  ]
 
   return (
-    <div className="flex flex-col gap-6 px-4 pb-8 pt-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col gap-6 px-4 pb-10 pt-6 sm:px-6 lg:px-10">
       <MotionBox
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
         className="flex flex-wrap items-center justify-between gap-3"
       >
         <div>
@@ -72,30 +102,31 @@ export function CleanerDashboardPage() {
       </MotionBox>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label="Completed today"
-          value={isLoading ? '...' : String(stats?.completedToday ?? 0)}
-          helper="Resolved since midnight"
-        />
-        <StatCard
-          label="Pending"
-          value={isLoading ? '...' : String(stats?.pendingCount ?? 0)}
-          helper="Assigned or in progress"
-        />
-        <StatCard
-          label="Completed this month"
-          value={isLoading ? '...' : String(stats?.completedMonth ?? 0)}
-          helper="Rolling 30 days"
-        />
-        <StatCard
-          label="Completion rate"
-          value={isLoading ? '...' : `${stats?.completionRate ?? 0}%`}
-          helper="Resolved vs assigned"
-        />
+        {statCards.map((card, index) => (
+          <MotionBox
+            key={card.label}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: index * 0.08 }}
+          >
+            <StatCard
+              label={card.label}
+              value={card.value}
+              helper={card.helper}
+              cardClassName={cardClassName}
+              labelClassName={labelClassName}
+            />
+          </MotionBox>
+        ))}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm lg:col-span-2">
+        <MotionBox
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.15 }}
+          className={`${cardClassName} lg:col-span-2`}
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold">Services completed (7d)</p>
@@ -111,10 +142,16 @@ export function CleanerDashboardPage() {
                 key={entry.date}
                 className="flex flex-1 flex-col items-center gap-2"
               >
-                <div
-                  className="w-full rounded-md bg-primary/70"
+                <MotionBox
+                  initial={{ scaleY: 0, opacity: 0.4 }}
+                  animate={{ scaleY: 1, opacity: 1 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className="w-full origin-bottom rounded-md bg-primary/70"
                   style={{
-                    height: `${Math.max(12, (entry.count / chartMax) * 120)}px`,
+                    height: `${Math.max(
+                      10,
+                      (entry.count / chartMax) * chartHeight,
+                    )}px`,
                   }}
                 />
                 <span className="text-[10px] text-muted-foreground">
@@ -126,8 +163,13 @@ export function CleanerDashboardPage() {
               <p className="text-sm text-muted-foreground">No activity yet.</p>
             )}
           </div>
-        </div>
-        <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
+        </MotionBox>
+        <MotionBox
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.2 }}
+          className={cardClassName}
+        >
           <p className="text-sm font-semibold">Performance</p>
           <div className="mt-4 space-y-3 text-sm text-muted-foreground">
             <div className="flex items-center justify-between">
@@ -153,9 +195,7 @@ export function CleanerDashboardPage() {
               </span>
             </div>
             <div className="mt-4">
-              <p className="text-xs uppercase text-muted-foreground">
-                Top categories
-              </p>
+              <p className={labelClassName}>Top categories</p>
               <div className="mt-2 space-y-2">
                 {(stats?.topCategories || []).length === 0 ? (
                   <p className="text-xs text-muted-foreground">No data yet.</p>
@@ -175,12 +215,17 @@ export function CleanerDashboardPage() {
               </div>
             </div>
           </div>
-        </div>
+        </MotionBox>
       </div>
 
-      <div className="rounded-xl border border-border/60 bg-card shadow-sm">
+      <MotionBox
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, delay: 0.25 }}
+        className="rounded-2xl border border-border/60 bg-card shadow-sm"
+      >
         <CleanerServicesPage />
-      </div>
+      </MotionBox>
     </div>
   )
 }
@@ -189,14 +234,18 @@ function StatCard({
   label,
   value,
   helper,
+  cardClassName,
+  labelClassName,
 }: {
   label: string
   value: string
   helper: string
+  cardClassName: string
+  labelClassName: string
 }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card p-4 shadow-sm">
-      <p className="text-xs uppercase text-muted-foreground">{label}</p>
+    <div className={cardClassName}>
+      <p className={labelClassName}>{label}</p>
       <p className="mt-2 text-2xl font-semibold">{value}</p>
       <p className="text-xs text-muted-foreground">{helper}</p>
     </div>

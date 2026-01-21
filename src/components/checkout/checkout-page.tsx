@@ -438,8 +438,8 @@ export function CheckoutPage() {
                     </Field.Root>
                   </SimpleGrid>
                   <Checkbox
-                    isChecked={saveDefault}
-                    onChange={(event) => setSaveDefault(event.target.checked)}
+                    checked={saveDefault}
+                    onCheckedChange={setSaveDefault}
                   >
                     Save as default address
                   </Checkbox>
@@ -543,10 +543,8 @@ export function CheckoutPage() {
                   </Field.Root>
                   <Field.Root invalid={!!errors.terms}>
                     <Checkbox
-                      isChecked={termsAccepted}
-                      onChange={(event) =>
-                        setTermsAccepted(event.target.checked)
-                      }
+                      checked={termsAccepted}
+                      onCheckedChange={setTermsAccepted}
                     >
                       I agree to terms
                     </Checkbox>

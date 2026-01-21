@@ -54,30 +54,51 @@ export function AuthShell({
           py={{ base: 8, md: 10 }}
           color={panelText}
         >
-          <MotionBox
+          <Box
             position="absolute"
             inset="auto auto -60px -40px"
             w={{ base: '180px', md: '260px' }}
             h={{ base: '180px', md: '260px' }}
             borderRadius="full"
-            bg="linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(168, 85, 247, 0.4))"
+            overflow="hidden"
             filter="blur(0px)"
             opacity={0.85}
-            animate={{ y: [0, -16, 0], rotate: [0, 4, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <MotionBox
+            bg="transparent"
+          >
+            <MotionBox
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: 'inherit',
+                background:
+                  'linear-gradient(135deg, rgba(59, 130, 246, 0.6), rgba(168, 85, 247, 0.4))',
+              }}
+              animate={{ y: [0, -16, 0], rotate: [0, 4, 0] }}
+              transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </Box>
+          <Box
             position="absolute"
             top="-60px"
             right="-40px"
             w={{ base: '160px', md: '240px' }}
             h={{ base: '160px', md: '240px' }}
             borderRadius="full"
-            bg="linear-gradient(135deg, rgba(14, 116, 144, 0.7), rgba(59, 130, 246, 0.35))"
-            opacity={0.8}
-            animate={{ y: [0, 18, 0], rotate: [0, -6, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-          />
+            overflow="hidden"
+          >
+            <MotionBox
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: 'inherit',
+                background:
+                  'linear-gradient(135deg, rgba(14, 116, 144, 0.7), rgba(59, 130, 246, 0.35))',
+                opacity: 0.8,
+              }}
+              animate={{ y: [0, 18, 0], rotate: [0, -6, 0] }}
+              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </Box>
 
           <Stack position="relative" gap={4} maxW="sm">
             <Text fontSize={{ base: 'sm', md: 'md' }} letterSpacing="widest">

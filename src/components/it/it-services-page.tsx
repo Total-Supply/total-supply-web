@@ -11,7 +11,8 @@ import {
 import { Input } from '@/src/components/ui/input'
 import { Separator } from '@/src/components/ui/separator'
 import { Textarea } from '@/src/components/ui/textarea'
-import { ChevronDown, CalendarClock } from 'lucide-react'
+import { CalendarClock, ChevronDown } from 'lucide-react'
+
 import { useEffect, useMemo, useState } from 'react'
 
 type ServiceHistory = {
@@ -78,7 +79,9 @@ export function ITServicesPage() {
   const [progressFiles, setProgressFiles] = useState<Record<number, File[]>>({})
   const [timeSpent, setTimeSpent] = useState<Record<number, string>>({})
   const [completeNotes, setCompleteNotes] = useState<Record<number, string>>({})
-  const [solutionSummary, setSolutionSummary] = useState<Record<number, string>>({})
+  const [solutionSummary, setSolutionSummary] = useState<
+    Record<number, string>
+  >({})
   const [followUps, setFollowUps] = useState<Record<number, string>>({})
   const [completeFiles, setCompleteFiles] = useState<Record<number, File[]>>({})
   const [lastSeen, setLastSeen] = useState<number>(() => {
@@ -100,7 +103,9 @@ export function ITServicesPage() {
       if (date) {
         params.set('date', date)
       }
-      const response = await fetch(`/api/staff/it/services?${params.toString()}`)
+      const response = await fetch(
+        `/api/staff/it/services?${params.toString()}`,
+      )
       const data = await response.json()
       if (!response.ok) {
         throw new Error(data.error?.message || 'Failed to load services')
@@ -131,8 +136,7 @@ export function ITServicesPage() {
   const newCount = useMemo(() => {
     if (!lastSeen) return 0
     return services.filter(
-      (service) =>
-        new Date(service.request.createdAt).getTime() > lastSeen,
+      (service) => new Date(service.request.createdAt).getTime() > lastSeen,
     ).length
   }, [services, lastSeen])
 
@@ -245,11 +249,12 @@ export function ITServicesPage() {
         [entry.id]: 'Progress updated. Customer notified.',
       }))
       await fetchServices()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to update IT progress', error)
       setActionMessage((prev) => ({
         ...prev,
-        [entry.id]: error?.message || 'Unable to update progress.',
+        [entry.id]:
+          error instanceof Error ? error.message : 'Unable to update progress.',
       }))
     } finally {
       setActionLoading(null)
@@ -303,11 +308,14 @@ export function ITServicesPage() {
         [entry.id]: 'Service completed and customer notified.',
       }))
       await fetchServices()
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to complete IT service', error)
       setActionMessage((prev) => ({
         ...prev,
-        [entry.id]: error?.message || 'Unable to complete service.',
+        [entry.id]:
+          error instanceof Error
+            ? error.message
+            : 'Unable to complete service.',
       }))
     } finally {
       setActionLoading(null)
@@ -344,7 +352,7 @@ export function ITServicesPage() {
         {STATUS_OPTIONS.map((option) => (
           <Button
             key={option}
-            variant={status === option ? 'default' : 'outline'}
+            variant={status === option ? 'solid' : 'outline'}
             size="sm"
             onClick={() => setStatus(option)}
           >
@@ -354,7 +362,7 @@ export function ITServicesPage() {
         {PRIORITY_OPTIONS.map((option) => (
           <Button
             key={option}
-            variant={priority === option ? 'default' : 'outline'}
+            variant={priority === option ? 'solid' : 'outline'}
             size="sm"
             onClick={() => setPriority(option)}
           >
@@ -375,7 +383,7 @@ export function ITServicesPage() {
             </Button>
           )}
         </div>
-        {newCount > 0 && <Badge variant="secondary">{newCount} new</Badge>}
+        {newCount > 0 && <Badge variant="subtle">{newCount} new</Badge>}
       </div>
 
       {isLoading ? (
@@ -400,7 +408,8 @@ export function ITServicesPage() {
                       {entry.request.requestNumber}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {entry.request.customer.name} - {entry.request.priority.toLowerCase()}
+                      {entry.request.customer.name} -{' '}
+                      {entry.request.priority.toLowerCase()}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
@@ -448,7 +457,9 @@ export function ITServicesPage() {
                     {entry.request.notes && (
                       <div>
                         <p className="font-medium">Special notes</p>
-                        <p className="text-muted-foreground">{entry.request.notes}</p>
+                        <p className="text-muted-foreground">
+                          {entry.request.notes}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -457,7 +468,9 @@ export function ITServicesPage() {
                       <p className="font-medium">Scheduled</p>
                       <p className="text-muted-foreground">
                         {entry.request.requestedDate
-                          ? new Date(entry.request.requestedDate).toLocaleString()
+                          ? new Date(
+                              entry.request.requestedDate,
+                            ).toLocaleString()
                           : 'Not scheduled'}
                       </p>
                     </div>
@@ -632,8 +645,10 @@ export function ITServicesPage() {
                         <div className="mt-2 space-y-1 text-xs text-muted-foreground">
                           {entry.request.history.map((history) => (
                             <div key={history.id}>
-                              {history.requestNumber} - {history.status.toLowerCase()} (
-                              {new Date(history.createdAt).toLocaleDateString()})
+                              {history.requestNumber} -{' '}
+                              {history.status.toLowerCase()} (
+                              {new Date(history.createdAt).toLocaleDateString()}
+                              )
                             </div>
                           ))}
                         </div>
@@ -649,5 +664,3 @@ export function ITServicesPage() {
     </div>
   )
 }
-
-

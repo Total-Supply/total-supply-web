@@ -250,14 +250,14 @@ export function DriverDeliveriesPage() {
         {STATUS_OPTIONS.map((option) => (
           <Button
             key={option}
-            variant={status === option ? 'default' : 'outline'}
+            variant={status === option ? 'solid' : 'outline'}
             size="sm"
             onClick={() => setStatus(option)}
           >
             {option.replace(/_/g, ' ')}
           </Button>
         ))}
-        {newCount > 0 && <Badge variant="secondary">{newCount} new</Badge>}
+        {newCount > 0 && <Badge variant="subtle">{newCount} new</Badge>}
       </div>
 
       {isLoading ? (

@@ -2,21 +2,14 @@
 
 import { useAuth } from '@/src/hooks/useAuth'
 import { cn } from '@/src/lib/utils'
+import { Box, Card, Field, Stack, Text } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
 
 import { useState } from 'react'
 
-import {
-  Box,
-  Button,
-  Card,
-  Checkbox,
-  Divider,
-  Field,
-  Input,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { Button } from '../ui/button'
+import { Checkbox } from '../ui/checkbox'
+import { Input } from '../ui/input'
 
 export function LoginForm({
   className,
@@ -72,14 +65,18 @@ export function LoginForm({
                     <Field.Label>
                       Password <Field.RequiredIndicator />
                     </Field.Label>
-                    <Box
-                      as="a"
+                    <a
                       href="/forgot-password"
-                      fontSize="sm"
-                      color="primary.500"
+                      style={{
+                        fontSize: '0.875rem',
+                        color: 'var(--chakra-colors-primary-500)',
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                        fontWeight: 400,
+                      }}
                     >
                       Forgot your password?
-                    </Box>
+                    </a>
                   </Stack>
                   <Input
                     type="password"
@@ -90,9 +87,7 @@ export function LoginForm({
 
                 <Checkbox
                   checked={rememberMe}
-                  onCheckedChange={(checked) =>
-                    setRememberMe(Boolean(checked))
-                  }
+                  onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
                 >
                   Remember me
                 </Checkbox>
@@ -102,11 +97,11 @@ export function LoginForm({
                 </Button>
 
                 <Stack direction="row" align="center" gap={3}>
-                  <Divider />
+                  <Box flex="1" height="1px" bg="gray.200" />
                   <Text fontSize="xs" color="muted" whiteSpace="nowrap">
                     Or continue with
                   </Text>
-                  <Divider />
+                  <Box flex="1" height="1px" bg="gray.200" />
                 </Stack>
 
                 <Stack direction="row" gap={3} justify="center">
@@ -141,9 +136,12 @@ export function LoginForm({
 
                 <Text fontSize="sm" textAlign="center">
                   Don&apos;t have an account?{' '}
-                  <Box as="a" href="/signup" color="primary.500">
+                  <a
+                    href="/signup"
+                    style={{ color: 'var(--chakra-colors-primary-500)' }}
+                  >
                     Sign up
-                  </Box>
+                  </a>
                 </Text>
               </Stack>
             </Box>
@@ -159,13 +157,23 @@ export function LoginForm({
       </Card.Root>
       <Text fontSize="xs" textAlign="center" color="muted">
         By clicking continue, you agree to our{' '}
-        <Box as="a" href="/terms">
-          Terms of Service
-        </Box>{' '}
+        <Text as="span">
+          <a
+            href="/terms"
+            style={{ color: 'var(--chakra-colors-primary-500)' }}
+          >
+            Terms of Service
+          </a>
+        </Text>{' '}
         and{' '}
-        <Box as="a" href="/privacy">
-          Privacy Policy
-        </Box>
+        <Text as="span">
+          <a
+            href="/privacy"
+            style={{ color: 'var(--chakra-colors-primary-500)' }}
+          >
+            Privacy Policy
+          </a>
+        </Text>
         .
       </Text>
     </div>

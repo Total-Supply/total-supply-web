@@ -9,7 +9,6 @@ import { ZodError } from 'zod'
 export function handleApiError(error: unknown): NextResponse {
   console.error('API Error:', error)
 
-  // Handle custom API errors
   if (error instanceof ApiError) {
     return ApiResponse.error(
       error.message,
@@ -19,14 +18,17 @@ export function handleApiError(error: unknown): NextResponse {
     )
   }
 
-  // Handle Zod validation errors
+  // ✅ Zod v4 uses `issues`
   if (error instanceof ZodError) {
-    return ApiResponse.validationError(error.errors)
+    return ApiResponse.validationError(error.issues)
   }
 
-  // Handle Prisma errors
   if (error && typeof error === 'object' && 'code' in error) {
-    const prismaError = error as { code: string; meta?: any; message: string }
+    const prismaError = error as {
+      code: string
+      meta?: Record<string, unknown>
+      message: string
+    }
     console.error('Prisma Error Code:', prismaError.code)
     console.error('Prisma Error Meta:', prismaError.meta)
 
@@ -52,7 +54,6 @@ export function handleApiError(error: unknown): NextResponse {
     }
   }
 
-  // Handle unknown errors
   if (error instanceof Error) {
     return ApiResponse.internalError(
       process.env.NODE_ENV === 'development'
@@ -130,7 +131,7 @@ async function logFailureAudit({
   }
 }
 
-export function withErrorHandler<T extends any[], R>(
+export function withErrorHandler<T extends unknown[], R>(
   handler: (...args: T) => Promise<R>,
 ) {
   return async (...args: T): Promise<R | NextResponse> => {
@@ -146,5 +147,3 @@ export function withErrorHandler<T extends any[], R>(
     }
   }
 }
-
-

@@ -66,8 +66,8 @@ export function ShopCard({ item, onClick, highlight, onAdd }: ShopCardProps) {
     <MotionBox
       whileHover={{ y: -6 }}
       transition={{ duration: 0.2 }}
-      cursor="pointer"
       onClick={onClick}
+      style={{ cursor: 'pointer' }}
     >
       <Box
         bg={cardBg}

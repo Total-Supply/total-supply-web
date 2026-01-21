@@ -3,6 +3,7 @@
 import { ITServicesPage } from '@/src/components/it/it-services-page'
 import { MotionBox } from '@/src/components/motion/box'
 import { Button } from '@/src/components/ui/button'
+import { useIsMobile } from '@/src/hooks/use-mobile'
 import { Badge } from '@chakra-ui/react'
 import Link from 'next/link'
 
@@ -19,6 +20,7 @@ type ITStats = {
 }
 
 export function ITDashboardPage() {
+  const isMobile = useIsMobile()
   const [stats, setStats] = useState<ITStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -45,6 +47,7 @@ export function ITDashboardPage() {
     if (!stats?.chart?.length) return 1
     return Math.max(...stats.chart.map((entry) => entry.count), 1)
   }, [stats?.chart])
+  const chartHeight = isMobile ? 90 : 120
 
   return (
     <div className="flex flex-col gap-6 px-4 pb-8 pt-4 sm:px-6 lg:px-8">
@@ -116,7 +119,10 @@ export function ITDashboardPage() {
                 <div
                   className="w-full rounded-md bg-primary/70"
                   style={{
-                    height: `${Math.max(12, (entry.count / chartMax) * 120)}px`,
+                    height: `${Math.max(
+                      10,
+                      (entry.count / chartMax) * chartHeight,
+                    )}px`,
                   }}
                 />
                 <span className="text-[10px] text-muted-foreground">

@@ -289,9 +289,9 @@ export function ServiceRequestForm({
             </Field.Root>
           </SimpleGrid>
           <Checkbox
-            isChecked={data.saveAsDefault}
-            onChange={(event) =>
-              onChange({ saveAsDefault: event.target.checked })
+            checked={data.saveAsDefault}
+            onCheckedChange={(value) =>
+              onChange({ saveAsDefault: Boolean(value) })
             }
           >
             Save as default address

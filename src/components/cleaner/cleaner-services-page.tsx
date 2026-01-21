@@ -11,7 +11,8 @@ import {
 import { Input } from '@/src/components/ui/input'
 import { Separator } from '@/src/components/ui/separator'
 import { Textarea } from '@/src/components/ui/textarea'
-import { ChevronDown, CalendarClock } from 'lucide-react'
+import { CalendarClock, ChevronDown } from 'lucide-react'
+
 import { useEffect, useMemo, useState } from 'react'
 
 type ServiceAssignment = {
@@ -49,6 +50,11 @@ const STATUS_OPTIONS = ['ALL', 'ASSIGNED', 'IN_PROGRESS']
 const STORAGE_KEY = 'total-supply-cleaner-last-seen'
 
 export function CleanerServicesPage() {
+  const cardClassName = 'rounded-2xl border border-border/60 bg-card shadow-sm'
+  const mutedPanelClassName =
+    'rounded-xl border border-dashed border-border/60 bg-muted/20 p-6 text-sm text-muted-foreground'
+  const labelClassName =
+    'text-[11px] font-semibold uppercase tracking-wide text-muted-foreground'
   const [services, setServices] = useState<ServiceAssignment[]>([])
   const [status, setStatus] = useState('ALL')
   const [date, setDate] = useState('')
@@ -75,7 +81,9 @@ export function CleanerServicesPage() {
       if (date) {
         params.set('date', date)
       }
-      const response = await fetch(`/api/staff/cleaner/services?${params.toString()}`)
+      const response = await fetch(
+        `/api/staff/cleaner/services?${params.toString()}`,
+      )
       const data = await response.json()
       if (!response.ok) {
         throw new Error(data.error?.message || 'Failed to load services')
@@ -106,8 +114,7 @@ export function CleanerServicesPage() {
   const newCount = useMemo(() => {
     if (!lastSeen) return 0
     return services.filter(
-      (service) =>
-        new Date(service.request.createdAt).getTime() > lastSeen,
+      (service) => new Date(service.request.createdAt).getTime() > lastSeen,
     ).length
   }, [services, lastSeen])
 
@@ -257,11 +264,14 @@ export function CleanerServicesPage() {
         [entry.id]: 'Progress updated. Customer notified.',
       }))
       await fetchServices()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to update progress', error)
       setActionMessage((prev) => ({
         ...prev,
-        [entry.id]: error?.message || 'Unable to update progress.',
+        [entry.id]:
+          error instanceof Error && error.message
+            ? error.message
+            : 'Unable to update progress.',
       }))
     } finally {
       setActionLoading(null)
@@ -310,11 +320,14 @@ export function CleanerServicesPage() {
         [entry.id]: 'Service completed and customer notified.',
       }))
       await fetchServices()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to complete service', error)
       setActionMessage((prev) => ({
         ...prev,
-        [entry.id]: error?.message || 'Unable to complete service.',
+        [entry.id]:
+          error instanceof Error && error.message
+            ? error.message
+            : 'Unable to complete service.',
       }))
     } finally {
       setActionLoading(null)
@@ -329,7 +342,7 @@ export function CleanerServicesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6 pt-2">
+    <div className="flex flex-col gap-6 px-4 pb-8 pt-4 sm:px-6 lg:px-8">
       <MotionBox
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -337,28 +350,32 @@ export function CleanerServicesPage() {
         className="flex flex-wrap items-center justify-between gap-3"
       >
         <div>
-          <h1 className="text-2xl font-semibold">My services</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">My services</h1>
           <p className="text-sm text-muted-foreground">
             Assigned cleaning jobs and scheduled visits.
           </p>
         </div>
-        <Button variant="outline" onClick={markSeen}>
+        <Button size="sm" variant="outline" onClick={markSeen}>
           Mark all as read
         </Button>
       </MotionBox>
 
-      <div className="flex flex-wrap items-center gap-3">
-        {STATUS_OPTIONS.map((option) => (
-          <Button
-            key={option}
-            variant={status === option ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setStatus(option)}
-          >
-            {option.replace(/_/g, ' ')}
-          </Button>
-        ))}
-        <div className="flex items-center gap-2">
+      <div className={`${cardClassName} flex flex-wrap items-center gap-3 p-4`}>
+        <div className="flex flex-wrap items-center gap-2">
+          {STATUS_OPTIONS.map((option) => (
+            <Button
+              key={option}
+              size="sm"
+              variant={status === option ? 'solid' : 'outline'}
+              colorPalette={status === option ? 'primary' : undefined}
+              onClick={() => setStatus(option)}
+            >
+              {option.replace(/_/g, ' ')}
+            </Button>
+          ))}
+        </div>
+        <Separator orientation="vertical" className="hidden h-6 sm:block" />
+        <div className="flex flex-wrap items-center gap-2">
           <CalendarClock className="h-4 w-4 text-muted-foreground" />
           <Input
             type="date"
@@ -367,46 +384,49 @@ export function CleanerServicesPage() {
             className="w-[160px]"
           />
           {date && (
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setDate('')}
-            >
+            <Button size="sm" variant="ghost" onClick={() => setDate('')}>
               Clear
             </Button>
           )}
         </div>
-        {newCount > 0 && <Badge variant="secondary">{newCount} new</Badge>}
+        {newCount > 0 && (
+          <Badge colorPalette="green" variant="subtle">
+            {newCount} new
+          </Badge>
+        )}
       </div>
 
       {isLoading ? (
-        <div className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          Loading services...
-        </div>
+        <div className={mutedPanelClassName}>Loading services...</div>
       ) : services.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          No assigned services yet.
-        </div>
+        <div className={mutedPanelClassName}>No assigned services yet.</div>
       ) : (
         <div className="space-y-4">
           {services.map((entry) => (
             <Collapsible
               key={entry.id}
-              className={`rounded-xl border border-border/60 bg-card ${isUpcoming(entry) ? 'border-amber-300/60 bg-amber-50/70 dark:border-amber-900/60 dark:bg-amber-950/30' : ''}`}
+              className={`${cardClassName} overflow-hidden transition-shadow duration-200 hover:shadow-md ${isUpcoming(entry) ? 'border-amber-300/60 bg-amber-50/70 dark:border-amber-900/60 dark:bg-amber-950/30' : ''}`}
             >
               <CollapsibleTrigger asChild>
-                <button className="flex w-full items-center justify-between gap-4 p-4 text-left">
-                  <div>
-                    <p className="text-sm font-semibold">
+                <button className="group flex w-full items-center justify-between gap-4 px-5 py-4 text-left">
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-foreground">
                       {entry.request.requestNumber}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {entry.request.customer.name} - {entry.request.type.toLowerCase().replace(/_/g, ' ')}
+                      {entry.request.customer.name} ·{' '}
+                      {entry.request.type.toLowerCase().replace(/_/g, ' ')}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Scheduled:{' '}
+                      {entry.request.requestedDate
+                        ? new Date(entry.request.requestedDate).toLocaleString()
+                        : 'Not scheduled'}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     {isUpcoming(entry) && (
-                      <Badge variant="secondary">Upcoming</Badge>
+                      <Badge variant="subtle">Upcoming</Badge>
                     )}
                     <Badge variant="outline">
                       {entry.request.status.toLowerCase().replace(/_/g, ' ')}
@@ -414,16 +434,16 @@ export function CleanerServicesPage() {
                     {new Date(entry.request.createdAt).getTime() > lastSeen && (
                       <span className="h-2 w-2 rounded-full bg-emerald-500" />
                     )}
-                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
                   </div>
                 </button>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <Separator />
-                <div className="grid gap-4 p-4 md:grid-cols-2">
+                <div className="grid gap-5 px-5 py-4 md:grid-cols-[1.1fr_0.9fr]">
                   <div className="space-y-3 text-sm">
                     <div>
-                      <p className="font-medium">Customer</p>
+                      <p className={labelClassName}>Customer</p>
                       <p className="text-muted-foreground">
                         {entry.request.customer.name}
                         {entry.request.customer.phone
@@ -433,7 +453,7 @@ export function CleanerServicesPage() {
                     </div>
                     {entry.request.address && (
                       <div>
-                        <p className="font-medium">Address</p>
+                        <p className={labelClassName}>Address</p>
                         <p className="text-muted-foreground">
                           {entry.request.address.line1}
                           {entry.request.address.line2
@@ -444,43 +464,47 @@ export function CleanerServicesPage() {
                       </div>
                     )}
                     <div>
-                      <p className="font-medium">Description</p>
+                      <p className={labelClassName}>Description</p>
                       <p className="text-muted-foreground">
                         {entry.request.description}
                       </p>
                     </div>
                     {entry.request.notes && (
                       <div>
-                        <p className="font-medium">Special notes</p>
-                        <p className="text-muted-foreground">{entry.request.notes}</p>
+                        <p className={labelClassName}>Special notes</p>
+                        <p className="text-muted-foreground">
+                          {entry.request.notes}
+                        </p>
                       </div>
                     )}
                   </div>
                   <div className="space-y-3 text-sm">
                     <div>
-                      <p className="font-medium">Scheduled</p>
+                      <p className={labelClassName}>Scheduled</p>
                       <p className="text-muted-foreground">
                         {entry.request.requestedDate
-                          ? new Date(entry.request.requestedDate).toLocaleString()
+                          ? new Date(
+                              entry.request.requestedDate,
+                            ).toLocaleString()
                           : 'Not scheduled'}
                       </p>
                     </div>
                     <div>
-                      <p className="font-medium">Assigned</p>
+                      <p className={labelClassName}>Assigned</p>
                       <p className="text-muted-foreground">
                         {new Date(entry.assignedAt).toLocaleString()}
                       </p>
                     </div>
                     {entry.acceptedAt && (
                       <div>
-                        <p className="font-medium">Accepted</p>
+                        <p className={labelClassName}>Accepted</p>
                         <p className="text-muted-foreground">
                           {new Date(entry.acceptedAt).toLocaleString()}
                         </p>
                       </div>
                     )}
                     {entry.request.status === 'ASSIGNED' && (
-                      <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/60 bg-muted/20 p-3">
                         {entry.acceptedAt ? (
                           <Button
                             size="sm"
@@ -507,10 +531,8 @@ export function CleanerServicesPage() {
                     )}
                     {entry.request.status === 'IN_PROGRESS' && (
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          <p className="text-xs font-medium text-muted-foreground">
-                            Progress update
-                          </p>
+                        <div className="space-y-2 rounded-xl border border-border/60 bg-muted/10 p-3">
+                          <p className={labelClassName}>Progress update</p>
                           <Input
                             type="file"
                             accept="image/*"
@@ -518,7 +540,9 @@ export function CleanerServicesPage() {
                             onChange={(event) =>
                               setProgressFiles((prev) => ({
                                 ...prev,
-                                [entry.id]: Array.from(event.target.files || []),
+                                [entry.id]: Array.from(
+                                  event.target.files || [],
+                                ),
                               }))
                             }
                           />
@@ -542,10 +566,8 @@ export function CleanerServicesPage() {
                             Update Progress
                           </Button>
                         </div>
-                        <div className="space-y-2">
-                          <p className="text-xs font-medium text-muted-foreground">
-                            Complete service
-                          </p>
+                        <div className="space-y-2 rounded-xl border border-border/60 bg-muted/10 p-3">
+                          <p className={labelClassName}>Complete service</p>
                           <Input
                             type="file"
                             accept="image/*"
@@ -553,7 +575,9 @@ export function CleanerServicesPage() {
                             onChange={(event) =>
                               setCompleteFiles((prev) => ({
                                 ...prev,
-                                [entry.id]: Array.from(event.target.files || []),
+                                [entry.id]: Array.from(
+                                  event.target.files || [],
+                                ),
                               }))
                             }
                           />
@@ -584,15 +608,17 @@ export function CleanerServicesPage() {
                       </div>
                     )}
                     <div>
-                      <p className="font-medium">Before photos</p>
+                      <p className={labelClassName}>Before photos</p>
                       {entry.request.beforePhotos.length === 0 ? (
-                        <p className="text-muted-foreground">No photos uploaded.</p>
+                        <p className="text-muted-foreground">
+                          No photos uploaded.
+                        </p>
                       ) : (
                         <div className="mt-2 grid grid-cols-3 gap-2">
                           {entry.request.beforePhotos.map((photo) => (
                             <div
                               key={photo.id}
-                              className="h-20 overflow-hidden rounded-lg border"
+                              className="h-20 overflow-hidden rounded-lg border border-border/60 bg-background/40"
                             >
                               <img
                                 src={photo.url}
@@ -614,5 +640,3 @@ export function CleanerServicesPage() {
     </div>
   )
 }
-
-

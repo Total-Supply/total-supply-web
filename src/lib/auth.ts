@@ -1,12 +1,18 @@
 import prisma from '@/src/lib/prisma'
 import { compare } from 'bcryptjs'
 import { randomUUID } from 'crypto'
-import { NextAuthOptions } from 'next-auth'
+import type { NextAuthOptions, RequestInternal, Session } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
+type SessionWithExpired = Session & { expired?: boolean }
+
 const DEFAULT_SESSION_MAX_AGE = 30 * 24 * 60 * 60
 const REMEMBER_ME_MAX_AGE = 90 * 24 * 60 * 60
+
+function parseRememberMe(value: unknown) {
+  return value === true || value === 'true' || value === 'on' || value === '1'
+}
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -30,13 +36,18 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
         rememberMe: { label: 'Remember Me', type: 'checkbox' },
       },
-      async authorize(credentials) {
+      async authorize(
+        credentials:
+          | Record<'email' | 'rememberMe' | 'password', string>
+          | undefined,
+        req: Pick<RequestInternal, 'body' | 'query' | 'headers' | 'method'>,
+      ) {
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Email and password required')
         }
 
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: String(credentials.email) },
           select: {
             id: true,
             email: true,
@@ -49,38 +60,21 @@ export const authOptions: NextAuthOptions = {
           },
         })
 
-        if (!user) {
-          throw new Error('Invalid email or password')
-        }
+        if (!user) throw new Error('Invalid email or password')
 
         const isPasswordValid = await compare(
-          credentials.password,
+          String(credentials.password),
           user.passwordHash,
         )
+        if (!isPasswordValid) throw new Error('Invalid email or password')
 
-        if (!isPasswordValid) {
-          throw new Error('Invalid email or password')
-        }
-
-        if (!user.emailVerified) {
-          throw new Error('Email not verified')
-        }
-
-        if (user.status === 'SUSPENDED') {
-          throw new Error('Account suspended')
-        }
-
-        if (user.status === 'REJECTED') {
-          throw new Error('Account rejected')
-        }
-
-        if (user.status === 'PENDING_APPROVAL') {
+        if (!user.emailVerified) throw new Error('Email not verified')
+        if (user.status === 'SUSPENDED') throw new Error('Account suspended')
+        if (user.status === 'REJECTED') throw new Error('Account rejected')
+        if (user.status === 'PENDING_APPROVAL')
           throw new Error('Account pending approval')
-        }
 
-        const rememberMe =
-          credentials.rememberMe === true ||
-          credentials.rememberMe === 'true'
+        const rememberMe = parseRememberMe(credentials.rememberMe)
 
         return {
           id: user.id.toString(),
@@ -97,25 +91,34 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.role = (user as any).role
-        token.status = (user as any).status
-        token.rememberMe = (user as any).rememberMe === true
+        type AuthUser = {
+          id: string | number
+          role?: string
+          status?: string
+          rememberMe?: boolean
+        }
+        const typedUser = user as AuthUser
+        token.id = String(typedUser.id)
+        token.role = typedUser.role
+        token.status = typedUser.status
+        token.rememberMe = typedUser.rememberMe === true
+
         if (!token.sessionToken) {
           const now = Date.now()
           const maxAgeSeconds = token.rememberMe
             ? REMEMBER_ME_MAX_AGE
             : DEFAULT_SESSION_MAX_AGE
+
           token.sessionToken = randomUUID()
           token.sessionExpiresAt = now + maxAgeSeconds * 1000
 
-          const userId = Number(user.id)
+          const userId = Number(typedUser.id)
           if (!Number.isNaN(userId)) {
             await prisma.session.create({
               data: {
                 userId,
-                token: token.sessionToken,
-                expiresAt: new Date(token.sessionExpiresAt),
+                token: token.sessionToken as string,
+                expiresAt: new Date(token.sessionExpiresAt as number),
               },
             })
           }
@@ -124,42 +127,63 @@ export const authOptions: NextAuthOptions = {
 
       return token
     },
+
     async session({ session, token }) {
+      // ✅ NEVER return null (type + stability). Mark expired instead.
       if (
         token.sessionExpiresAt &&
         Date.now() > Number(token.sessionExpiresAt)
       ) {
         if (token.sessionToken) {
           await prisma.session.deleteMany({
-            where: { token: token.sessionToken },
+            where: { token: String(token.sessionToken) },
           })
         }
-        return null
+
+        session.expires = new Date(0).toISOString()
+        ;(session as SessionWithExpired).expired = true
+        session.user = {
+          id: '',
+          name: null,
+          email: null,
+          image: null,
+          role: undefined,
+          status: undefined,
+          rememberMe: undefined,
+        }
+        return session
       }
+
       if (session.user) {
-        ;(session.user as any).id = token.id
-        ;(session.user as any).role = token.role
-        ;(session.user as any).status = token.status
-        ;(session.user as any).rememberMe = token.rememberMe === true
+        type ExtendedUser = typeof session.user & {
+          id?: string
+          role?: string
+          status?: string
+          rememberMe?: boolean
+        }
+        const user = session.user as ExtendedUser
+        user.id = token.id as string
+        user.role = token.role as string | undefined
+        user.status = token.status as string | undefined
+        user.rememberMe = token.rememberMe === true
+        session.user = user
       }
+
       if (token.sessionExpiresAt) {
-        session.expires = new Date(
-          Number(token.sessionExpiresAt),
-        ).toISOString()
+        session.expires = new Date(Number(token.sessionExpiresAt)).toISOString()
       }
+
       return session
     },
   },
   events: {
-    async signOut({ token }) {
+    async signOut({ token }: { token: { sessionToken?: string } }) {
       if (token?.sessionToken) {
         await prisma.session.deleteMany({
-          where: { token: token.sessionToken as string },
+          where: { token: String(token.sessionToken) },
         })
       }
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
 }
-
-

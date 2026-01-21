@@ -1,3 +1,5 @@
+import { useColorModeValue } from '../hooks/color-mode'
+
 export const Logo = () => {
   return (
     <svg

@@ -122,7 +122,7 @@ export function VerifyEmailPage() {
     <Section height="calc(100vh - 200px)" innerWidth="container.sm">
       <BackgroundGradient zIndex="-1" />
       <Center height="100%" pt="20">
-        <PageTransition width="100%">
+        <PageTransition style={{ width: '100%' }}>
           <VStack gap={6}>
             <Stack gap={2} textAlign="center">
               <Text fontSize="2xl" fontWeight="bold">

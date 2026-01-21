@@ -1,7 +1,6 @@
 import { SessionTimeout } from '@/src/components/auth/session-timeout'
+import { Provider } from '@/src/components/ui/provider'
 import { AppToaster } from '@/src/components/ui/toaster'
-import { ColorModeProvider } from '@/src/hooks/color-mode'
-import { ChakraProvider } from '@/src/providers/chakra-provider'
 import { ReduxProvider } from '@/src/providers/redux-provider'
 import { SessionProvider } from '@/src/providers/session-provider'
 import '@fontsource-variable/inter'
@@ -20,19 +19,17 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <ColorModeProvider>
+        <Provider>
           <SessionProvider>
             <ReduxProvider>
-              <ChakraProvider>
-                <SessionTimeout />
-                <AppToaster />
-                {children}
-              </ChakraProvider>
+              <SessionTimeout />
+              <AppToaster />
+              {children}
             </ReduxProvider>
           </SessionProvider>
-        </ColorModeProvider>
+        </Provider>
       </body>
     </html>
   )

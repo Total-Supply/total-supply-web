@@ -28,7 +28,11 @@ const Home: NextPage = () => {
       {/* Hero Section */}
       <Box position="relative" overflow="hidden">
         <BackgroundGradient height="100%" zIndex="-1" />
-        <Container maxW="container.xl" pt={{ base: 20, lg: 32 }} pb={{ base: 16, lg: 20 }}>
+        <Container
+          maxW="container.xl"
+          pt={{ base: 20, lg: 32 }}
+          pb={{ base: 16, lg: 20 }}
+        >
           <Hero
             id="home"
             justifyContent="center"
@@ -39,10 +43,12 @@ const Home: NextPage = () => {
               </FallInPlace>
             }
             description={
-              <FallInPlace delay={0.4} fontWeight="medium">
-                Order food, schedule cleaning services, and get IT support
-                <br />
-                all in one platform. Fast, reliable, and convenient.
+              <FallInPlace delay={0.4}>
+                <Text fontWeight="medium">
+                  Order food, schedule cleaning services, and get IT support
+                  <br />
+                  all in one platform. Fast, reliable, and convenient.
+                </Text>
               </FallInPlace>
             }
           >

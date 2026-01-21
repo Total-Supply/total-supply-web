@@ -11,7 +11,7 @@ import {
 } from '@/src/components/ui/collapsible'
 import { Input } from '@/src/components/ui/input'
 import { Separator } from '@/src/components/ui/separator'
-import { Badge, Label, Textarea } from '@chakra-ui/react'
+import { Badge, Textarea } from '@chakra-ui/react'
 import { ChevronDown } from 'lucide-react'
 
 import { useEffect, useMemo, useState } from 'react'
@@ -468,9 +468,9 @@ export function SalesmanOrdersPage() {
                       <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
                         <div className="flex flex-col gap-3">
                           <div className="flex flex-wrap items-center gap-3">
-                            <Label className="text-xs uppercase tracking-wide text-muted-foreground">
+                            <p className="text-xs uppercase tracking-wide text-muted-foreground">
                               Decline reason
-                            </Label>
+                            </p>
                             <div className="min-w-[180px]">
                               <AppSelect
                                 value={
@@ -501,7 +501,6 @@ export function SalesmanOrdersPage() {
                           />
                           <div className="flex items-center gap-2">
                             <Checkbox
-                              id={`notify-${order.id}`}
                               checked={declineNotify[order.id] ?? true}
                               onCheckedChange={(value) =>
                                 setDeclineNotify((prev) => ({
@@ -510,12 +509,9 @@ export function SalesmanOrdersPage() {
                                 }))
                               }
                             />
-                            <Label
-                              htmlFor={`notify-${order.id}`}
-                              className="text-xs"
-                            >
+                            <label className="text-xs">
                               Notify customer about delay
-                            </Label>
+                            </label>
                           </div>
                         </div>
                       </div>

@@ -217,231 +217,234 @@ export function ShopDetailPage() {
           </Breadcrumb.List>
         </Breadcrumb.Root>
 
-        <MotionBox
-          mt={6}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Box
-            bg={cardBg}
-            borderWidth="1px"
-            borderColor={cardBorder}
-            borderRadius="3xl"
-            overflow="hidden"
-            boxShadow="xl"
+        <Box mt={6}>
+          <MotionBox
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            {isLoading ? (
-              <Stack p={8} gap={6}>
-                <Skeleton height="240px" borderRadius="2xl" />
-                <Skeleton height="24px" />
-                <Skeleton height="18px" />
-                <Skeleton height="18px" />
-              </Stack>
-            ) : item ? (
-              <Stack
-                direction={{ base: 'column', lg: 'row' }}
-                gap={10}
-                p={{ base: 6, md: 10 }}
-              >
-                <Stack flex="1" gap={4}>
-                  <Box minH={{ base: '220px', md: '320px' }}>
-                    {activeImage ? (
-                      <Box position="relative" w="full" h="full">
-                        <Image
-                          src={activeImage}
-                          alt={item.name}
-                          objectFit="cover"
+            <Box
+              bg={cardBg}
+              borderWidth="1px"
+              borderColor={cardBorder}
+              borderRadius="3xl"
+              overflow="hidden"
+              boxShadow="xl"
+            >
+              {isLoading ? (
+                <Stack p={8} gap={6}>
+                  <Skeleton height="240px" borderRadius="2xl" />
+                  <Skeleton height="24px" />
+                  <Skeleton height="18px" />
+                  <Skeleton height="18px" />
+                </Stack>
+              ) : item ? (
+                <Stack
+                  direction={{ base: 'column', lg: 'row' }}
+                  gap={10}
+                  p={{ base: 6, md: 10 }}
+                >
+                  <Stack flex="1" gap={4}>
+                    <Box minH={{ base: '220px', md: '320px' }}>
+                      {activeImage ? (
+                        <Box position="relative" w="full" h="full">
+                          <Image
+                            src={activeImage}
+                            alt={item.name}
+                            objectFit="cover"
+                            w="full"
+                            h="full"
+                            borderRadius="2xl"
+                          />
+                          {gallery.length > 1 && (
+                            <HStack
+                              position="absolute"
+                              top="50%"
+                              left="4"
+                              right="4"
+                              transform="translateY(-50%)"
+                              justify="space-between"
+                            >
+                              <IconButton
+                                aria-label="Previous image"
+                                variant="solid"
+                                size="sm"
+                                onClick={() =>
+                                  setActiveIndex(
+                                    (prev) =>
+                                      (prev - 1 + gallery.length) %
+                                      gallery.length,
+                                  )
+                                }
+                              >
+                                <ChevronLeft size={16} />
+                              </IconButton>
+                              <IconButton
+                                aria-label="Next image"
+                                variant="solid"
+                                size="sm"
+                                onClick={() =>
+                                  setActiveIndex(
+                                    (prev) => (prev + 1) % gallery.length,
+                                  )
+                                }
+                              >
+                                <ChevronRight size={16} />
+                              </IconButton>
+                            </HStack>
+                          )}
+                        </Box>
+                      ) : (
+                        <Box
                           w="full"
                           h="full"
                           borderRadius="2xl"
-                        />
-                        {gallery.length > 1 && (
-                          <HStack
-                            position="absolute"
-                            top="50%"
-                            left="4"
-                            right="4"
-                            transform="translateY(-50%)"
-                            justify="space-between"
-                          >
-                            <IconButton
-                              aria-label="Previous image"
-                              variant="solid"
-                              size="sm"
-                              onClick={() =>
-                                setActiveIndex(
-                                  (prev) =>
-                                    (prev - 1 + gallery.length) %
-                                    gallery.length,
-                                )
-                              }
-                            >
-                              <ChevronLeft size={16} />
-                            </IconButton>
-                            <IconButton
-                              aria-label="Next image"
-                              variant="solid"
-                              size="sm"
-                              onClick={() =>
-                                setActiveIndex(
-                                  (prev) => (prev + 1) % gallery.length,
-                                )
-                              }
-                            >
-                              <ChevronRight size={16} />
-                            </IconButton>
-                          </HStack>
-                        )}
-                      </Box>
-                    ) : (
-                      <Box
-                        w="full"
-                        h="full"
-                        borderRadius="2xl"
-                        bg="gray.100"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        color="gray.400"
-                      >
-                        No image
-                      </Box>
-                    )}
-                  </Box>
-                  {gallery.length > 1 && (
-                    <HStack gap={3} flexWrap="wrap">
-                      {gallery.map((url, index) => (
-                        <Box
-                          key={url}
-                          borderWidth={activeIndex === index ? '2px' : '1px'}
-                          borderColor={
-                            activeIndex === index ? 'primary.500' : cardBorder
-                          }
-                          borderRadius="lg"
-                          overflow="hidden"
-                          cursor="pointer"
-                          onClick={() => setActiveIndex(index)}
+                          bg="gray.100"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          color="gray.400"
                         >
-                          <Image
-                            src={url}
-                            alt={item.name}
-                            boxSize="70px"
-                            objectFit="cover"
-                          />
+                          No image
                         </Box>
-                      ))}
-                    </HStack>
-                  )}
-                </Stack>
-
-                <Stack flex="1" gap={4}>
-                  <HStack gap={3}>
-                    <Text fontSize="2xl" fontWeight="bold">
-                      {item.name}
-                    </Text>
-                    {item.stock === 0 && (
-                      <Badge colorPalette="red">Sold Out</Badge>
+                      )}
+                    </Box>
+                    {gallery.length > 1 && (
+                      <HStack gap={3} flexWrap="wrap">
+                        {gallery.map((url, index) => (
+                          <Box
+                            key={url}
+                            borderWidth={activeIndex === index ? '2px' : '1px'}
+                            borderColor={
+                              activeIndex === index ? 'primary.500' : cardBorder
+                            }
+                            borderRadius="lg"
+                            overflow="hidden"
+                            cursor="pointer"
+                            onClick={() => setActiveIndex(index)}
+                          >
+                            <Image
+                              src={url}
+                              alt={item.name}
+                              boxSize="70px"
+                              objectFit="cover"
+                            />
+                          </Box>
+                        ))}
+                      </HStack>
                     )}
-                  </HStack>
-                  <Text color="muted" fontSize="sm">
-                    {item.category?.name || 'Food item'}
-                  </Text>
-                  {item.categories?.length ? (
-                    <HStack gap={2} flexWrap="wrap">
-                      {item.categories.map((category) => (
-                        <Tag.Root
-                          key={category.id}
-                          size="sm"
-                          borderRadius="full"
-                        >
-                          <Tag.Label>{category.name}</Tag.Label>
-                        </Tag.Root>
-                      ))}
-                    </HStack>
-                  ) : null}
-                  <Text fontSize="xl" fontWeight="bold" color="primary.500">
-                    LKR {Number(item.price).toFixed(2)}
-                  </Text>
-                  <Text color="gray.600">
-                    {item.description || 'No description available.'}
-                  </Text>
-
-                  <HStack gap={3}>
-                    <Tag.Root colorPalette={item.stock > 0 ? 'green' : 'red'}>
-                      <Tag.Label>
-                        {item.stock > 0 ? 'In stock' : 'Out of stock'}
-                      </Tag.Label>
-                    </Tag.Root>
-                    <Text fontSize="sm" color="muted">
-                      {item.stock} available
-                    </Text>
-                  </HStack>
-
-                  <Stack gap={2}>
-                    <Text fontSize="sm" fontWeight="600">
-                      Quantity
-                    </Text>
-                    <HStack>
-                      <Input
-                        type="number"
-                        min={1}
-                        max={100}
-                        value={quantity}
-                        onChange={(event) =>
-                          setQuantity(
-                            Math.min(
-                              item.stock > 0 ? Math.min(100, item.stock) : 100,
-                              Math.max(1, Number(event.target.value)),
-                            ),
-                          )
-                        }
-                        width="120px"
-                      />
-                      <Button
-                        colorPalette="primary"
-                        isDisabled={item.stock === 0}
-                        onClick={handleAddToCart}
-                      >
-                        {isAdded ? 'Added' : 'Add to cart'}
-                      </Button>
-                      <Button variant="outline" onClick={handleShare}>
-                        Share this item
-                      </Button>
-                    </HStack>
                   </Stack>
 
-                  {item.ingredients ? (
-                    <Stack gap={2}>
-                      <Text fontSize="sm" fontWeight="600">
-                        Ingredients
+                  <Stack flex="1" gap={4}>
+                    <HStack gap={3}>
+                      <Text fontSize="2xl" fontWeight="bold">
+                        {item.name}
                       </Text>
-                      <Text fontSize="sm" color="muted">
-                        {item.ingredients}
-                      </Text>
-                    </Stack>
-                  ) : null}
+                      {item.stock === 0 && (
+                        <Badge colorPalette="red">Sold Out</Badge>
+                      )}
+                    </HStack>
+                    <Text color="muted" fontSize="sm">
+                      {item.category?.name || 'Food item'}
+                    </Text>
+                    {item.categories?.length ? (
+                      <HStack gap={2} flexWrap="wrap">
+                        {item.categories.map((category) => (
+                          <Tag.Root
+                            key={category.id}
+                            size="sm"
+                            borderRadius="full"
+                          >
+                            <Tag.Label>{category.name}</Tag.Label>
+                          </Tag.Root>
+                        ))}
+                      </HStack>
+                    ) : null}
+                    <Text fontSize="xl" fontWeight="bold" color="primary.500">
+                      LKR {Number(item.price).toFixed(2)}
+                    </Text>
+                    <Text color="gray.600">
+                      {item.description || 'No description available.'}
+                    </Text>
 
-                  {item.nutritionInfo ? (
+                    <HStack gap={3}>
+                      <Tag.Root colorPalette={item.stock > 0 ? 'green' : 'red'}>
+                        <Tag.Label>
+                          {item.stock > 0 ? 'In stock' : 'Out of stock'}
+                        </Tag.Label>
+                      </Tag.Root>
+                      <Text fontSize="sm" color="muted">
+                        {item.stock} available
+                      </Text>
+                    </HStack>
+
                     <Stack gap={2}>
                       <Text fontSize="sm" fontWeight="600">
-                        Nutritional info
+                        Quantity
                       </Text>
-                      <Text fontSize="sm" color="muted">
-                        {item.nutritionInfo}
-                      </Text>
+                      <HStack>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={100}
+                          value={quantity}
+                          onChange={(event) =>
+                            setQuantity(
+                              Math.min(
+                                item.stock > 0
+                                  ? Math.min(100, item.stock)
+                                  : 100,
+                                Math.max(1, Number(event.target.value)),
+                              ),
+                            )
+                          }
+                          width="120px"
+                        />
+                        <Button
+                          colorPalette="primary"
+                          isDisabled={item.stock === 0}
+                          onClick={handleAddToCart}
+                        >
+                          {isAdded ? 'Added' : 'Add to cart'}
+                        </Button>
+                        <Button variant="outline" onClick={handleShare}>
+                          Share this item
+                        </Button>
+                      </HStack>
                     </Stack>
-                  ) : null}
+
+                    {item.ingredients ? (
+                      <Stack gap={2}>
+                        <Text fontSize="sm" fontWeight="600">
+                          Ingredients
+                        </Text>
+                        <Text fontSize="sm" color="muted">
+                          {item.ingredients}
+                        </Text>
+                      </Stack>
+                    ) : null}
+
+                    {item.nutritionInfo ? (
+                      <Stack gap={2}>
+                        <Text fontSize="sm" fontWeight="600">
+                          Nutritional info
+                        </Text>
+                        <Text fontSize="sm" color="muted">
+                          {item.nutritionInfo}
+                        </Text>
+                      </Stack>
+                    ) : null}
+                  </Stack>
                 </Stack>
-              </Stack>
-            ) : (
-              <Stack p={8} gap={2} align="center">
-                <Text fontWeight="600">Item not found</Text>
-                <Text color="muted">Please return to the catalog.</Text>
-              </Stack>
-            )}
-          </Box>
-        </MotionBox>
+              ) : (
+                <Stack p={8} gap={2} align="center">
+                  <Text fontWeight="600">Item not found</Text>
+                  <Text color="muted">Please return to the catalog.</Text>
+                </Stack>
+              )}
+            </Box>
+          </MotionBox>
+        </Box>
 
         {related.length > 0 && (
           <Stack mt={10} gap={4}>

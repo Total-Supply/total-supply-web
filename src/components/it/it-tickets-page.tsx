@@ -62,7 +62,7 @@ export function ITTicketsPage() {
             {STATUS_FILTERS.map((filter) => (
               <Button
                 key={filter}
-                variant={status === filter ? 'default' : 'outline'}
+                variant={status === filter ? 'solid' : 'outline'}
                 size="sm"
                 onClick={() => setStatus(filter)}
               >
@@ -82,7 +82,7 @@ export function ITTicketsPage() {
         {activeFilters.length ? (
           <div className="mt-3 flex flex-wrap gap-2">
             {activeFilters.map((filter) => (
-              <Badge key={filter} variant="secondary">
+              <Badge key={filter} variant="subtle">
                 {filter}
               </Badge>
             ))}
