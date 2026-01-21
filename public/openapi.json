@@ -1,19 +1,185 @@
 {
-  "apiFolder": "src/app/api",
-  "outputPath": "public/openapi.json",
-  "title": "Total Supply API",
-  "version": "1.0.0",
-  "description": "Comprehensive API documentation for Total Supply platform",
-  "baseUrl": "http://localhost:3000",
-  "docPath": "/api-docs",
   "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "1.0.0",
+    "description": "This is the OpenAPI specification for your project."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Local development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "error"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid request parameters"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "BAD_REQUEST"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "error"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication required"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "UNAUTHORIZED"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "error"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access denied"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "FORBIDDEN"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "error"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "An unexpected error occurred"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "INTERNAL_ERROR"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {}
+  },
   "paths": {
     "/addresses": {
       "get": {
         "operationId": "get-addresses",
         "summary": "",
         "description": "",
-        "tags": ["Addresses"],
+        "tags": [
+          "Addresses"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -30,7 +196,9 @@
         "operationId": "get-admin-analytics",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -47,7 +215,9 @@
         "operationId": "get-admin-audit-logs",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -64,7 +234,9 @@
         "operationId": "post-admin-data-retention",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -79,9 +251,11 @@
     "/admin/services": {
       "get": {
         "operationId": "get-admin-services",
-        "summary": "GET /api/admin/services",
+        "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -94,9 +268,11 @@
       },
       "post": {
         "operationId": "post-admin-services",
-        "summary": "POST /api/admin/services",
+        "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -113,7 +289,9 @@
         "operationId": "get-admin-users",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -130,7 +308,9 @@
         "operationId": "get-admin-catalog-categories",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -145,7 +325,9 @@
         "operationId": "post-admin-catalog-categories",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -162,7 +344,9 @@
         "operationId": "get-admin-catalog-items",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -177,7 +361,9 @@
         "operationId": "post-admin-catalog-items",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -194,7 +380,9 @@
         "operationId": "get-admin-services-offerings",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -209,7 +397,9 @@
         "operationId": "post-admin-services-offerings",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -226,7 +416,9 @@
         "operationId": "put-admin-services-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -241,7 +433,9 @@
         "operationId": "delete-admin-services-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "204": {
@@ -261,7 +455,9 @@
         "operationId": "post-admin-users-bulk-approve",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -278,7 +474,9 @@
         "operationId": "get-admin-catalog-categories-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -293,7 +491,9 @@
         "operationId": "patch-admin-catalog-categories-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -308,7 +508,9 @@
         "operationId": "delete-admin-catalog-categories-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "204": {
@@ -328,7 +530,9 @@
         "operationId": "get-admin-catalog-items-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -343,7 +547,9 @@
         "operationId": "patch-admin-catalog-items-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -358,7 +564,9 @@
         "operationId": "delete-admin-catalog-items-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "204": {
@@ -378,7 +586,9 @@
         "operationId": "get-admin-services-offerings-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -393,7 +603,9 @@
         "operationId": "patch-admin-services-offerings-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -408,7 +620,9 @@
         "operationId": "delete-admin-services-offerings-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "204": {
@@ -428,7 +642,9 @@
         "operationId": "post-admin-users-approve-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -445,7 +661,9 @@
         "operationId": "post-admin-users-reject-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -462,7 +680,9 @@
         "operationId": "post-auth-forgot-password",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -479,7 +699,9 @@
         "operationId": "post-auth-login",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -496,7 +718,9 @@
         "operationId": "get-auth-me",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -513,7 +737,9 @@
         "operationId": "post-auth-register",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -530,7 +756,9 @@
         "operationId": "post-auth-resend-verification",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -547,7 +775,9 @@
         "operationId": "post-auth-reset-password",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -564,7 +794,9 @@
         "operationId": "post-auth-signout",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -581,7 +813,9 @@
         "operationId": "put-auth-update-profile",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -598,7 +832,9 @@
         "operationId": "post-auth-verify-email",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -615,7 +851,9 @@
         "operationId": "post-contact",
         "summary": "",
         "description": "",
-        "tags": ["Contact"],
+        "tags": [
+          "Contact"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -632,7 +870,9 @@
         "operationId": "post-cron-data-retention",
         "summary": "",
         "description": "",
-        "tags": ["Cron"],
+        "tags": [
+          "Cron"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -649,7 +889,9 @@
         "operationId": "get-customer-bookings",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -664,7 +906,9 @@
         "operationId": "post-customer-bookings",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -681,7 +925,9 @@
         "operationId": "get-customer-orders",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -696,7 +942,9 @@
         "operationId": "post-customer-orders",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -713,7 +961,9 @@
         "operationId": "get-customer-profile",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -728,7 +978,9 @@
         "operationId": "put-customer-profile",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -745,7 +997,9 @@
         "operationId": "get-food-categories",
         "summary": "",
         "description": "",
-        "tags": ["Food-categories"],
+        "tags": [
+          "Food-categories"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -762,7 +1016,9 @@
         "operationId": "get-food-items",
         "summary": "",
         "description": "",
-        "tags": ["Food-items"],
+        "tags": [
+          "Food-items"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -779,7 +1035,9 @@
         "operationId": "get-food-items-{slug}",
         "summary": "",
         "description": "",
-        "tags": ["Food-items"],
+        "tags": [
+          "Food-items"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -796,7 +1054,9 @@
         "operationId": "post-orders",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -811,7 +1071,9 @@
         "operationId": "get-orders",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -828,7 +1090,9 @@
         "operationId": "get-orders-{orderNumber}",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -843,7 +1107,9 @@
         "operationId": "patch-orders-{orderNumber}",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -860,7 +1126,9 @@
         "operationId": "post-orders-{orderNumber}-cancel",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -877,7 +1145,9 @@
         "operationId": "get-profile",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -892,7 +1162,9 @@
         "operationId": "put-profile",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -909,7 +1181,9 @@
         "operationId": "post-profile-delete",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -926,7 +1200,9 @@
         "operationId": "get-profile-export",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -943,7 +1219,9 @@
         "operationId": "put-profile-marketing",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -960,7 +1238,9 @@
         "operationId": "post-profile-restore",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -977,7 +1257,9 @@
         "operationId": "post-service-requests",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -992,7 +1274,9 @@
         "operationId": "get-service-requests",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1009,7 +1293,9 @@
         "operationId": "get-service-requests-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1024,7 +1310,9 @@
         "operationId": "post-service-requests-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1039,7 +1327,9 @@
         "operationId": "patch-service-requests-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1056,7 +1346,9 @@
         "operationId": "get-services-offerings",
         "summary": "",
         "description": "",
-        "tags": ["Services"],
+        "tags": [
+          "Services"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1073,7 +1365,9 @@
         "operationId": "get-staff-cleaner-services",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1090,7 +1384,9 @@
         "operationId": "get-staff-cleaner-stats",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1107,7 +1403,9 @@
         "operationId": "get-staff-driver-deliveries",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1124,7 +1422,9 @@
         "operationId": "get-staff-driver-stats",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1141,7 +1441,9 @@
         "operationId": "get-staff-it-services",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1158,7 +1460,9 @@
         "operationId": "get-staff-it-stats",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1175,7 +1479,9 @@
         "operationId": "get-staff-salesman-orders",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1192,7 +1498,9 @@
         "operationId": "get-staff-salesman-stats",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1209,7 +1517,9 @@
         "operationId": "post-staff-cleaner-services-{id}-accept",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1226,7 +1536,9 @@
         "operationId": "post-staff-cleaner-services-{id}-complete",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1243,7 +1555,9 @@
         "operationId": "post-staff-cleaner-services-{id}-progress",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1260,7 +1574,9 @@
         "operationId": "post-staff-cleaner-services-{id}-start",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1277,7 +1593,9 @@
         "operationId": "post-staff-driver-deliveries-{orderNumber}-accept",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1294,7 +1612,9 @@
         "operationId": "post-staff-driver-deliveries-{orderNumber}-confirm",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1311,7 +1631,9 @@
         "operationId": "post-staff-it-services-{id}-accept",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1328,7 +1650,9 @@
         "operationId": "post-staff-it-services-{id}-complete",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1345,7 +1669,9 @@
         "operationId": "post-staff-it-services-{id}-progress",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1362,7 +1688,9 @@
         "operationId": "post-staff-salesman-orders-{orderNumber}-accept",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1379,7 +1707,9 @@
         "operationId": "post-staff-salesman-orders-{orderNumber}-decline",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1396,7 +1726,9 @@
         "operationId": "post-staff-salesman-orders-{orderNumber}-prepare",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1413,7 +1745,9 @@
         "operationId": "get-test-db",
         "summary": "",
         "description": "",
-        "tags": ["Test-db"],
+        "tags": [
+          "Test-db"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1430,7 +1764,9 @@
         "operationId": "get-unsubscribe",
         "summary": "",
         "description": "",
-        "tags": ["Unsubscribe"],
+        "tags": [
+          "Unsubscribe"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1447,7 +1783,9 @@
         "operationId": "post-upload",
         "summary": "",
         "description": "",
-        "tags": ["Upload"],
+        "tags": [
+          "Upload"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1464,7 +1802,9 @@
         "operationId": "get-users",
         "summary": "",
         "description": "",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -1476,15 +1816,5 @@
         }
       }
     }
-  },
-  "servers": [
-    {
-      "url": "",
-      "description": "API server"
-    }
-  ],
-  "components": {
-    "schemas": {},
-    "responses": {}
   }
 }

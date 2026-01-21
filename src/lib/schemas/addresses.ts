@@ -1,18 +1,30 @@
 // src/lib/schemas/addresses.ts
 import { z } from 'zod'
 
+import {
+  BadRequestResponse,
+  ForbiddenResponse,
+  InternalServerErrorResponse,
+  UnauthorizedResponse,
+  ValidationErrorResponse,
+} from './common'
+
+// Single address object
 export const AddressResponse = z
   .object({
     id: z.number().int().positive().describe('Unique address identifier'),
-    label: z.string().nullable().describe('Address label or null if not set'),
+    label: z
+      .string()
+      .nullable()
+      .describe('Address label (e.g., "Home", "Office") or null'),
     line1: z.string().describe('Primary address line (street address)'),
     line2: z
       .string()
       .nullable()
-      .describe('Secondary address line (apartment, suite, etc.)'),
+      .describe('Secondary address line (apartment, suite, etc.) or null'),
     city: z.string().describe('City or town name'),
     postalCode: z.string().describe('Postal or ZIP code'),
-    country: z.string().describe('Country name (e.g. Sri Lanka)'),
+    country: z.string().describe('Country name (e.g., "Sri Lanka")'),
     isDefault: z
       .boolean()
       .describe('Whether this is the default delivery address'),
@@ -23,10 +35,12 @@ export const AddressResponse = z
   })
   .describe('Single address object')
 
+// List of addresses
 export const AddressesListData = z
   .array(AddressResponse)
-  .describe('User addresses, sorted by default first, then newest')
+  .describe('Array of user addresses, sorted by default first, then newest')
 
+// Success response for GET /api/customer/addresses
 export const ListAddressesSuccessResponse = z
   .object({
     success: z.literal(true),
@@ -35,27 +49,7 @@ export const ListAddressesSuccessResponse = z
   })
   .describe('Successful addresses list response')
 
-export const ErrorResponse = z
-  .object({
-    success: z.literal(false),
-    error: z.object({
-      message: z.string().describe('Human-readable error message'),
-    }),
-  })
-  .describe('Standard error response for this endpoint')
-
-export const UnauthorizedErrorResponse = ErrorResponse.describe(
-  'User is not authenticated or session is invalid',
-)
-
-export const ForbiddenErrorResponse = ErrorResponse.describe(
-  'User account is suspended or not allowed to access this resource',
-)
-
-export const ServerErrorResponse = ErrorResponse.describe(
-  'Unexpected server error while fetching addresses',
-)
-
+// Query parameters for GET /api/customer/addresses
 export const ListAddressesQuery = z
   .object({
     includeDefault: z
@@ -66,7 +60,16 @@ export const ListAddressesQuery = z
       .enum(['default', 'newest', 'oldest'])
       .optional()
       .describe(
-        'Sort order: default (isDefault first, then newest), newest, or oldest',
+        'Sort order: "default" (isDefault first, then newest), "newest", or "oldest"',
       ),
   })
   .describe('Query parameters for listing addresses')
+
+// Re-export common error responses
+export {
+  BadRequestResponse,
+  UnauthorizedResponse,
+  ForbiddenResponse,
+  ValidationErrorResponse,
+  InternalServerErrorResponse,
+}

@@ -13,14 +13,12 @@ import { NextRequest } from 'next/server'
  * Get User Addresses
  *
  * @description Returns the list of addresses for the currently authenticated user,
- * sorted so the default address appears first, then newest entries. Uses the
- * Address model from Prisma and exposes only user-facing fields.
+ * sorted so the default address appears first, then newest entries. Requires authentication
+ * via NextAuth session and active user status.
  *
  * @params ListAddressesQuery
- * @response 200:ListAddressesSuccessResponse
- * @response 401:UnauthorizedErrorResponse
- * @response 403:ForbiddenErrorResponse
- * @response 500:ServerErrorResponse
+ * @response 200:ListAddressesSuccessResponse:Successful response with addresses
+ * @responseSet auth
  *
  * @auth bearer
  * @tag Customer
@@ -31,7 +29,6 @@ async function handler(request: NextRequest) {
   const authRequest = await requireAuth(request)
   const userId = parseInt(authRequest.user.id)
 
-  // Optional: parse query params (kept non-strict to preserve current behaviour)
   const queryParsed = ListAddressesQuery.safeParse({
     includeDefault:
       request.nextUrl.searchParams.get('includeDefault') ?? undefined,
