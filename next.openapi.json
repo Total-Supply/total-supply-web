@@ -132,10 +132,10 @@
     "public": ["400", "500"]
   },
 
+  "schemaFiles": ["./openapi.responses.yaml"],
   "apiDir": "./src/app/api",
   "schemaDir": "./src/lib/schemas",
   "schemaType": "zod",
-  "schemaFiles": [],
   "docsUrl": "/api-docs",
   "ui": "scalar",
   "outputFile": "openapi.json",

@@ -1,28 +1,37 @@
 import { Prisma } from '@/generated/prisma'
 import { ApiResponse } from '@/src/lib/api/response'
 import { validateBody } from '@/src/lib/api/validator'
-import { slugify } from '@/src/lib/utils'
-import {
-  updateFoodItemSchema,
-} from '@/src/lib/validations/catalog.schema'
 import prisma from '@/src/lib/prisma'
+import { UpdateItemBody } from '@/src/lib/schemas/catalog'
+import { slugify } from '@/src/lib/utils'
 import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
-type Params = {
-  params: Promise<{ id: string }>
-}
+type Params = { params: { id: string } }
 
-async function handler(request: NextRequest, { params }: Params) {
-  const authRequest = await requireAdmin(request)
-  const { id } = await params
-  const itemId = Number(id)
-  if (Number.isNaN(itemId)) {
-    return ApiResponse.badRequest('Invalid item id')
-  }
+/**
+ * Get Food Item (Admin)
+ *
+ * @pathParams ItemIdParams
+ * @response 200:GetItemSuccessResponse:Item details
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag Catalog
+ * @tag Items
+ * @openapi
+ */
+export const GET = withErrorHandler(
+  async (_request: NextRequest, { params }: Params) => {
+    await requireAdmin(_request)
 
-  if (request.method === 'GET') {
+    const itemId = Number(params.id)
+    if (Number.isNaN(itemId)) {
+      return ApiResponse.badRequest('Invalid item id')
+    }
+
     const item = await prisma.foodItem.findUnique({
       where: { id: itemId },
       select: {
@@ -39,34 +48,68 @@ async function handler(request: NextRequest, { params }: Params) {
         mainImageUrl: true,
         category: { select: { id: true, name: true, slug: true } },
         categoryLinks: {
-          select: { category: { select: { id: true, name: true, slug: true } } },
+          select: {
+            category: { select: { id: true, name: true, slug: true } },
+          },
         },
         images: { select: { id: true, url: true, position: true } },
         createdAt: true,
         updatedAt: true,
       },
     })
+
     if (!item) {
       return ApiResponse.notFound('Item not found')
     }
 
-    const categoryMap = new Map<number, { id: number; name: string; slug: string }>()
+    const categoryMap = new Map<
+      number,
+      { id: number; name: string; slug: string }
+    >()
+
     if (item.category) {
       categoryMap.set(item.category.id, item.category)
     }
+
     item.categoryLinks.forEach((link) => {
       categoryMap.set(link.category.id, link.category)
     })
 
+    const { category, categoryLinks, ...rest } = item
+
     return ApiResponse.success({
-      ...item,
+      ...rest,
       categories: Array.from(categoryMap.values()),
     })
-  }
+  },
+)
 
-  if (request.method === 'PATCH') {
+/**
+ * Update Food Item (Admin)
+ *
+ * @pathParams ItemIdParams
+ * @body UpdateItemBody
+ * @response 200:UpdateItemSuccessResponse:Item updated
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag Catalog
+ * @tag Items
+ * @openapi
+ */
+export const PATCH = withErrorHandler(
+  async (request: NextRequest, { params }: Params) => {
+    const authRequest = await requireAdmin(request)
+
+    const itemId = Number(params.id)
+    if (Number.isNaN(itemId)) {
+      return ApiResponse.badRequest('Invalid item id')
+    }
+
     const body = await request.json()
-    const data = await validateBody(body, updateFoodItemSchema)
+    const data = await validateBody(body, UpdateItemBody)
+
     const slug = data.slug ? slugify(data.slug) : undefined
 
     if (slug) {
@@ -86,7 +129,11 @@ async function handler(request: NextRequest, { params }: Params) {
     if (nextCategoryId) {
       const categories = await prisma.foodCategory.findMany({
         where: {
-          id: { in: Array.from(new Set([nextCategoryId, ...(data.categoryIds ?? [])])) },
+          id: {
+            in: Array.from(
+              new Set([nextCategoryId, ...(data.categoryIds ?? [])]),
+            ),
+          },
         },
         select: { id: true },
       })
@@ -101,8 +148,12 @@ async function handler(request: NextRequest, { params }: Params) {
         data: {
           ...(data.name && { name: data.name }),
           ...(slug && { slug }),
-          ...(data.description !== undefined && { description: data.description }),
-          ...(data.ingredients !== undefined && { ingredients: data.ingredients }),
+          ...(data.description !== undefined && {
+            description: data.description,
+          }),
+          ...(data.ingredients !== undefined && {
+            ingredients: data.ingredients,
+          }),
           ...(data.nutritionInfo !== undefined && {
             nutritionInfo: data.nutritionInfo,
           }),
@@ -121,14 +172,19 @@ async function handler(request: NextRequest, { params }: Params) {
 
       if (data.categoryIds || data.categoryId) {
         const categoryIds = Array.from(
-          new Set([nextCategoryId, ...(data.categoryIds ?? [])].filter(Boolean)),
+          new Set(
+            [nextCategoryId, ...(data.categoryIds ?? [])].filter(Boolean),
+          ),
         ) as number[]
+
         await tx.foodItemCategory.deleteMany({
           where: { foodItemId: itemId },
         })
+
         const extraCategoryIds = categoryIds.filter(
           (categoryId) => categoryId !== item.categoryId,
         )
+
         if (extraCategoryIds.length) {
           await tx.foodItemCategory.createMany({
             data: extraCategoryIds.map((categoryId) => ({
@@ -141,6 +197,7 @@ async function handler(request: NextRequest, { params }: Params) {
 
       if (data.imageUrls) {
         await tx.foodImage.deleteMany({ where: { foodItemId: itemId } })
+
         if (data.imageUrls.length) {
           await tx.foodImage.createMany({
             data: data.imageUrls.map((url, index) => ({
@@ -171,13 +228,36 @@ async function handler(request: NextRequest, { params }: Params) {
     })
 
     return ApiResponse.success(updated, 'Item updated')
-  }
+  },
+)
 
-  if (request.method === 'DELETE') {
+/**
+ * Delete Food Item (Admin)
+ *
+ * @pathParams ItemIdParams
+ * @response 200:DeleteItemSuccessResponse:Item deleted
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag Catalog
+ * @tag Items
+ * @openapi
+ */
+export const DELETE = withErrorHandler(
+  async (request: NextRequest, { params }: Params) => {
+    const authRequest = await requireAdmin(request)
+
+    const itemId = Number(params.id)
+    if (Number.isNaN(itemId)) {
+      return ApiResponse.badRequest('Invalid item id')
+    }
+
     await prisma.$transaction(async (tx) => {
       await tx.foodImage.deleteMany({ where: { foodItemId: itemId } })
       await tx.foodItemCategory.deleteMany({ where: { foodItemId: itemId } })
       await tx.foodItem.delete({ where: { id: itemId } })
+
       await tx.auditLog.create({
         data: {
           entityType: 'FOOD_ITEM',
@@ -193,13 +273,5 @@ async function handler(request: NextRequest, { params }: Params) {
     })
 
     return ApiResponse.success({ id: itemId }, 'Item deleted')
-  }
-
-  return ApiResponse.badRequest('Unsupported method')
-}
-
-export const GET = withErrorHandler(handler)
-export const PATCH = withErrorHandler(handler)
-export const DELETE = withErrorHandler(handler)
-
-
+  },
+)

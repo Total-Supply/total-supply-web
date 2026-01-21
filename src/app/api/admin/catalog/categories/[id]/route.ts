@@ -1,49 +1,80 @@
 import { ApiResponse } from '@/src/lib/api/response'
 import { validateBody } from '@/src/lib/api/validator'
-import { slugify } from '@/src/lib/utils'
-import {
-  updateFoodCategorySchema,
-} from '@/src/lib/validations/catalog.schema'
 import prisma from '@/src/lib/prisma'
+import { UpdateCategoryBody } from '@/src/lib/schemas/catalog'
+import { slugify } from '@/src/lib/utils'
 import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
-type Params = {
-  params: Promise<{ id: string }>
-}
+type Params = { params: { id: string } }
 
-async function handler(request: NextRequest, { params }: Params) {
-  const authRequest = await requireAdmin(request)
-  const { id } = await params
-  const categoryId = Number(id)
-  if (Number.isNaN(categoryId)) {
-    return ApiResponse.badRequest('Invalid category id')
-  }
+/**
+ * Get Food Category (Admin)
+ *
+ * @pathParams CategoryIdParams
+ * @response 200:GetCategorySuccessResponse:Category details
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag Catalog
+ * @tag Categories
+ * @openapi
+ */
+export const GET = withErrorHandler(
+  async (_request: NextRequest, { params }: Params) => {
+    await requireAdmin(_request)
 
-  if (request.method === 'GET') {
+    const categoryId = Number(params.id)
+    if (Number.isNaN(categoryId)) {
+      return ApiResponse.badRequest('Invalid category id')
+    }
+
     const category = await prisma.foodCategory.findUnique({
       where: { id: categoryId },
     })
+
     if (!category) {
       return ApiResponse.notFound('Category not found')
     }
 
     const itemCount = await prisma.foodItem.count({
       where: {
-        OR: [
-          { categoryId },
-          { categoryLinks: { some: { categoryId } } },
-        ],
+        OR: [{ categoryId }, { categoryLinks: { some: { categoryId } } }],
       },
     })
 
     return ApiResponse.success({ ...category, itemCount })
-  }
+  },
+)
 
-  if (request.method === 'PATCH') {
+/**
+ * Update Food Category (Admin)
+ *
+ * @pathParams CategoryIdParams
+ * @body UpdateCategoryBody
+ * @response 200:UpdateCategorySuccessResponse:Category updated
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag Catalog
+ * @tag Categories
+ * @openapi
+ */
+export const PATCH = withErrorHandler(
+  async (request: NextRequest, { params }: Params) => {
+    const authRequest = await requireAdmin(request)
+
+    const categoryId = Number(params.id)
+    if (Number.isNaN(categoryId)) {
+      return ApiResponse.badRequest('Invalid category id')
+    }
+
     const body = await request.json()
-    const data = await validateBody(body, updateFoodCategorySchema)
+    const data = await validateBody(body, UpdateCategoryBody)
+
     const slug = data.slug ? slugify(data.slug) : undefined
 
     if (slug) {
@@ -61,7 +92,9 @@ async function handler(request: NextRequest, { params }: Params) {
       data: {
         ...(data.name && { name: data.name }),
         ...(slug && { slug }),
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
         ...(data.imageUrl !== undefined && { imageUrl: data.imageUrl }),
       },
     })
@@ -82,17 +115,37 @@ async function handler(request: NextRequest, { params }: Params) {
     })
 
     return ApiResponse.success(updated, 'Category updated')
-  }
+  },
+)
 
-  if (request.method === 'DELETE') {
+/**
+ * Delete Food Category (Admin)
+ *
+ * @pathParams CategoryIdParams
+ * @response 200:DeleteCategorySuccessResponse:Category deleted
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag Catalog
+ * @tag Categories
+ * @openapi
+ */
+export const DELETE = withErrorHandler(
+  async (request: NextRequest, { params }: Params) => {
+    const authRequest = await requireAdmin(request)
+
+    const categoryId = Number(params.id)
+    if (Number.isNaN(categoryId)) {
+      return ApiResponse.badRequest('Invalid category id')
+    }
+
     const itemCount = await prisma.foodItem.count({
       where: {
-        OR: [
-          { categoryId },
-          { categoryLinks: { some: { categoryId } } },
-        ],
+        OR: [{ categoryId }, { categoryLinks: { some: { categoryId } } }],
       },
     })
+
     if (itemCount > 0) {
       return ApiResponse.conflict(
         'Category has assigned items and cannot be deleted',
@@ -117,13 +170,5 @@ async function handler(request: NextRequest, { params }: Params) {
     })
 
     return ApiResponse.success({ id: categoryId }, 'Category deleted')
-  }
-
-  return ApiResponse.badRequest('Unsupported method')
-}
-
-export const GET = withErrorHandler(handler)
-export const PATCH = withErrorHandler(handler)
-export const DELETE = withErrorHandler(handler)
-
-
+  },
+)
