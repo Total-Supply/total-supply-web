@@ -1,17 +1,47 @@
 import { ApiResponse } from '@/src/lib/api/response'
-import prisma from '@/src/lib/prisma'
 import { runDataRetention } from '@/src/lib/data-retention'
+import prisma from '@/src/lib/prisma'
+import {
+  DataRetentionQuery,
+  DataRetentionSuccessResponse,
+} from '@/src/lib/schemas/data-retention'
 import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
-async function handler(request: NextRequest) {
+/**
+ * Run Data Retention Job
+ *
+ * @description Runs your data retention process (anonymize + purge).
+ * Can be triggered by:
+ * 1) ADMIN session (Bearer auth)
+ * 2) Cron trigger with secret token (header `x-cron-token` OR query param `token`)
+ *
+ * @params DataRetentionQuery
+ * @response 200:DataRetentionSuccessResponse:Data retention completed
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag DataRetention
+ * @openapi
+ */
+export const POST = withErrorHandler(async function POST(request: NextRequest) {
   const cronToken = request.headers.get('x-cron-token')
-  const queryToken = request.nextUrl.searchParams.get('token')
+
+  const parsedQuery = DataRetentionQuery.safeParse({
+    token: request.nextUrl.searchParams.get('token') ?? undefined,
+  })
+
+  const queryToken = parsedQuery.success ? parsedQuery.data.token : undefined
   const secret = process.env.DATA_RETENTION_CRON_SECRET
-  const isCron = secret && (cronToken === secret || queryToken === secret)
+
+  const isCron = Boolean(
+    secret && (cronToken === secret || queryToken === secret),
+  )
 
   const authRequest = isCron ? null : await requireAdmin(request)
+
   const { anonymizedCount, purgedCount } = await runDataRetention()
 
   await prisma.auditLog.create({
@@ -31,15 +61,14 @@ async function handler(request: NextRequest) {
     },
   })
 
-  return ApiResponse.success(
-    {
-      anonymizedCount,
-      purgedCount,
-    },
-    'Data retention job completed',
-  )
-}
+  const payload = {
+    success: true as const,
+    data: { anonymizedCount, purgedCount },
+    message: 'Data retention job completed',
+  }
 
-export const POST = withErrorHandler(handler)
+  // optional: validate response structure
+  const validated = DataRetentionSuccessResponse.parse(payload)
 
-
+  return ApiResponse.success(validated.data, validated.message)
+})

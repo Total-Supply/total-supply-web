@@ -1,43 +1,90 @@
 import { ApiResponse } from '@/src/lib/api/response'
 import { validateBody } from '@/src/lib/api/validator'
 import prisma from '@/src/lib/prisma'
-import { slugify } from '@/src/lib/utils'
 import {
-  serviceOfferingUpdateSchema,
-} from '@/src/lib/validations/service-offering.schema'
+  DeleteServiceOfferingSuccessResponse,
+  GetServiceOfferingSuccessResponse,
+  ServiceOfferingIdParams,
+  UpdateServiceOfferingBody,
+  UpdateServiceOfferingSuccessResponse,
+} from '@/src/lib/schemas/service-offerings'
+import { slugify } from '@/src/lib/utils'
 import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
-async function handler(
+/**
+ * Get Service Offering by ID
+ *
+ * @description Fetch a single service offering (ADMIN only).
+ *
+ * @pathParams ServiceOfferingIdParams
+ * @response 200:GetServiceOfferingSuccessResponse:Offering fetched
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag ServiceOfferings
+ * @openapi
+ */
+export const GET = withErrorHandler(async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: { id: string } },
 ) {
   await requireAdmin(request)
-  const { id } = await params
-  const offeringId = parseInt(id, 10)
+
+  ServiceOfferingIdParams.parse(params)
+  const offeringId = parseInt(params.id, 10)
 
   if (!Number.isFinite(offeringId)) {
     return ApiResponse.badRequest('Invalid service offering ID')
   }
 
-  if (request.method === 'GET') {
-    const offering = await prisma.serviceOffering.findUnique({
-      where: { id: offeringId },
-    })
-    if (!offering) {
-      return ApiResponse.notFound('Service offering not found')
-    }
-    return ApiResponse.success(offering)
+  const offering = await prisma.serviceOffering.findUnique({
+    where: { id: offeringId },
+  })
+
+  if (!offering) {
+    return ApiResponse.notFound('Service offering not found')
   }
 
-  if (request.method === 'DELETE') {
-    await prisma.serviceOffering.delete({ where: { id: offeringId } })
-    return ApiResponse.success({ id: offeringId }, 'Service offering deleted')
+  const payload = { success: true as const, data: offering }
+  GetServiceOfferingSuccessResponse.parse(payload)
+
+  return ApiResponse.success(payload.data)
+})
+
+/**
+ * Update Service Offering
+ *
+ * @description Updates a service offering by ID (ADMIN only).
+ *
+ * @pathParams ServiceOfferingIdParams
+ * @body UpdateServiceOfferingBody
+ * @response 200:UpdateServiceOfferingSuccessResponse:Offering updated
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag ServiceOfferings
+ * @openapi
+ */
+export const PATCH = withErrorHandler(async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  await requireAdmin(request)
+
+  ServiceOfferingIdParams.parse(params)
+  const offeringId = parseInt(params.id, 10)
+
+  if (!Number.isFinite(offeringId)) {
+    return ApiResponse.badRequest('Invalid service offering ID')
   }
 
   const body = await request.json()
-  const data = await validateBody(body, serviceOfferingUpdateSchema)
+  const data = await validateBody(body, UpdateServiceOfferingBody)
+
   const slug = data.slug ? slugify(data.slug) : undefined
 
   if (slug) {
@@ -63,11 +110,53 @@ async function handler(
     },
   })
 
-  return ApiResponse.success(offering, 'Service offering updated')
-}
+  const payload = {
+    success: true as const,
+    data: offering,
+    message: 'Service offering updated',
+  }
 
-export const GET = withErrorHandler(handler)
-export const PATCH = withErrorHandler(handler)
-export const DELETE = withErrorHandler(handler)
+  UpdateServiceOfferingSuccessResponse.parse(payload)
 
+  return ApiResponse.success(payload.data, payload.message)
+})
 
+/**
+ * Delete Service Offering
+ *
+ * @description Deletes a service offering by ID (ADMIN only).
+ *
+ * @pathParams ServiceOfferingIdParams
+ * @response 200:DeleteServiceOfferingSuccessResponse:Offering deleted
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag ServiceOfferings
+ * @openapi
+ */
+export const DELETE = withErrorHandler(async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  await requireAdmin(request)
+
+  ServiceOfferingIdParams.parse(params)
+  const offeringId = parseInt(params.id, 10)
+
+  if (!Number.isFinite(offeringId)) {
+    return ApiResponse.badRequest('Invalid service offering ID')
+  }
+
+  await prisma.serviceOffering.delete({ where: { id: offeringId } })
+
+  const payload = {
+    success: true as const,
+    data: { id: offeringId },
+    message: 'Service offering deleted',
+  }
+
+  DeleteServiceOfferingSuccessResponse.parse(payload)
+
+  return ApiResponse.success(payload.data, payload.message)
+})

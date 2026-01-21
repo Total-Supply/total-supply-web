@@ -276,6 +276,122 @@
       "UpdateItemBody": {
         "$ref": "#/components/schemas/updateFoodItemSchema"
       },
+      "DataRetentionQuery": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional cron token (alternative to x-cron-token header). Must match DATA_RETENTION_CRON_SECRET"
+          }
+        },
+        "description": "Query parameters for triggering data retention"
+      },
+      "CreateServiceOfferingBody": {
+        "type": "object"
+      },
+      "ServiceOfferingIdParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Service offering ID"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "description": "Path parameters for service offering routes"
+      },
+      "UpdateServiceOfferingBody": {
+        "type": "object"
+      },
+      "ListAdminServicesQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Items per page (max 100)"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceStatusEnum"
+              }
+            ],
+            "description": "Filter by status"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceTypeEnum"
+              }
+            ],
+            "description": "Filter by type"
+          },
+          "priority": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServicePriorityEnum"
+              }
+            ],
+            "description": "Filter by priority"
+          },
+          "search": {
+            "type": "string",
+            "nullable": true,
+            "description": "Search by title / description / requestNumber"
+          }
+        },
+        "required": [
+          "page",
+          "limit"
+        ],
+        "description": "Query parameters for listing service requests (Admin)"
+      },
+      "CreateServiceRequestBody": {
+        "type": "object"
+      },
+      "ServiceIdParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Service request ID"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "description": "Path parameters for service routes"
+      },
+      "AssignServiceBody": {
+        "type": "object"
+      },
+      "CompleteServiceBody": {
+        "type": "object"
+      },
+      "ItCompleteBody": {
+        "type": "object"
+      },
+      "ItProgressBody": {
+        "type": "object"
+      },
+      "ProgressServiceBody": {
+        "type": "object"
+      },
+      "UpdateServiceRequestBody": {
+        "type": "object"
+      },
       "PaginationMeta": {
         "type": "object",
         "properties": {
@@ -1722,6 +1838,645 @@
         ],
         "description": "Validation failed on request body or parameters"
       },
+      "DataRetentionJobResult": {
+        "type": "object",
+        "properties": {
+          "anonymizedCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How many users were anonymized"
+          },
+          "purgedCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How many users were purged"
+          }
+        },
+        "required": [
+          "anonymizedCount",
+          "purgedCount"
+        ],
+        "description": "Data retention job result summary"
+      },
+      "DataRetentionSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/DataRetentionJobResult"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional response message"
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Successful execution of data retention job"
+      },
+      "ServiceTypeEnum": {
+        "type": "string",
+        "description": "Type of service offering"
+      },
+      "ServiceCategoryEnum": {
+        "type": "string",
+        "description": "Category of service offering"
+      },
+      "ServiceOfferingResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "Service offering ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Service name"
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL slug"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ServiceTypeEnum"
+          },
+          "category": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceCategoryEnum"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "basePrice": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DecimalLike"
+              }
+            ],
+            "description": "Base price (LKR)"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Active status"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Created at (ISO 8601)"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Updated at (ISO 8601)"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "type",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ],
+        "description": "Service offering object"
+      },
+      "ListServiceOfferingsSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceOfferingResponse"
+            }
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "List service offerings response"
+      },
+      "GetServiceOfferingSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceOfferingResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Get service offering response"
+      },
+      "CreateServiceOfferingSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceOfferingResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Created service offering response"
+      },
+      "UpdateServiceOfferingSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceOfferingResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Updated service offering response"
+      },
+      "DeleteServiceOfferingSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Deleted service offering response"
+      },
+      "ServiceStatusEnum": {
+        "type": "string"
+      },
+      "ServicePriorityEnum": {
+        "type": "string"
+      },
+      "ServiceRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "requestNumber": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/ServiceTypeEnum"
+          },
+          "category": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceCategoryEnum"
+              }
+            ]
+          },
+          "serviceOfferingId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceStatusEnum"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/ServicePriorityEnum"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "addressId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "requestedDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "requestNumber",
+          "customerId",
+          "type",
+          "status",
+          "priority",
+          "title",
+          "description",
+          "createdAt",
+          "updatedAt"
+        ],
+        "description": "Service request object"
+      },
+      "ListServicesSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceRequestResponse"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
+        "description": "List service requests response"
+      },
+      "CreateServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceRequestResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Service request created response"
+      },
+      "UpdateServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceRequestResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Service request updated response"
+      },
+      "DeleteServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Service request deleted/canceled response"
+      },
+      "ServicePhotoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "type",
+          "createdAt"
+        ]
+      },
+      "ServiceAssignmentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "staffId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "assignedById": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "assignedAt": {
+            "type": "string"
+          },
+          "acceptedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeSpentMinutes": {
+            "type": "integer",
+            "nullable": true
+          },
+          "completionNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "solutionSummary": {
+            "type": "string",
+            "nullable": true
+          },
+          "followUpRecommendations": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "staffId",
+          "assignedAt",
+          "status"
+        ]
+      },
+      "ServiceRequestAdminDetailResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "requestNumber": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "type": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "serviceOfferingId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "addressId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "requestedDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServicePhotoResponse"
+            }
+          },
+          "assignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceAssignmentResponse"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "requestNumber",
+          "customerId",
+          "type",
+          "status",
+          "priority",
+          "title",
+          "description",
+          "photos",
+          "assignments",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ServiceActionSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceRequestAdminDetailResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Service action success response (Admin detail view)"
+      },
       "openapi": "3.0.0",
       "components": {
         "responses": {
@@ -1860,18 +2615,38 @@
     "/admin/data-retention": {
       "post": {
         "operationId": "post-admin-data-retention",
-        "summary": "",
-        "description": "",
+        "summary": "Run Data Retention Job",
+        "description": "Runs your data retention process (anonymize + purge).",
         "tags": [
           "Admin"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "schema": {
+              "type": "string",
+              "description": "Optional cron token (alternative to x-cron-token header). Must match DATA_RETENTION_CRON_SECRET"
+            },
+            "required": false,
+            "description": "Optional cron token (alternative to x-cron-token header). Must match DATA_RETENTION_CRON_SECRET"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataRetentionSuccessResponse:Data retention completed"
+                }
+              }
+            }
           }
         }
       }
@@ -1879,35 +2654,120 @@
     "/admin/services": {
       "get": {
         "operationId": "get-admin-services",
-        "summary": "",
-        "description": "",
+        "summary": "List Service Requests (Admin)\r",
+        "description": "Lists service requests with pagination + filters (Admin only).",
         "tags": [
           "Admin"
         ],
-        "parameters": [],
-        "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Page number"
+            },
+            "required": false,
+            "description": "Page number"
           },
-          "500": {
-            "$ref": "#/components/responses/500"
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "Items per page (max 100)"
+            },
+            "required": false,
+            "description": "Items per page (max 100)"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "description": "Filter by status"
+            },
+            "required": false,
+            "description": "Filter by status"
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "description": "Filter by type"
+            },
+            "required": false,
+            "description": "Filter by type"
+          },
+          {
+            "in": "query",
+            "name": "priority",
+            "schema": {
+              "description": "Filter by priority"
+            },
+            "required": false,
+            "description": "Filter by priority"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "description": "Search by title / description / requestNumber"
+            },
+            "required": false,
+            "description": "Search by title / description / requestNumber"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListServicesSuccessResponse:Service requests fetched"
+                }
+              }
+            }
           }
         }
       },
       "post": {
         "operationId": "post-admin-services",
-        "summary": "",
-        "description": "",
+        "summary": "Create Service Request (Admin)\r",
+        "description": "Creates a service request (Admin only).",
         "tags": [
           "Admin"
         ],
         "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceRequestBody"
+              }
+            }
+          }
+        },
         "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateServiceSuccessResponse:Service request created"
+                }
+              }
+            }
           }
         }
       }
@@ -2146,35 +3006,62 @@
     "/admin/services/offerings": {
       "get": {
         "operationId": "get-admin-services-offerings",
-        "summary": "",
-        "description": "",
+        "summary": "List Service Offerings",
+        "description": "Returns all service offerings (ADMIN only).",
         "tags": [
           "Admin"
         ],
         "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListServiceOfferingsSuccessResponse:Offerings fetched"
+                }
+              }
+            }
           }
         }
       },
       "post": {
         "operationId": "post-admin-services-offerings",
-        "summary": "",
-        "description": "",
+        "summary": "Create Service Offering",
+        "description": "Creates a new service offering (ADMIN only).",
         "tags": [
           "Admin"
         ],
         "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceOfferingBody"
+              }
+            }
+          }
+        },
         "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateServiceOfferingSuccessResponse:Offering created"
+                }
+              }
+            }
           }
         }
       }
@@ -2182,38 +3069,86 @@
     "/admin/services/{id}": {
       "put": {
         "operationId": "put-admin-services-{id}",
-        "summary": "",
-        "description": "",
+        "summary": "Update Service Request (Admin)\r",
+        "description": "Updates a service request by ID (Admin only).",
         "tags": [
           "Admin"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceRequestBody"
+              }
+            }
+          }
+        },
         "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateServiceSuccessResponse:Service updated"
+                }
+              }
+            }
           }
         }
       },
       "delete": {
         "operationId": "delete-admin-services-{id}",
-        "summary": "",
-        "description": "",
+        "summary": "Cancel Service Request (Admin)\r",
+        "description": "Cancels a service request by setting status = CANCELED.",
         "tags": [
           "Admin"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteServiceSuccessResponse:Service deleted/canceled"
+                }
+              }
+            }
           }
         }
       }
@@ -2490,55 +3425,369 @@
     "/admin/services/offerings/{id}": {
       "get": {
         "operationId": "get-admin-services-offerings-{id}",
-        "summary": "",
-        "description": "",
+        "summary": "Get Service Offering by ID",
+        "description": "Fetch a single service offering (ADMIN only).",
         "tags": [
           "Admin"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service offering ID"
+            },
+            "required": true,
+            "description": "Service offering ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetServiceOfferingSuccessResponse:Offering fetched"
+                }
+              }
+            }
           }
         }
       },
       "patch": {
         "operationId": "patch-admin-services-offerings-{id}",
-        "summary": "",
-        "description": "",
+        "summary": "Update Service Offering",
+        "description": "Updates a service offering by ID (ADMIN only).",
         "tags": [
           "Admin"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service offering ID"
+            },
+            "required": true,
+            "description": "Service offering ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceOfferingBody"
+              }
+            }
+          }
+        },
         "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateServiceOfferingSuccessResponse:Offering updated"
+                }
+              }
+            }
           }
         }
       },
       "delete": {
         "operationId": "delete-admin-services-offerings-{id}",
-        "summary": "",
-        "description": "",
+        "summary": "Delete Service Offering",
+        "description": "Deletes a service offering by ID (ADMIN only).",
         "tags": [
           "Admin"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service offering ID"
+            },
+            "required": true,
+            "description": "Service offering ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteServiceOfferingSuccessResponse:Offering deleted"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/assign": {
+      "post": {
+        "operationId": "post-admin-services-{id}-assign",
+        "summary": "Assign Service Request (Admin)\r",
+        "description": "Assigns a staff member to a service request.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignServiceBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse:Service assigned"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/complete": {
+      "post": {
+        "operationId": "post-admin-services-{id}-complete",
+        "summary": "Complete Service Request (Cleaning) - Admin\r",
+        "description": "Marks the service request as RESOLVED and saves AFTER photos.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteServiceBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse:Service completed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/it-complete": {
+      "post": {
+        "operationId": "post-admin-services-{id}-it-complete",
+        "summary": "Complete Service Request (IT) - Admin\r",
+        "description": "Marks IT service request as RESOLVED and stores completion details.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItCompleteBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse:IT service completed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/it-progress": {
+      "post": {
+        "operationId": "post-admin-services-{id}-it-progress",
+        "summary": "IT Progress Update (Admin)\r",
+        "description": "Adds IT progress update including time spent and photos.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItProgressBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse:IT progress updated"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/progress": {
+      "post": {
+        "operationId": "post-admin-services-{id}-progress",
+        "summary": "Progress Service Request (Admin)\r",
+        "description": "Adds progress notes/photos and sets status to IN_PROGRESS.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgressServiceBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse:Progress updated"
+                }
+              }
+            }
           }
         }
       }
