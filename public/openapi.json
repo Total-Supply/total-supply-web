@@ -287,25 +287,9 @@
         },
         "description": "Query parameters for triggering data retention"
       },
-      "CreateServiceOfferingBody": {
-        "type": "object"
-      },
-      "ServiceOfferingIdParams": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Service offering ID"
-          }
-        },
-        "required": [
-          "id"
-        ],
-        "description": "Path parameters for service offering routes"
-      },
-      "UpdateServiceOfferingBody": {
-        "type": "object"
-      },
+      "CreateServiceOfferingBody": {},
+      "ServiceOfferingIdParams": {},
+      "UpdateServiceOfferingBody": {},
       "ListAdminServicesQuery": {
         "type": "object",
         "properties": {
@@ -1882,78 +1866,348 @@
         ],
         "description": "Successful execution of data retention job"
       },
-      "ServiceTypeEnum": {
+      "OrderStatusEnum": {
         "type": "string",
-        "description": "Type of service offering"
+        "description": "Order status (PENDING, ACCEPTED, PREPARING, OUT_FOR_DELIVERY, DELIVERED, CANCELED)"
       },
-      "ServiceCategoryEnum": {
-        "type": "string",
-        "description": "Category of service offering"
+      "CreateOrderBody": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "foodItemId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true,
+                  "description": "Food item ID"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Quantity (min 1)"
+                }
+              },
+              "required": [
+                "foodItemId",
+                "quantity"
+              ]
+            },
+            "minItems": 1,
+            "description": "Order items"
+          },
+          "deliveryAddressId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true,
+            "description": "Existing saved address ID"
+          },
+          "deliveryAddress": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "nullable": true,
+                "description": "Address label (Home/Office)"
+              },
+              "line1": {
+                "type": "string",
+                "description": "Street address line 1"
+              },
+              "line2": {
+                "type": "string",
+                "nullable": true,
+                "description": "Street address line 2"
+              },
+              "city": {
+                "type": "string",
+                "description": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "description": "Postal code"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Country"
+              },
+              "isDefault": {
+                "type": "boolean",
+                "nullable": true,
+                "description": "Set as default address"
+              }
+            },
+            "required": [
+              "line1",
+              "city",
+              "postalCode"
+            ],
+            "nullable": true,
+            "description": "Inline address payload"
+          },
+          "saveAsDefault": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "If true, make selected/created address default"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true,
+            "description": "Customer notes"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Optional order photo URL"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "description": "Create order request body"
       },
-      "ServiceOfferingResponse": {
+      "ListCustomerOrdersQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Items per page"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatusEnum"
+              }
+            ],
+            "description": "Filter by order status"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "createdAt",
+              "totalPrice",
+              "orderNumber"
+            ],
+            "default": "createdAt",
+            "description": "Sort field"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "default": "desc",
+            "description": "Sort order"
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "sortBy",
+          "sortOrder"
+        ],
+        "description": "Query parameters for listing customer orders"
+      },
+      "OrderIdParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Order ID"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "description": "Path params for order details"
+      },
+      "OrderItemResponse": {
         "type": "object",
         "properties": {
           "id": {
             "type": "integer",
-            "minimum": 0,
-            "exclusiveMinimum": true,
-            "description": "Service offering ID"
+            "description": "Order item ID"
           },
-          "name": {
-            "type": "string",
-            "description": "Service name"
+          "foodItemId": {
+            "type": "integer",
+            "description": "Food item ID"
           },
-          "slug": {
-            "type": "string",
-            "description": "URL slug"
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity"
           },
-          "type": {
-            "$ref": "#/components/schemas/ServiceTypeEnum"
+          "unitPrice": {
+            "type": "number",
+            "description": "Unit price snapshot (LKR)"
           },
-          "category": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ServiceCategoryEnum"
+          "foodItem": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slug": {
+                "type": "string"
               }
-            ]
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "basePrice": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DecimalLike"
-              }
+            },
+            "required": [
+              "id",
+              "name",
+              "slug"
             ],
-            "description": "Base price (LKR)"
-          },
-          "isActive": {
-            "type": "boolean",
-            "description": "Active status"
-          },
-          "createdAt": {
-            "type": "string",
-            "description": "Created at (ISO 8601)"
-          },
-          "updatedAt": {
-            "type": "string",
-            "description": "Updated at (ISO 8601)"
+            "nullable": true,
+            "description": "Food item minimal details"
           }
         },
         "required": [
           "id",
-          "name",
-          "slug",
-          "type",
-          "isActive",
-          "createdAt",
-          "updatedAt"
+          "foodItemId",
+          "quantity",
+          "unitPrice"
         ],
-        "description": "Service offering object"
+        "description": "Order item response"
       },
-      "ListServiceOfferingsSuccessResponse": {
+      "OrderDeliveryAddressResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "line1",
+          "city",
+          "postalCode",
+          "country"
+        ],
+        "nullable": true,
+        "description": "Delivery address used for this order"
+      },
+      "OrderResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Order ID"
+          },
+          "orderNumber": {
+            "type": "string",
+            "description": "Human-friendly order number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatusEnum"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true,
+            "description": "Customer notes"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Order image URL"
+          },
+          "totalPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Total price (LKR)"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Created timestamp (ISO)"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Updated timestamp (ISO)"
+          },
+          "deliveryAddress": {
+            "$ref": "#/components/schemas/OrderDeliveryAddressResponse"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemResponse"
+            },
+            "description": "Order items"
+          }
+        },
+        "required": [
+          "id",
+          "orderNumber",
+          "status",
+          "totalPrice",
+          "createdAt",
+          "updatedAt",
+          "deliveryAddress",
+          "items"
+        ],
+        "description": "Full order response"
+      },
+      "PaginatedMeta": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages"
+        ],
+        "description": "Pagination meta"
+      },
+      "ListCustomerOrdersSuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
@@ -1965,109 +2219,14 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ServiceOfferingResponse"
+              "$ref": "#/components/schemas/OrderResponse"
             }
           },
-          "message": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "success",
-          "data"
-        ],
-        "description": "List service offerings response"
-      },
-      "GetServiceOfferingSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "enum": [
-              true
-            ]
-          },
-          "data": {
-            "$ref": "#/components/schemas/ServiceOfferingResponse"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "success",
-          "data"
-        ],
-        "description": "Get service offering response"
-      },
-      "CreateServiceOfferingSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "enum": [
-              true
-            ]
-          },
-          "data": {
-            "$ref": "#/components/schemas/ServiceOfferingResponse"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "success",
-          "data"
-        ],
-        "description": "Created service offering response"
-      },
-      "UpdateServiceOfferingSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "enum": [
-              true
-            ]
-          },
-          "data": {
-            "$ref": "#/components/schemas/ServiceOfferingResponse"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "required": [
-          "success",
-          "data"
-        ],
-        "description": "Updated service offering response"
-      },
-      "DeleteServiceOfferingSuccessResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "enum": [
-              true
-            ]
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "integer",
-                "minimum": 0,
-                "exclusiveMinimum": true
+          "meta": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaginatedMeta"
               }
-            },
-            "required": [
-              "id"
             ]
           },
           "message": {
@@ -2079,12 +2238,362 @@
           "success",
           "data"
         ],
-        "description": "Deleted service offering response"
+        "description": "List customer orders success response"
+      },
+      "CreateOrderSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/OrderResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Create order success response"
+      },
+      "GetOrderSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/OrderResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Get order success response"
+      },
+      "ListCustomerServicesQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Items per page (max 100)"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by status"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by service type"
+          },
+          "priority": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by priority"
+          }
+        },
+        "required": [
+          "page",
+          "limit"
+        ],
+        "description": "Customer service list query parameters"
+      },
+      "ServicePhotoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "type": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "type",
+          "createdAt"
+        ],
+        "description": "Service photo (BEFORE/PROGRESS/AFTER)"
+      },
+      "AssignmentSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "staffId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "assignedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "staffId",
+          "status",
+          "assignedAt"
+        ],
+        "description": "Latest staff assignment summary (if assigned)"
+      },
+      "CustomerServiceRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "requestNumber": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "addressId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "requestedDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServicePhotoResponse"
+            },
+            "description": "Service photos"
+          },
+          "latestAssignment": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssignmentSummaryResponse"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "requestNumber",
+          "type",
+          "status",
+          "priority",
+          "title",
+          "description",
+          "photos",
+          "createdAt",
+          "updatedAt"
+        ],
+        "description": "Customer service request response"
+      },
+      "ListCustomerServicesSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerServiceRequestResponse"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
+        "description": "List customer services success response"
+      },
+      "CreateCustomerServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/CustomerServiceRequestResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Create customer service success response"
+      },
+      "ServiceRatingResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "serviceId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "customerId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "staffId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "review": {
+            "type": "string",
+            "nullable": true
+          },
+          "wouldRecommend": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "serviceId",
+          "customerId",
+          "score",
+          "wouldRecommend",
+          "createdAt"
+        ],
+        "description": "Service rating response"
+      },
+      "RateServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceRatingResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Rate service success response"
+      },
+      "ServiceTypeEnum": {
+        "type": "string"
       },
       "ServiceStatusEnum": {
         "type": "string"
       },
       "ServicePriorityEnum": {
+        "type": "string"
+      },
+      "ServiceCategoryEnum": {
         "type": "string"
       },
       "ServiceRequestResponse": {
@@ -2275,31 +2784,6 @@
         ],
         "description": "Service request deleted/canceled response"
       },
-      "ServicePhotoResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "minimum": 0,
-            "exclusiveMinimum": true
-          },
-          "url": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "url",
-          "type",
-          "createdAt"
-        ]
-      },
       "ServiceAssignmentResponse": {
         "type": "object",
         "properties": {
@@ -2478,6 +2962,11 @@
         "description": "Service action success response (Admin detail view)"
       },
       "openapi": "3.0.0",
+      "info": {
+        "title": "API Documentation",
+        "version": "1.0.0",
+        "description": "Shared OpenAPI response components used by next-openapi-gen"
+      },
       "components": {
         "responses": {
           "400": {
@@ -2485,7 +2974,38 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid request parameters"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "BAD_REQUEST"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2495,7 +3015,38 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Authentication required"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "UNAUTHORIZED"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2505,7 +3056,38 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Access denied"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "FORBIDDEN"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2515,7 +3097,38 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NotFoundResponse"
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Resource not found"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "NOT_FOUND"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2525,7 +3138,38 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConflictResponse"
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Resource already exists"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "CONFLICT"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2535,7 +3179,76 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message",
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Validation failed"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "VALIDATION_ERROR"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "path",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "example": "invalid_type"
+                              },
+                              "path": {
+                                "type": "array",
+                                "items": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    }
+                                  ]
+                                },
+                                "example": [
+                                  "items",
+                                  0,
+                                  "quantity"
+                                ]
+                              },
+                              "message": {
+                                "type": "string",
+                                "example": "Quantity must be at least 1"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2545,7 +3258,38 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InternalServerErrorResponse"
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "INTERNAL_ERROR"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2647,6 +3391,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -2733,6 +3498,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -2768,6 +3554,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -2846,6 +3653,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -2881,6 +3709,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -2964,6 +3813,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -2999,6 +3869,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3027,6 +3918,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -3062,6 +3974,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3111,6 +4044,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -3149,6 +4103,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3208,6 +4183,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -3255,6 +4251,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -3293,6 +4310,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3333,6 +4371,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -3380,6 +4439,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -3418,6 +4498,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3430,19 +4531,7 @@
         "tags": [
           "Admin"
         ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "description": "Service offering ID"
-            },
-            "required": true,
-            "description": "Service offering ID",
-            "example": "123"
-          }
-        ],
+        "parameters": [],
         "security": [
           {
             "BearerAuth": []
@@ -3458,6 +4547,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -3468,19 +4578,7 @@
         "tags": [
           "Admin"
         ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "description": "Service offering ID"
-            },
-            "required": true,
-            "description": "Service offering ID",
-            "example": "123"
-          }
-        ],
+        "parameters": [],
         "security": [
           {
             "BearerAuth": []
@@ -3505,6 +4603,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       },
@@ -3515,19 +4634,7 @@
         "tags": [
           "Admin"
         ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "description": "Service offering ID"
-            },
-            "required": true,
-            "description": "Service offering ID",
-            "example": "123"
-          }
-        ],
+        "parameters": [],
         "security": [
           {
             "BearerAuth": []
@@ -3543,6 +4650,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3592,6 +4720,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3641,6 +4790,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3690,6 +4860,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3739,6 +4930,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -3788,6 +5000,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
           }
         }
       }
@@ -4039,42 +5272,6 @@
         }
       }
     },
-    "/customer/bookings": {
-      "get": {
-        "operationId": "get-customer-bookings",
-        "summary": "",
-        "description": "",
-        "tags": [
-          "Customer"
-        ],
-        "parameters": [],
-        "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
-          }
-        }
-      },
-      "post": {
-        "operationId": "post-customer-bookings",
-        "summary": "",
-        "description": "",
-        "tags": [
-          "Customer"
-        ],
-        "parameters": [],
-        "responses": {
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
-          "500": {
-            "$ref": "#/components/responses/500"
-          }
-        }
-      }
-    },
     "/customer/orders": {
       "get": {
         "operationId": "get-customer-orders",
@@ -4111,9 +5308,9 @@
         }
       }
     },
-    "/customer/profile": {
+    "/customer/services": {
       "get": {
-        "operationId": "get-customer-profile",
+        "operationId": "get-customer-services",
         "summary": "",
         "description": "",
         "tags": [
@@ -4129,8 +5326,103 @@
           }
         }
       },
+      "post": {
+        "operationId": "post-customer-services",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/orders/{id}": {
+      "get": {
+        "operationId": "get-customer-orders-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services/{id}": {
+      "get": {
+        "operationId": "get-customer-services-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services/{id}/cancel": {
       "put": {
-        "operationId": "put-customer-profile",
+        "operationId": "put-customer-services-{id}-cancel",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services/{id}/rate": {
+      "post": {
+        "operationId": "post-customer-services-{id}-rate",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services/{id}/timeline": {
+      "get": {
+        "operationId": "get-customer-services-{id}-timeline",
         "summary": "",
         "description": "",
         "tags": [

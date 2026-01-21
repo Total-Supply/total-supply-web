@@ -1,8 +1,14 @@
-import { ServiceCategory, ServiceType } from '@/generated/prisma'
 import {
-  serviceOfferingCreateSchema,
-  serviceOfferingUpdateSchema,
-} from '@/src/lib/validations/service-offering.schema'
+  ServiceCategory,
+  ServicePhotoType,
+  ServicePriority,
+  ServiceStatus,
+  ServiceType,
+} from '@/generated/prisma'
+import {
+  createServiceRequestSchema,
+  rateServiceSchema,
+} from '@/src/lib/validations/service.schema'
 import { z } from 'zod'
 
 import {
@@ -16,102 +22,144 @@ import {
 } from './common'
 
 /**
- * Path params: /admin/services/offerings/[id]
+ * -----------------------------
+ * Query (Customer List)
+ * -----------------------------
  */
-export const ServiceOfferingIdParams = z
+export const ListCustomerServicesQuery = z
   .object({
-    id: z.string().describe('Service offering ID'),
+    page: z.coerce.number().int().min(1).default(1).describe('Page number'),
+    limit: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(100)
+      .default(10)
+      .describe('Items per page (max 100)'),
+
+    status: z.nativeEnum(ServiceStatus).optional().describe('Filter by status'),
+    type: z
+      .nativeEnum(ServiceType)
+      .optional()
+      .describe('Filter by service type'),
+    priority: z
+      .nativeEnum(ServicePriority)
+      .optional()
+      .describe('Filter by priority'),
   })
-  .describe('Path parameters for service offering routes')
+  .describe('Customer service list query parameters')
 
-/**
- * Prisma Enums (from generated Prisma schema)
- */
-export const ServiceTypeEnum = z
-  .nativeEnum(ServiceType)
-  .describe('Type of service offering')
-
-export const ServiceCategoryEnum = z
-  .nativeEnum(ServiceCategory)
-  .describe('Category of service offering')
-
-/**
- * NOTE: Prisma Decimal may serialize as string depending on runtime.
- * In DB it is Decimal?, so allow string | number | null.
- */
-export const DecimalLike = z.union([z.number(), z.string()])
-
-export const ServiceOfferingResponse = z
+export const PaginationMeta = z
   .object({
-    id: z.number().int().positive().describe('Service offering ID'),
-    name: z.string().describe('Service name'),
-    slug: z.string().describe('URL slug'),
-    type: ServiceTypeEnum,
-    category: ServiceCategoryEnum.nullable().optional(),
-    description: z.string().nullable().optional(),
-    basePrice: DecimalLike.nullable().optional().describe('Base price (LKR)'),
-    isActive: z.boolean().describe('Active status'),
-    createdAt: z.string().datetime().describe('Created at (ISO 8601)'),
-    updatedAt: z.string().datetime().describe('Updated at (ISO 8601)'),
+    page: z.number().int(),
+    limit: z.number().int(),
+    total: z.number().int(),
+    totalPages: z.number().int(),
   })
-  .describe('Service offering object')
+  .describe('Pagination metadata')
 
 /**
- * ✅ Bodies (EXACTLY match your validations)
+ * -----------------------------
+ * Bodies (from validations)
+ * -----------------------------
  */
-export const CreateServiceOfferingBody = serviceOfferingCreateSchema.describe(
-  'Create service offering request body',
+export const CreateCustomerServiceBody = createServiceRequestSchema.describe(
+  'Create service request body (Customer)',
 )
 
-export const UpdateServiceOfferingBody = serviceOfferingUpdateSchema.describe(
-  'Update service offering request body',
+export const RateServiceBody = rateServiceSchema.describe(
+  'Rate service body (Customer)',
 )
 
 /**
- * ✅ Success responses
+ * -----------------------------
+ * Response Models
+ * -----------------------------
  */
-export const ListServiceOfferingsSuccessResponse = z
+export const ServicePhotoResponse = z
   .object({
-    success: z.literal(true),
-    data: z.array(ServiceOfferingResponse),
-    message: z.string().optional(),
+    id: z.number().int().positive(),
+    url: z.string().url(),
+    type: z.nativeEnum(ServicePhotoType),
+    createdAt: z.string().datetime(),
   })
-  .describe('List service offerings response')
+  .describe('Service photo (BEFORE/PROGRESS/AFTER)')
 
-export const GetServiceOfferingSuccessResponse = z
+export const AssignmentSummaryResponse = z
   .object({
-    success: z.literal(true),
-    data: ServiceOfferingResponse,
-    message: z.string().optional(),
+    id: z.number().int().positive(),
+    staffId: z.number().int().positive(),
+    status: z.nativeEnum(ServiceStatus),
+    assignedAt: z.string().datetime(),
   })
-  .describe('Get service offering response')
+  .describe('Latest staff assignment summary (if assigned)')
 
-export const CreateServiceOfferingSuccessResponse = z
+export const CustomerServiceRequestResponse = z
   .object({
-    success: z.literal(true),
-    data: ServiceOfferingResponse,
-    message: z.string().optional(),
-  })
-  .describe('Created service offering response')
+    id: z.number().int().positive(),
+    requestNumber: z.string(),
+    type: z.nativeEnum(ServiceType),
+    category: z.nativeEnum(ServiceCategory).nullable().optional(),
+    status: z.nativeEnum(ServiceStatus),
+    priority: z.nativeEnum(ServicePriority),
 
-export const UpdateServiceOfferingSuccessResponse = z
-  .object({
-    success: z.literal(true),
-    data: ServiceOfferingResponse,
-    message: z.string().optional(),
-  })
-  .describe('Updated service offering response')
+    title: z.string(),
+    description: z.string(),
 
-export const DeleteServiceOfferingSuccessResponse = z
+    addressId: z.number().int().positive().nullable().optional(),
+    requestedDate: z.string().datetime().nullable().optional(),
+    notes: z.string().nullable().optional(),
+
+    photos: z.array(ServicePhotoResponse).describe('Service photos'),
+    latestAssignment: AssignmentSummaryResponse.nullable().optional(),
+
+    createdAt: z.string().datetime(),
+    updatedAt: z.string().datetime(),
+  })
+  .describe('Customer service request response')
+
+export const ListCustomerServicesSuccessResponse = z
   .object({
     success: z.literal(true),
-    data: z.object({ id: z.number().int().positive() }),
+    data: z.array(CustomerServiceRequestResponse),
+    meta: PaginationMeta,
     message: z.string().optional(),
   })
-  .describe('Deleted service offering response')
+  .describe('List customer services success response')
+
+export const CreateCustomerServiceSuccessResponse = z
+  .object({
+    success: z.literal(true),
+    data: CustomerServiceRequestResponse,
+    message: z.string().optional(),
+  })
+  .describe('Create customer service success response')
+
+export const ServiceRatingResponse = z
+  .object({
+    id: z.number().int().positive(),
+    serviceId: z.number().int().positive(),
+    customerId: z.number().int().positive(),
+    staffId: z.number().int().positive().nullable().optional(),
+    score: z.number().int().min(1).max(5),
+    review: z.string().nullable().optional(),
+    wouldRecommend: z.boolean(),
+    createdAt: z.string().datetime(),
+  })
+  .describe('Service rating response')
+
+export const RateServiceSuccessResponse = z
+  .object({
+    success: z.literal(true),
+    data: ServiceRatingResponse,
+    message: z.string().optional(),
+  })
+  .describe('Rate service success response')
 
 /**
- * Re-export common error schemas
+ * -----------------------------
+ * Errors
+ * -----------------------------
  */
 export {
   BadRequestResponse,
