@@ -1,5 +1,6 @@
-import * as React from 'react'
 import { HTMLMotionProps } from 'framer-motion'
+
+import * as React from 'react'
 
 import { MotionBox, MotionBoxProps } from './box'
 

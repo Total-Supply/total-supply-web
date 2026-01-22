@@ -1,34 +1,41 @@
+'use client'
+
 import {
-  VStack,
-  Heading,
   Box,
-  StackProps,
-  useMultiStyleConfig,
+  Heading,
+  type RecipeVariantProps,
+  type StackProps,
+  VStack,
+  useRecipe,
 } from '@chakra-ui/react'
 
-export interface SectionTitleProps extends Omit<StackProps, 'title'> {
+import * as React from 'react'
+
+import { sectionTitleRecipe } from './section-title.recipe'
+
+type SectionTitleVariants = RecipeVariantProps<typeof sectionTitleRecipe>
+
+export interface SectionTitleProps
+  extends Omit<StackProps, 'title' | 'align'>, SectionTitleVariants {
   title: React.ReactNode
   description?: React.ReactNode
-  align?: 'left' | 'center'
-  variant?: string
 }
 
 export const SectionTitle: React.FC<SectionTitleProps> = (props) => {
-  const { title, description, align, variant, ...rest } = props
-  const styles = useMultiStyleConfig('SectionTitle', { variant })
+  const recipe = useRecipe({ recipe: sectionTitleRecipe })
+  const [variantProps, rest] = recipe.splitVariantProps(props)
+  const styles = recipe(variantProps)
+
+  const { title, description, ...restProps } = rest
 
   return (
-    <VStack
-      sx={styles.wrapper}
-      alignItems={align === 'left' ? 'flex-start' : 'center'}
-      spacing={4}
-      {...rest}
-    >
-      <Heading sx={styles.title} as="h2">
+    <VStack css={styles} gap={4} {...restProps}>
+      <Heading as="h2" textStyle="sectionTitle">
         {title}
       </Heading>
+
       {description && (
-        <Box sx={styles.description} textAlign={align}>
+        <Box textStyle="body" color="fg.muted">
           {description}
         </Box>
       )}

@@ -1,5 +1,6 @@
 import { NotFoundError } from '@/src/lib/api/errors'
 import { ApiResponse } from '@/src/lib/api/response'
+import { buildApprovalEmail, sendEmail } from '@/src/lib/email'
 import prisma from '@/src/lib/prisma'
 import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
@@ -23,11 +24,16 @@ async function handler(
       email: true,
       name: true,
       status: true,
+      emailVerified: true,
     },
   })
 
   if (!user) {
     throw new NotFoundError('User not found')
+  }
+
+  if (!user.emailVerified) {
+    throw new NotFoundError('User email not verified')
   }
 
   // Update user status to ACTIVE
@@ -57,11 +63,23 @@ async function handler(
         from: user.status,
         to: 'ACTIVE',
         action: 'approved',
+        result: 'SUCCESS',
+        actorName: authRequest.user.name,
       },
     },
+  })
+
+  const { text, html } = buildApprovalEmail({ name: updatedUser.name })
+  await sendEmail({
+    to: updatedUser.email,
+    subject: 'Your account has been approved',
+    text,
+    html,
   })
 
   return ApiResponse.success(updatedUser, 'User approved successfully')
 }
 
 export const POST = withErrorHandler(handler)
+
+

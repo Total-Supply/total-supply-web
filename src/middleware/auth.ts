@@ -23,7 +23,7 @@ export async function requireAuth(
     throw new UnauthorizedError('Authentication required')
   }
 
-  const user = session.user as any
+  const user = session.user as AuthenticatedRequest['user']
 
   if (user.status === 'SUSPENDED') {
     throw new ForbiddenError('Account suspended')
@@ -70,3 +70,5 @@ export async function requireStaff(
     'IT_STAFF',
   ])
 }
+
+

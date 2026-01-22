@@ -59,6 +59,14 @@ npx prisma generate
 # Push schema to database
 npx prisma db push
 
+# Seed restaurant catalog and service offerings
+npx prisma db seed
+
+# The Prisma seed hook executes `prisma/seed.ts`, which upserts `FoodCategory`
+# records first, uses their slugs to pin `FoodItem` category IDs, creates linked
+# `FoodItemCategory` rows for any extra slugs, and attaches `FoodImage` entries
+# before finally upserting `ServiceOffering` rows with enum-compatible values.
+
 # (Optional) Open Prisma Studio to view data
 npx prisma studio
 

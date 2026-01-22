@@ -21,11 +21,6 @@ export const apiClient = {
       return response.data
     },
 
-    getSession: async () => {
-      const response = await axiosInstance.get('/auth/session')
-      return response.data
-    },
-
     getMe: async () => {
       const response = await axiosInstance.get('/auth/me')
       return response.data
@@ -100,7 +95,7 @@ export const apiClient = {
 
   // Services endpoints
   services: {
-    create: async (data: any) => {
+    create: async <T extends Record<string, unknown>>(data: T) => {
       const response = await axiosInstance.post('/services', data)
       return response.data
     },

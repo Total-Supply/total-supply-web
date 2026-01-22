@@ -1,5 +1,6 @@
-import { MotionBox, MotionBoxProps } from './box'
 import React from 'react'
+
+import { MotionBox, MotionBoxProps } from './box'
 
 export const Float: React.FC<
   MotionBoxProps & { delay?: number; steps?: number[] }

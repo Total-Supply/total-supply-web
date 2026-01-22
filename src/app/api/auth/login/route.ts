@@ -28,6 +28,7 @@ async function handler(request: NextRequest) {
       passwordHash: true,
       role: true,
       status: true,
+      emailVerified: true,
       profileImage: true,
     },
   })
@@ -44,6 +45,10 @@ async function handler(request: NextRequest) {
   }
 
   // Check account status
+  if (!user.emailVerified) {
+    throw new ForbiddenError('Email not verified')
+  }
+
   if (user.status === 'SUSPENDED') {
     throw new ForbiddenError('Your account has been suspended')
   }
@@ -65,6 +70,10 @@ async function handler(request: NextRequest) {
       actorId: user.id,
       ipAddress: ip,
       userAgent: request.headers.get('user-agent') || undefined,
+      details: {
+        result: 'SUCCESS',
+        actorName: user.name,
+      },
     },
   })
 
@@ -75,3 +84,5 @@ async function handler(request: NextRequest) {
 }
 
 export const POST = withErrorHandler(handler)
+
+

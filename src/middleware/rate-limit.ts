@@ -41,6 +41,8 @@ export function createRateLimiter(config: RateLimitConfig) {
 export const rateLimiters = {
   upload: createRateLimiter({ maxRequests: 10, windowMs: 60 * 60 * 1000 }), // 10/hour
   auth: createRateLimiter({ maxRequests: 5, windowMs: 15 * 60 * 1000 }), // 5/15min
+  verifyResend: createRateLimiter({ maxRequests: 5, windowMs: 60 * 60 * 1000 }), // 5/hour
+  passwordReset: createRateLimiter({ maxRequests: 3, windowMs: 60 * 60 * 1000 }), // 3/hour
   api: createRateLimiter({ maxRequests: 100, windowMs: 60 * 1000 }), // 100/min
 }
 

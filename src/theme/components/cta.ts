@@ -6,10 +6,10 @@ const CTA = {
       pb: 28,
     },
     action: {
-      colorScheme: 'primary',
+      colorPalette: 'primary',
     },
     secondaryAction: {
-      colorScheme: 'primary',
+      colorPalette: 'primary',
       variant: 'ghost',
     },
   },
@@ -20,7 +20,7 @@ const CTA = {
         bg: 'primary.400',
       },
       secondaryAction: {
-        colorScheme: 'white',
+        colorPalette: 'white',
       },
     },
     light: ({ colorMode }: any) => ({

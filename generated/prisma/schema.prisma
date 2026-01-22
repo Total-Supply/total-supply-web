@@ -7,7 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -55,6 +54,21 @@ enum ServicePriority {
   URGENT
 }
 
+enum ServiceCategory {
+  GENERAL_CLEANING
+  DEEP_CLEAN
+  OFFICE_CLEANING
+  MOVE_OUT_CLEANING
+  SANITIZATION
+  OTHER
+}
+
+enum ServicePhotoType {
+  BEFORE
+  PROGRESS
+  AFTER
+}
+
 enum AuditEntityType {
   USER
   ORDER
@@ -74,15 +88,21 @@ enum AuditAction {
 }
 
 model User {
-  id            Int        @id @default(autoincrement())
-  email         String     @unique
-  passwordHash  String
-  name          String
-  phone         String?
-  role          UserRole   @default(CUSTOMER)
-  status        UserStatus @default(PENDING_APPROVAL)
-  emailVerified DateTime?
-  profileImage  String? // GCS URL
+  id                  Int        @id @default(autoincrement())
+  email               String     @unique
+  passwordHash        String
+  name                String
+  phone               String?
+  role                UserRole   @default(CUSTOMER)
+  status              UserStatus @default(PENDING_APPROVAL)
+  emailVerified       DateTime?
+  profileImage        String? // GCS URL
+  marketingOptIn      Boolean    @default(true)
+  unsubscribeToken    String     @unique @default(uuid())
+  deletionRequestedAt DateTime?
+  deletionScheduledAt DateTime?
+  deletedAt           DateTime?
+  dataPurgedAt        DateTime?
 
   // addresses
   addresses Address[]
@@ -106,8 +126,10 @@ model User {
   deliveryProofs     DeliveryProof[]
   serviceAssignments ServiceAssignment[]  @relation("ServiceAssignedBy")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  EmailVerificationToken EmailVerificationToken[]
+  PasswordResetToken     PasswordResetToken[]
 }
 
 model Session {
@@ -117,6 +139,28 @@ model Session {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model EmailVerificationToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Address {
@@ -152,28 +196,32 @@ model ContactMessage {
 }
 
 model FoodCategory {
-  id          Int        @id @default(autoincrement())
-  name        String
-  slug        String     @unique
-  description String?
-  imageUrl    String? // GCS image
-  items       FoodItem[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id            Int                @id @default(autoincrement())
+  name          String
+  slug          String             @unique
+  description   String?
+  imageUrl      String? // GCS image
+  items         FoodItem[]
+  categoryLinks FoodItemCategory[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
 }
 
 model FoodItem {
-  id          Int     @id @default(autoincrement())
-  name        String
-  slug        String  @unique
-  description String?
-  price       Decimal @db.Decimal(10, 2)
-  sku         String? @unique
-  stock       Int     @default(0)
-  isActive    Boolean @default(true)
+  id            Int     @id @default(autoincrement())
+  name          String
+  slug          String  @unique
+  description   String?
+  ingredients   String?
+  nutritionInfo String?
+  price         Decimal @db.Decimal(10, 2)
+  sku           String? @unique
+  stock         Int     @default(0)
+  isActive      Boolean @default(true)
 
-  category   FoodCategory @relation(fields: [categoryId], references: [id])
-  categoryId Int
+  category      FoodCategory       @relation(fields: [categoryId], references: [id])
+  categoryId    Int
+  categoryLinks FoodItemCategory[]
 
   mainImageUrl String? // GCS main image
   images       FoodImage[]
@@ -182,6 +230,18 @@ model FoodItem {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model FoodItemCategory {
+  id         Int          @id @default(autoincrement())
+  foodItem   FoodItem     @relation(fields: [foodItemId], references: [id], onDelete: Cascade)
+  foodItemId Int
+  category   FoodCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId Int
+  createdAt  DateTime     @default(now())
+
+  @@unique([foodItemId, categoryId])
+  @@index([categoryId])
 }
 
 model FoodImage {
@@ -271,13 +331,16 @@ model DeliveryProof {
 }
 
 model ServiceRequest {
-  id            Int             @id @default(autoincrement())
-  requestNumber String          @unique
-  customer      User            @relation("CustomerServiceRequests", fields: [customerId], references: [id])
-  customerId    Int
-  type          ServiceType
-  status        ServiceStatus   @default(RECEIVED)
-  priority      ServicePriority @default(MEDIUM)
+  id                Int              @id @default(autoincrement())
+  requestNumber     String           @unique
+  customer          User             @relation("CustomerServiceRequests", fields: [customerId], references: [id])
+  customerId        Int
+  type              ServiceType
+  category          ServiceCategory?
+  serviceOffering   ServiceOffering? @relation(fields: [serviceOfferingId], references: [id])
+  serviceOfferingId Int?
+  status            ServiceStatus    @default(RECEIVED)
+  priority          ServicePriority  @default(MEDIUM)
 
   title       String
   description String
@@ -296,29 +359,47 @@ model ServiceRequest {
   updatedAt DateTime @updatedAt
 }
 
+model ServiceOffering {
+  id          Int              @id @default(autoincrement())
+  name        String
+  slug        String           @unique
+  type        ServiceType
+  category    ServiceCategory?
+  description String?
+  basePrice   Decimal?         @db.Decimal(10, 2)
+  isActive    Boolean          @default(true)
+  requests    ServiceRequest[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
 model ServiceAssignment {
-  id           Int            @id @default(autoincrement())
-  service      ServiceRequest @relation(fields: [serviceId], references: [id])
-  serviceId    Int
-  staff        User           @relation(fields: [staffId], references: [id])
-  staffId      Int
-  assignedBy   User?          @relation("ServiceAssignedBy", fields: [assignedById], references: [id])
-  assignedById Int?
-  assignedAt   DateTime       @default(now())
-  acceptedAt   DateTime?
-  startedAt    DateTime?
-  completedAt  DateTime?
-  status       ServiceStatus  @default(ASSIGNED)
-  notes        String?
+  id                      Int            @id @default(autoincrement())
+  service                 ServiceRequest @relation(fields: [serviceId], references: [id])
+  serviceId               Int
+  staff                   User           @relation(fields: [staffId], references: [id])
+  staffId                 Int
+  assignedBy              User?          @relation("ServiceAssignedBy", fields: [assignedById], references: [id])
+  assignedById            Int?
+  assignedAt              DateTime       @default(now())
+  acceptedAt              DateTime?
+  startedAt               DateTime?
+  completedAt             DateTime?
+  status                  ServiceStatus  @default(ASSIGNED)
+  notes                   String?
+  timeSpentMinutes        Int?           @default(0)
+  completionNotes         String?
+  solutionSummary         String?
+  followUpRecommendations String?
 }
 
 model ServicePhoto {
-  id        Int            @id @default(autoincrement())
-  service   ServiceRequest @relation(fields: [serviceId], references: [id])
+  id        Int              @id @default(autoincrement())
+  service   ServiceRequest   @relation(fields: [serviceId], references: [id])
   serviceId Int
   url       String // GCS URL
-  isBefore  Boolean        @default(true) // true for "BEFORE", false for "AFTER"
-  createdAt DateTime       @default(now())
+  type      ServicePhotoType @default(BEFORE)
+  createdAt DateTime         @default(now())
 }
 
 model ServiceRating {

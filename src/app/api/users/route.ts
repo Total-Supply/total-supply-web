@@ -1,3 +1,4 @@
+import { Prisma, UserRole, UserStatus } from '@/generated/prisma'
 import { ApiResponse } from '@/src/lib/api/response'
 import { validateQuery } from '@/src/lib/api/validator'
 import prisma from '@/src/lib/prisma'
@@ -23,15 +24,15 @@ async function handler(request: NextRequest) {
   }
 
   // Build where clause
-  const where: any = {}
+  const where: Prisma.UserWhereInput = {}
   if (query.search) {
     where.OR = [
       { email: { contains: query.search, mode: 'insensitive' } },
       { name: { contains: query.search, mode: 'insensitive' } },
     ]
   }
-  if (query.role) where.role = query.role
-  if (query.status) where.status = query.status
+  if (query.role) where.role = query.role as UserRole
+  if (query.status) where.status = query.status as UserStatus
 
   // Get total count
   const total = await prisma.user.count({ where })

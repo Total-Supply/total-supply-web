@@ -30,6 +30,19 @@ export const getUsersQuerySchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 })
 
+export const rejectUserSchema = z.object({
+  reason: z
+    .string()
+    .min(3, 'Reason must be at least 3 characters')
+    .max(500, 'Reason must be less than 500 characters'),
+})
+
+export const bulkApproveSchema = z.object({
+  ids: z.array(z.number().int().positive()).min(1, 'Select at least one user'),
+})
+
 export type CreateUserInput = z.infer<typeof createUserSchema>
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
 export type GetUsersQuery = z.infer<typeof getUsersQuerySchema>
+export type RejectUserInput = z.infer<typeof rejectUserSchema>
+export type BulkApproveInput = z.infer<typeof bulkApproveSchema>

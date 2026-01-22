@@ -1,22 +1,14 @@
-import {
-  Avatar,
-  Card,
-  CardBody,
-  CardHeader,
-  CardProps,
-  Heading,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { Link } from "@saas-ui/react";
-import { FaTwitter } from "react-icons/fa";
+import { Avatar, Card, Heading, Link, Stack, Text } from '@chakra-ui/react'
+import { FaTwitter } from 'react-icons/fa'
 
-export interface TestimonialProps extends CardProps {
-  name: string;
-  description: React.ReactNode;
-  avatar: string;
-  href?: string;
-  children?: React.ReactNode;
+import type { ComponentProps } from 'react'
+
+export interface TestimonialProps extends ComponentProps<typeof Card.Root> {
+  name: string
+  description: React.ReactNode
+  avatar: string
+  href?: string
+  children?: React.ReactNode
 }
 
 export const Testimonial = ({
@@ -28,17 +20,20 @@ export const Testimonial = ({
   ...rest
 }: TestimonialProps) => {
   return (
-    <Card position="relative" {...rest}>
-      <CardHeader display="flex" flexDirection="row" alignItems="center">
-        <Avatar name={name} src={avatar} size="sm" bg="transparent" />
-        <Stack spacing="1" ms="4">
+    <Card.Root position="relative" {...rest}>
+      <Card.Header display="flex" flexDirection="row" alignItems="center">
+        <Avatar.Root size="sm">
+          <Avatar.Fallback name={name} />
+          <Avatar.Image src={avatar} alt={name} />
+        </Avatar.Root>
+        <Stack gap="1" ms="4">
           <Heading size="sm">{name}</Heading>
-          <Text color="muted" size="xs">
+          <Text color="muted" fontSize="xs">
             {description}
           </Text>
         </Stack>
-      </CardHeader>
-      <CardBody>
+      </Card.Header>
+      <Card.Body>
         {children}
 
         {href && (
@@ -46,7 +41,7 @@ export const Testimonial = ({
             <FaTwitter />
           </Link>
         )}
-      </CardBody>
-    </Card>
-  );
-};
+      </Card.Body>
+    </Card.Root>
+  )
+}

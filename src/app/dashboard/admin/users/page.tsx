@@ -1,8 +1,9 @@
+import { UsersManagement } from '@/src/components/admin/users/users-management'
+
 export default function AdminUsersPage() {
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6">User Management</h1>
-      <p>Users management page</p>
+    <div className="container mx-auto space-y-6 px-4 pb-10 pt-6 sm:px-6 lg:px-10">
+      <UsersManagement />
     </div>
   )
 }

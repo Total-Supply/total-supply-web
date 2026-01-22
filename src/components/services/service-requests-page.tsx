@@ -1,0 +1,243 @@
+'use client'
+
+import { BackgroundGradient } from '@/src/components/gradients/background-gradient'
+import { OrdersPagination } from '@/src/components/orders/orders-pagination'
+import { ServiceFilters } from '@/src/components/services/service-filters'
+import { ServiceRequestCard } from '@/src/components/services/service-request-card'
+import { ServiceRequestsEmptyState } from '@/src/components/services/service-requests-empty-state'
+import { ServiceRequestsHeader } from '@/src/components/services/service-requests-header'
+import {
+  ServiceRequestsCardSkeleton,
+  ServiceRequestsTableSkeleton,
+} from '@/src/components/services/service-requests-skeleton'
+import { ServiceRequestsTable } from '@/src/components/services/service-requests-table'
+import { ServiceStats } from '@/src/components/services/service-stats'
+import { useToast } from '@/src/hooks/use-toast'
+import { Container, Stack, useBreakpointValue } from '@chakra-ui/react'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+import { useEffect, useMemo, useState } from 'react'
+
+type ServiceSummary = {
+  id: number
+  requestNumber: string
+  type: string
+  status: string
+  priority: string
+  title?: string | null
+  createdAt: string
+}
+
+type ServiceResponse = {
+  data: ServiceSummary[]
+  meta?: {
+    page: number
+    totalPages: number
+  }
+}
+
+const STATUS_OPTIONS = [
+  'ALL',
+  'RECEIVED',
+  'ASSIGNED',
+  'IN_PROGRESS',
+  'RESOLVED',
+]
+const PRIORITY_OPTIONS = ['ALL', 'URGENT', 'HIGH', 'MEDIUM', 'LOW']
+const TYPE_OPTIONS = ['ALL', 'CLEANING', 'IT_SUPPORT']
+
+export function ServiceRequestsPage() {
+  const router = useRouter()
+  const toast = useToast()
+  const searchParams = useSearchParams()
+  const isMobile = useBreakpointValue({ base: true, md: false })
+
+  const statusParam = searchParams.get('status') || 'ALL'
+  const priorityParam = searchParams.get('priority') || 'ALL'
+  const typeParam = searchParams.get('type') || 'ALL'
+  const searchParam = searchParams.get('search') || ''
+  const pageParam = Number(searchParams.get('page') || 1)
+
+  const [items, setItems] = useState<ServiceSummary[]>([])
+  const [status, setStatus] = useState(statusParam)
+  const [priority, setPriority] = useState(priorityParam)
+  const [type, setType] = useState(typeParam)
+  const [search, setSearch] = useState(searchParam)
+  const [page, setPage] = useState(pageParam)
+  const [totalPages, setTotalPages] = useState(1)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const serviceStats = useMemo(() => {
+    return {
+      total: items.length,
+      received: items.filter((r) => r.status === 'RECEIVED').length,
+      inProgress: items.filter((r) =>
+        ['ASSIGNED', 'IN_PROGRESS'].includes(r.status),
+      ).length,
+      resolved: items.filter((r) => r.status === 'RESOLVED').length,
+    }
+  }, [items])
+
+  const hasFilters =
+    status !== 'ALL' || priority !== 'ALL' || type !== 'ALL' || search
+
+  useEffect(() => {
+    setStatus(statusParam)
+    setPriority(priorityParam)
+    setType(typeParam)
+    setSearch(searchParam)
+    setPage(pageParam)
+  }, [statusParam, priorityParam, typeParam, searchParam, pageParam])
+
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (status !== 'ALL') params.set('status', status)
+    if (priority !== 'ALL') params.set('priority', priority)
+    if (type !== 'ALL') params.set('type', type)
+    if (search) params.set('search', search)
+    if (page > 1) params.set('page', String(page))
+    const query = params.toString()
+    router.replace(query ? `/services/requests?${query}` : '/services/requests')
+  }, [status, priority, type, search, page, router])
+
+  const loadRequests = async (showLoading = true) => {
+    if (showLoading) {
+      setIsLoading(true)
+    }
+    try {
+      const params = new URLSearchParams({
+        page: String(pageParam),
+        limit: '10',
+      })
+      if (statusParam !== 'ALL') params.set('status', statusParam)
+      if (priorityParam !== 'ALL') params.set('priority', priorityParam)
+      if (typeParam !== 'ALL') params.set('type', typeParam)
+      if (searchParam) params.set('search', searchParam)
+
+      const response = await fetch(`/api/service-requests?${params.toString()}`)
+      const data = (await response.json()) as ServiceResponse
+      if (!response.ok) {
+        throw new Error(data as unknown as string)
+      }
+      setItems(data.data || [])
+      setTotalPages(data.meta?.totalPages || 1)
+    } catch (error) {
+      toast({
+        title: 'Failed to load service requests',
+        status: 'error',
+        duration: 2500,
+      })
+    } finally {
+      if (showLoading) {
+        setIsLoading(false)
+      }
+    }
+  }
+
+  useEffect(() => {
+    loadRequests()
+  }, [statusParam, priorityParam, typeParam, searchParam, pageParam])
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    setIsLoading(true)
+    await loadRequests(false)
+    setIsRefreshing(false)
+    setIsLoading(false)
+    toast({
+      title: 'Requests refreshed',
+      status: 'success',
+      duration: 2000,
+    })
+  }
+
+  const handleView = (id: number) => {
+    router.push(`/services/${id}`)
+  }
+
+  const handleSearchChange = (value: string) => {
+    setSearch(value)
+    setPage(1)
+  }
+
+  const handleTypeChange = (value: string) => {
+    setType(value)
+    setPage(1)
+  }
+
+  const handlePriorityChange = (value: string) => {
+    setPriority(value)
+    setPage(1)
+  }
+
+  const handleStatusChange = (value: string) => {
+    setStatus(value)
+    setPage(1)
+  }
+
+  const emptyState = !isLoading && items.length === 0
+
+  return (
+    <Stack gap={10}>
+      <BackgroundGradient height="240px" />
+      <Container maxW="container.xl" pt={{ base: 8, md: 12 }} pb={16}>
+        <Stack gap={6}>
+          <ServiceRequestsHeader
+            onRefresh={handleRefresh}
+            isRefreshing={isRefreshing}
+          />
+
+          {!isLoading && !emptyState && (
+            <ServiceStats stats={serviceStats} isLoading={isLoading} />
+          )}
+
+          <ServiceFilters
+            search={search}
+            type={type}
+            priority={priority}
+            status={status}
+            onSearchChange={handleSearchChange}
+            onTypeChange={handleTypeChange}
+            onPriorityChange={handlePriorityChange}
+            onStatusChange={handleStatusChange}
+            typeOptions={TYPE_OPTIONS}
+            priorityOptions={PRIORITY_OPTIONS}
+            statusOptions={STATUS_OPTIONS}
+          />
+
+          {isLoading ? (
+            isMobile ? (
+              <ServiceRequestsCardSkeleton />
+            ) : (
+              <ServiceRequestsTableSkeleton />
+            )
+          ) : emptyState ? (
+            <ServiceRequestsEmptyState hasFilters={!!hasFilters} />
+          ) : isMobile ? (
+            <div className="space-y-4">
+              {items.map((item, index) => (
+                <ServiceRequestCard
+                  key={item.id}
+                  request={item}
+                  onView={handleView}
+                  index={index}
+                />
+              ))}
+            </div>
+          ) : (
+            <ServiceRequestsTable requests={items} onView={handleView} />
+          )}
+
+          {!emptyState && !isLoading && (
+            <OrdersPagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          )}
+        </Stack>
+      </Container>
+    </Stack>
+  )
+}

@@ -1,5 +1,4 @@
-import { Button } from '@chakra-ui/react'
-import { Link } from '@saas-ui/react'
+import { Button, Link } from '@chakra-ui/react'
 import { FaGithub, FaTwitter } from 'react-icons/fa'
 import { FiCheck } from 'react-icons/fi'
 
@@ -94,30 +93,28 @@ const siteConfig = {
     ],
   },
   signup: {
-    title: 'Start building with Saas UI',
+    title: 'Join Total Supply',
     features: [
       {
         icon: FiCheck,
-        title: 'Accessible',
-        description: 'All components strictly follow WAI-ARIA standards.',
+        title: 'Reliable',
+        description: 'Consistent ordering, delivery, and service workflows.',
       },
       {
         icon: FiCheck,
-        title: 'Themable',
-        description:
-          'Fully customize all components to your brand with theme support and style props.',
+        title: 'Scalable',
+        description: 'Built to grow with your store and service volume.',
       },
       {
         icon: FiCheck,
-        title: 'Composable',
+        title: 'Transparent',
         description:
-          'Compose components to fit your needs and mix them together to create new ones.',
+          'Track orders and service requests with real-time status updates.',
       },
       {
         icon: FiCheck,
-        title: 'Productive',
-        description:
-          'Designed to reduce boilerplate and fully typed, build your product at speed.',
+        title: 'Secure',
+        description: 'Verified accounts with admin approvals and audit logs.',
       },
     ],
   },

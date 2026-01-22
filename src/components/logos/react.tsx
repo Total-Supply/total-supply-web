@@ -1,4 +1,4 @@
-import { useColorModeValue } from '@chakra-ui/react'
+import { useColorModeValue } from '@/src/hooks/color-mode'
 
 import * as React from 'react'
 

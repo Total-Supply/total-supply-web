@@ -1,122 +1,92 @@
-import NextLink from "next/link";
 import {
-  Box,
+  Card,
   Container,
   Flex,
   HStack,
   Icon,
   LinkBox,
   LinkOverlay,
-  useColorModeValue,
-  Button,
-} from "@chakra-ui/react";
-import {
-  Banner,
-  BannerActions,
-  BannerContent,
-  BannerDescription,
-  BannerTitle,
-} from "@saas-ui/react";
-import { FiArrowRight } from "react-icons/fi";
-import { FallInPlace } from "../motion/fall-in-place";
+  Text,
+} from '@chakra-ui/react'
+import NextLink from 'next/link'
+import { FiArrowRight } from 'react-icons/fi'
+
+import { FallInPlace } from '../motion/fall-in-place'
+import { Button } from '../ui/button'
 
 export interface AnnouncementBannerProps {
-  title: string;
-  description: string;
-  href: string;
-  action?: string;
+  title: string
+  description: string
+  href: string
+  action?: string
 }
 
 export const AnnouncementBanner: React.FC<AnnouncementBannerProps> = (
-  props
+  props,
 ) => {
-  const { title, description, href, action } = props;
+  const { title, description, href, action } = props
   if (!title) {
-    return null;
+    return null
   }
 
   return (
     <Flex position="absolute" zIndex="10" top="100px" width="100%">
       <Container maxW="container.2xl" px="8">
-        <FallInPlace delay={1.4} translateY="-100px">
-          <NextLink href={href} legacyBehavior>
-            <Banner
-              display="flex"
-              bg="white"
-              fontSize="sm"
-              justifyContent="center"
-              colorScheme="purple"
-              backgroundClip="padding-box"
+        <FallInPlace delay={1.4}>
+          <LinkBox maxW="400px" mx="auto">
+            <Card.Root
               borderRadius="full"
-              maxW="400px"
-              margin="0 auto"
-              borderColor="transparent"
+              bg="white"
+              px="4"
+              py="2"
+              boxShadow="sm"
               position="relative"
-              py="4px"
-              px="3"
-              overflow="visible"
-              cursor="pointer"
-              transition="all .2s ease-out"
-              _dark={{ bg: "gray.900", borderColor: "transparent" }}
+              _dark={{ bg: 'gray.900' }}
               _before={{
                 content: `""`,
-                position: "absolute",
+                position: 'absolute',
                 zIndex: -1,
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0,
-                borderRadius: "inherit",
-                margin: "-2px",
-                bgGradient: "linear(to-r, purple.500, cyan.500)",
-                transition: "background .2s ease-out",
-                _dark: {
-                  bgGradient: "linear(to-r, purple.500, cyan.500)",
-                },
+                inset: 0,
+                borderRadius: 'inherit',
+                margin: '-2px',
+                bgGradient: 'linear(to-r, purple.500, cyan.500)',
               }}
-              _hover={{
-                "& .chakra-icon": {
-                  transform: "translate(0)",
-                },
-                boxShadow: "md",
-              }}
+              _hover={{ boxShadow: 'md' }}
             >
-              <HStack zIndex="2">
-                <BannerTitle fontWeight="semibold" noOfLines={1}>
-                  {title}
-                </BannerTitle>
-                <BannerDescription
-                  display={{ base: "none", md: "block" }}
-                  dangerouslySetInnerHTML={{ __html: description }}
-                />
-
-                {action && (
-                  <BannerActions>
+              <Card.Body py="2">
+                <HStack justify="center">
+                  <Text fontWeight="semibold" truncate>
+                    <LinkOverlay as={NextLink} href={href}>
+                      {title}
+                    </LinkOverlay>
+                  </Text>
+                  <Text
+                    display={{ base: 'none', md: 'block' }}
+                    dangerouslySetInnerHTML={{ __html: description }}
+                  />
+                  {action && (
                     <Button
                       size="xs"
-                      variant="link"
+                      variant="ghost"
                       color="muted"
-                      _hover={{
-                        textDecoration: "none",
-                      }}
-                      rightIcon={
-                        <Icon
-                          as={FiArrowRight}
-                          transform="translate(-5px)"
-                          transitionProperty="common"
-                          transitionDuration="normal"
-                        />
-                      }
+                      _hover={{ textDecoration: 'none' }}
                     >
                       Read more
+                      <Icon
+                        as={FiArrowRight}
+                        transform="translate(-5px)"
+                        transitionProperty="common"
+                        transitionDuration="normal"
+                        ml="1"
+                      />
                     </Button>
-                  </BannerActions>
-                )}
-              </HStack>
-            </Banner>
-          </NextLink>
+                  )}
+                </HStack>
+              </Card.Body>
+            </Card.Root>
+          </LinkBox>
         </FallInPlace>
       </Container>
     </Flex>
-  );
-};
+  )
+}

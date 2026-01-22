@@ -1,6 +1,6 @@
 import { mode } from '@chakra-ui/theme-tools'
 
-type Dict = Record<string, any>
+type Dict = Record<string, unknown>
 
 export default {
   variants: {

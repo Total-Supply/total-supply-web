@@ -1,0 +1,192 @@
+openapi: "3.0.0"
+info:
+  title: "API Documentation"
+  version: "1.0.0"
+  description: "Shared OpenAPI response components used by next-openapi-gen"
+
+components:
+  responses:
+    "400":
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, error]
+            properties:
+              success:
+                type: boolean
+                enum: [false]
+              error:
+                type: object
+                required: [message]
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid request parameters"
+                  code:
+                    type: string
+                    example: "BAD_REQUEST"
+                  details:
+                    nullable: true
+
+    "401":
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, error]
+            properties:
+              success:
+                type: boolean
+                enum: [false]
+              error:
+                type: object
+                required: [message]
+                properties:
+                  message:
+                    type: string
+                    example: "Authentication required"
+                  code:
+                    type: string
+                    example: "UNAUTHORIZED"
+                  details:
+                    nullable: true
+
+    "403":
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, error]
+            properties:
+              success:
+                type: boolean
+                enum: [false]
+              error:
+                type: object
+                required: [message]
+                properties:
+                  message:
+                    type: string
+                    example: "Access denied"
+                  code:
+                    type: string
+                    example: "FORBIDDEN"
+                  details:
+                    nullable: true
+
+    "404":
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, error]
+            properties:
+              success:
+                type: boolean
+                enum: [false]
+              error:
+                type: object
+                required: [message]
+                properties:
+                  message:
+                    type: string
+                    example: "Resource not found"
+                  code:
+                    type: string
+                    example: "NOT_FOUND"
+                  details:
+                    nullable: true
+
+    "409":
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, error]
+            properties:
+              success:
+                type: boolean
+                enum: [false]
+              error:
+                type: object
+                required: [message]
+                properties:
+                  message:
+                    type: string
+                    example: "Resource already exists"
+                  code:
+                    type: string
+                    example: "CONFLICT"
+                  details:
+                    nullable: true
+
+    "422":
+      description: Validation Error
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, error]
+            properties:
+              success:
+                type: boolean
+                enum: [false]
+              error:
+                type: object
+                required: [message, code, details]
+                properties:
+                  message:
+                    type: string
+                    example: "Validation failed"
+                  code:
+                    type: string
+                    example: "VALIDATION_ERROR"
+                  details:
+                    type: array
+                    items:
+                      type: object
+                      required: [code, path, message]
+                      properties:
+                        code:
+                          type: string
+                          example: "invalid_type"
+                        path:
+                          type: array
+                          items:
+                            oneOf:
+                              - type: string
+                              - type: number
+                          example: ["items", 0, "quantity"]
+                        message:
+                          type: string
+                          example: "Quantity must be at least 1"
+
+    "500":
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [success, error]
+            properties:
+              success:
+                type: boolean
+                enum: [false]
+              error:
+                type: object
+                required: [message]
+                properties:
+                  message:
+                    type: string
+                    example: "An unexpected error occurred"
+                  code:
+                    type: string
+                    example: "INTERNAL_ERROR"
+                  details:
+                    nullable: true

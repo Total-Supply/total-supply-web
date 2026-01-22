@@ -1,56 +1,24 @@
 'use client'
 
-import { Box, BoxProps, useColorModeValue, useTheme } from '@chakra-ui/react'
+import { useColorModeValue } from '@/src/hooks/color-mode'
+import { Box, type BoxProps, useToken } from '@chakra-ui/react'
 
 interface BackgroundGradientProps extends BoxProps {
   hideOverlay?: boolean
 }
 
-export const BackgroundGradient = ({
+export function BackgroundGradient({
   hideOverlay,
   ...props
-}: BackgroundGradientProps) => {
-  const theme = useTheme()
+}: BackgroundGradientProps) {
+  const [blue500, purple500] = useToken('colors', ['blue.500', 'purple.500'])
 
-  // Safely access theme colors with fallbacks
-  const colors = [
-    theme.colors?.primary?.['800'] || '#1565c0',
-    theme.colors?.secondary?.['500'] || '#e91e63',
-    theme.colors?.cyan?.['500'] || '#00bcd4',
-    theme.colors?.teal?.['500'] || '#009688',
-  ]
-
-  const fallbackBackground = `radial-gradient(at top left, ${colors[0]} 30%, transparent 80%), radial-gradient(at bottom, ${colors[1]} 0%, transparent 60%), radial-gradient(at bottom left, ${colors[2]} 0%, transparent 50%), radial-gradient(at top right, ${colors[3]}, transparent), radial-gradient(at bottom right, ${colors[0]} 0%, transparent 50%)`
-
-  const gradientOverlay = `linear-gradient(0deg, var(--chakra-colors-${useColorModeValue(
-    'white',
-    'gray-900',
-  )}) 60%, rgba(0, 0, 0, 0) 100%)`
-
-  return (
-    <Box
-      backgroundImage={fallbackBackground}
-      backgroundBlendMode="saturation"
-      position="absolute"
-      top="0"
-      left="0"
-      zIndex="0"
-      opacity={useColorModeValue('0.3', '0.5')}
-      height="100vh"
-      width="100%"
-      overflow="hidden"
-      pointerEvents="none"
-      {...props}
-    >
-      <Box
-        backgroundImage={!hideOverlay ? gradientOverlay : undefined}
-        position="absolute"
-        top="0"
-        right="0"
-        bottom="0"
-        left="0"
-        zIndex="1"
-      />
-    </Box>
+  const gradient = useColorModeValue(
+    `radial-gradient(circle at top, ${blue500} 0%, transparent 60%)`,
+    `radial-gradient(circle at top, ${purple500} 0%, transparent 60%)`,
   )
+
+  if (hideOverlay) return <Box {...props} />
+
+  return <Box {...props} bgImage={gradient} />
 }

@@ -1,18 +1,12 @@
 'use client'
 
+import { useToast } from '@/src/hooks/use-toast'
 import { addToCart } from '@/src/store/slices/cartSlice'
-import {
-  Badge,
-  Box,
-  Button,
-  Heading,
-  Image,
-  Text,
-  VStack,
-  useToast,
-} from '@chakra-ui/react'
+import { Badge, Box, Heading, Image, Text, VStack } from '@chakra-ui/react'
 import { FiShoppingCart } from 'react-icons/fi'
 import { useDispatch } from 'react-redux'
+
+import { Button } from './ui/button'
 
 interface ProductCardProps {
   id: number
@@ -72,19 +66,19 @@ export function ProductCard({
         objectFit="cover"
       />
 
-      <VStack p={4} align="start" spacing={2}>
+      <VStack p={4} align="start" gap={2}>
         {category && (
-          <Badge colorScheme="primary" fontSize="xs">
+          <Badge colorPalette="primary" fontSize="xs">
             {category}
           </Badge>
         )}
 
-        <Heading size="md" noOfLines={1}>
+        <Heading size="md" truncate>
           {name}
         </Heading>
 
         {description && (
-          <Text fontSize="sm" color="gray.600" noOfLines={2}>
+          <Text fontSize="sm" color="gray.600" truncate>
             {description}
           </Text>
         )}
@@ -94,13 +88,15 @@ export function ProductCard({
         </Text>
 
         <Button
-          leftIcon={<FiShoppingCart />}
-          colorScheme="primary"
+          colorPalette="primary"
           width="full"
           onClick={handleAddToCart}
           isDisabled={stock === 0}
         >
-          {stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          <FiShoppingCart />
+          <Box as="span" ms="2">
+            {stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          </Box>
         </Button>
       </VStack>
     </Box>

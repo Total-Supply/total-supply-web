@@ -1,60 +1,105 @@
-import { cn } from '@/src/lib/utils'
-import { Slot } from '@radix-ui/react-slot'
-import { type VariantProps, cva } from 'class-variance-authority'
+import {
+  Button as ChakraButton,
+  ButtonProps as ChakraButtonProps,
+} from '@chakra-ui/react'
 
-import * as React from 'react'
+import { type ReactNode, forwardRef } from 'react'
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        destructive:
-          'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
-        outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
-        secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost:
-          'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-        link: 'text-primary underline-offset-4 hover:underline',
-      },
-      size: {
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        icon: 'size-9',
-        'icon-sm': 'size-8',
-        'icon-lg': 'size-10',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
-)
-
-function Button({
-  className,
-  variant,
-  size,
-  asChild = false,
-  ...props
-}: React.ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
-  const Comp = asChild ? Slot : 'button'
-
-  return (
-    <Comp
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
-      {...props}
-    />
-  )
+export interface ButtonProps extends Omit<
+  ChakraButtonProps,
+  'disabled' | 'loading'
+> {
+  isDisabled?: boolean
+  disabled?: boolean
+  isLoading?: boolean
+  loading?: boolean
+  leftIcon?: ReactNode
+  rightIcon?: ReactNode
+  variant?: 'solid' | 'outline' | 'ghost' | 'subtle' | 'surface' | 'plain'
+  colorPalette?:
+    | 'teal'
+    | 'blue'
+    | 'orange'
+    | 'red'
+    | 'gray'
+    | 'green'
+    | 'primary'
 }
 
-export { Button, buttonVariants }
+const getColorClasses = (colorPalette?: string, variant?: string) => {
+  const palette = colorPalette || 'primary'
+
+  if (variant === 'outline') {
+    const outlineColors = {
+      primary:
+        'border border-primary text-primary bg-transparent hover:bg-primary/10',
+      teal: 'border border-chart-2 text-chart-2 bg-transparent hover:bg-chart-2/10',
+      blue: 'border border-chart-1 text-chart-1 bg-transparent hover:bg-chart-1/10',
+      orange:
+        'border border-chart-5 text-chart-5 bg-transparent hover:bg-chart-5/10',
+      red: 'border border-destructive text-destructive bg-transparent hover:bg-destructive/10',
+      gray: 'border border-border text-muted-foreground bg-transparent hover:bg-muted',
+      green:
+        'border border-chart-3 text-chart-3 bg-transparent hover:bg-chart-3/10',
+    }
+    return outlineColors[palette as keyof typeof outlineColors]
+  }
+
+  if (variant === 'ghost') {
+    const ghostColors = {
+      primary: 'text-primary bg-transparent hover:bg-primary/10 border-none',
+      teal: 'text-chart-2 bg-transparent hover:bg-chart-2/10 border-none',
+      blue: 'text-chart-1 bg-transparent hover:bg-chart-1/10 border-none',
+      orange: 'text-chart-5 bg-transparent hover:bg-chart-5/10 border-none',
+      red: 'text-destructive bg-transparent hover:bg-destructive/10 border-none',
+      gray: 'text-muted-foreground bg-transparent hover:bg-muted border-none',
+      green: 'text-chart-3 bg-transparent hover:bg-chart-3/10 border-none',
+    }
+    return ghostColors[palette as keyof typeof ghostColors]
+  }
+
+  // Solid variant (full background for CTAs)
+  if (variant === 'solid') {
+    const solidColors = {
+      primary:
+        'bg-primary text-primary-foreground hover:bg-primary/90 border-none',
+      teal: 'bg-chart-2 text-white hover:bg-chart-2/90 border-none',
+      blue: 'bg-chart-1 text-white hover:bg-chart-1/90 border-none',
+      orange: 'bg-chart-5 text-white hover:bg-chart-5/90 border-none',
+      red: 'bg-destructive text-white hover:bg-destructive/90 border-none',
+      gray: 'bg-muted text-muted-foreground hover:bg-muted/80 border-none',
+      green: 'bg-chart-3 text-white hover:bg-chart-3/90 border-none',
+    }
+    return solidColors[palette as keyof typeof solidColors]
+  }
+
+  // Default outline style
+  return 'border border-border text-foreground bg-transparent hover:bg-accent'
+}
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  function Button(props, ref) {
+    const {
+      isDisabled,
+      disabled,
+      isLoading,
+      loading,
+      className,
+      variant = 'outline',
+      colorPalette,
+      ...rest
+    } = props
+
+    const colorClasses = getColorClasses(colorPalette, variant)
+
+    return (
+      <ChakraButton
+        ref={ref}
+        disabled={isDisabled ?? disabled}
+        loading={isLoading ?? loading}
+        className={`h-8 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${colorClasses} ${className || ''}`}
+        {...rest}
+      />
+    )
+  },
+)

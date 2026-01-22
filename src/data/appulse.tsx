@@ -1,4 +1,4 @@
-import { useColorModeValue } from '@chakra-ui/react'
+import { useColorModeValue } from '../hooks/color-mode'
 
 export const Logo = () => {
   return (

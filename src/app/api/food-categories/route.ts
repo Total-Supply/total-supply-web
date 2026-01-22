@@ -11,18 +11,46 @@ async function handler(request: NextRequest) {
       slug: true,
       description: true,
       imageUrl: true,
-      _count: {
-        select: {
-          items: true,
-        },
-      },
     },
     orderBy: {
       name: 'asc',
     },
   })
 
-  return ApiResponse.success(categories)
+  const items = await prisma.foodItem.findMany({
+    where: {
+      isActive: true,
+    },
+    select: {
+      id: true,
+      categoryId: true,
+      categoryLinks: {
+        select: {
+          categoryId: true,
+        },
+      },
+    },
+  })
+
+  const countMap = new Map<number, number>()
+  for (const item of items) {
+    const categoryIds = new Set([
+      item.categoryId,
+      ...item.categoryLinks.map((link) => link.categoryId),
+    ])
+    categoryIds.forEach((categoryId) => {
+      countMap.set(categoryId, (countMap.get(categoryId) || 0) + 1)
+    })
+  }
+
+  return ApiResponse.success(
+    categories.map((category) => ({
+      ...category,
+      itemCount: countMap.get(category.id) || 0,
+    })),
+  )
 }
 
 export const GET = withErrorHandler(handler)
+
+

@@ -1,32 +1,46 @@
 'use client'
 
-import {
-  Container,
-  HTMLChakraProps,
-  StyleProps,
-  ThemingProps,
-  chakra,
-  omitThemingProps,
-  useStyleConfig,
-} from '@chakra-ui/react'
+import { Box, Container, type HTMLChakraProps } from '@chakra-ui/react'
 
-export interface SectionProps
-  extends HTMLChakraProps<'div'>, ThemingProps<'Section'> {
+import * as React from 'react'
+
+export interface SectionProps extends HTMLChakraProps<'section'> {
   children: React.ReactNode
-  innerWidth?: StyleProps['width']
+  /**
+   * Chakra Container maxW supports tokens like "container.lg"
+   * and also numeric values (e.g. 1200).
+   */
+  innerWidth?: string | number
+  variant?: 'default' | 'hero' | 'feature'
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
-  const { children, innerWidth = 'container.lg', className, ...rest } = props
-  const styles = useStyleConfig('Section', rest)
+  const {
+    children,
+    innerWidth = 'container.lg',
+    variant = 'default',
+    ...rest
+  } = props
 
-  const ownProps = omitThemingProps(rest)
+  const variantStyles: Record<NonNullable<SectionProps['variant']>, HTMLChakraProps<'section'>> = {
+    default: { py: { base: 10, md: 14 }, px: { base: 4, md: 6 } },
+    hero: {
+      py: { base: 16, md: 24 },
+      px: { base: 4, md: 6 },
+      bg: 'bg.subtle',
+    },
+    feature: {
+      py: { base: 12, md: 18 },
+      px: { base: 4, md: 6 },
+      bg: 'bg.muted',
+    },
+  }
 
   return (
-    <chakra.div __css={styles} {...ownProps}>
+    <Box as="section" css={variantStyles[variant]} {...rest}>
       <Container height="full" maxW={innerWidth}>
         {children}
       </Container>
-    </chakra.div>
+    </Box>
   )
 }

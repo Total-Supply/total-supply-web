@@ -1,0 +1,149 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "1.0.0",
+    "description": "This is the OpenAPI specification for your project."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Local development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["success", "error"],
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": {
+                  "type": "object",
+                  "required": ["message"],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid request parameters"
+                    },
+                    "code": { "type": "string", "example": "BAD_REQUEST" },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["success", "error"],
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": {
+                  "type": "object",
+                  "required": ["message"],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication required"
+                    },
+                    "code": { "type": "string", "example": "UNAUTHORIZED" },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["success", "error"],
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": {
+                  "type": "object",
+                  "required": ["message"],
+                  "properties": {
+                    "message": { "type": "string", "example": "Access denied" },
+                    "code": { "type": "string", "example": "FORBIDDEN" },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["success", "error"],
+              "properties": {
+                "success": { "type": "boolean", "example": false },
+                "error": {
+                  "type": "object",
+                  "required": ["message"],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "An unexpected error occurred"
+                    },
+                    "code": { "type": "string", "example": "INTERNAL_ERROR" },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "defaultResponseSet": "common",
+  "responseSets": {
+    "common": ["400", "500"],
+    "auth": ["400", "401", "403", "500"],
+    "public": ["400", "500"],
+
+    "crud": ["404", "409", "422"],
+    "adminCrud": ["400", "401", "403", "404", "409", "422", "500"]
+  },
+
+  "schemaFiles": ["./openapi.responses.yaml"],
+  "apiDir": "./src/app/api",
+  "schemaDir": "./src/lib/schemas",
+  "schemaType": "zod",
+  "docsUrl": "/api-docs",
+  "ui": "scalar",
+  "outputFile": "openapi.json",
+  "outputDir": "./public",
+  "includeOpenApiRoutes": false,
+  "ignoreRoutes": [],
+  "debug": false
+}
