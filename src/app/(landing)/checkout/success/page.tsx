@@ -1,4 +1,4 @@
-import { CheckoutSuccess } from '@/src/components/checkout/checkout-success'
+import { CheckoutSuccess } from '@/src/components/checkout/success/checkout-success'
 
 export const metadata = {
   title: 'Order Confirmed | Total Supply',

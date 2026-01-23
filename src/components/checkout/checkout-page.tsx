@@ -1,11 +1,10 @@
 'use client'
 
 import { MotionBox } from '@/src/components/motion/box'
-import { Badge } from '@/src/components/ui/badge'
-import { Button } from '@/src/components/ui/button'
 import { useToast } from '@/src/hooks/use-toast'
 import { RootState } from '@/src/store'
 import { clearCart } from '@/src/store/slices/cartSlice'
+import { Container } from '@chakra-ui/react'
 import {
   AlertCircle,
   CheckCircle2,
@@ -14,16 +13,16 @@ import {
   Loader2,
   MapPin,
   ShoppingBag,
-  Upload,
-  X,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useEffect, useMemo, useState } from 'react'
 
+import { Button } from '../ui/button'
 import { CheckoutAddressForm } from './checkout-address-form'
 import { CheckoutContactForm } from './checkout-contact-form'
+import { CheckoutHeader } from './checkout-header'
 import { CheckoutNotesForm } from './checkout-notes-form'
 import { CheckoutOrderReview } from './checkout-order-review'
 import { CheckoutSummary } from './checkout-summary'
@@ -57,7 +56,7 @@ const SERVICE_CITIES = [
   'Kurunegala',
 ]
 
-export function CheckoutPageEnhanced() {
+export function CheckoutPageEnhance() {
   const router = useRouter()
   const toast = useToast()
   const dispatch = useDispatch()
@@ -378,7 +377,7 @@ export function CheckoutPageEnhanced() {
 
   if (isLoadingProfile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-muted/20 to-background">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading checkout...</p>
@@ -388,55 +387,27 @@ export function CheckoutPageEnhanced() {
   }
 
   return (
-    <div className="min-h-screen relative py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <MotionBox
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mb-8"
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      {/* Hero Section - Match Shop/Service/Cart Pages */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28 pb-12"
         >
-          <div className="flex items-center gap-4 mb-6">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
-              <ShoppingBag className="h-7 w-7 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Checkout</h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                Complete your order securely
-              </p>
-            </div>
-          </div>
+          <CheckoutHeader
+            currentStep={currentStep}
+            steps={steps}
+            itemCount={items.length}
+          />
+        </Container>
+      </div>
 
-          {/* Progress Steps */}
-          <div className="flex items-center justify-between max-w-2xl">
-            {steps.map((step, index) => (
-              <div key={step.number} className="flex items-center flex-1">
-                <div className="flex flex-col items-center">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all ${
-                      currentStep >= step.number
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-background'
-                    }`}
-                  >
-                    <step.icon className="h-5 w-5" />
-                  </div>
-                  <span className="text-xs mt-2 font-medium">{step.title}</span>
-                </div>
-                {index < steps.length - 1 && (
-                  <div
-                    className={`flex-1 h-0.5 mx-2 transition-all ${
-                      currentStep > step.number ? 'bg-primary' : 'bg-border'
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-        </MotionBox>
-
+      {/* Main Content - Match Shop/Service/Cart Pages */}
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 py-6 lg:py-8"
+      >
         {/* Stock Issues Warning */}
         {hasStockIssues && (
           <MotionBox
@@ -444,10 +415,10 @@ export function CheckoutPageEnhanced() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+            <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4">
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-semibold text-red-700 dark:text-red-300">
                     Stock Issues in Cart
                   </p>
@@ -476,12 +447,12 @@ export function CheckoutPageEnhanced() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="rounded-2xl border border-dashed border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-16 text-center shadow-lg">
+            <div className="rounded-2xl border border-dashed border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-12 sm:p-16 text-center shadow-lg">
               <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
                 <ShoppingBag className="h-12 w-12 text-primary" />
               </div>
               <h2 className="text-2xl font-bold mb-3">Your cart is empty</h2>
-              <p className="text-muted-foreground mb-8">
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
                 Add items to your cart before proceeding to checkout
               </p>
               <Button
@@ -494,7 +465,7 @@ export function CheckoutPageEnhanced() {
             </div>
           </MotionBox>
         ) : (
-          <div className="grid gap-8 lg:grid-cols-[1fr_420px]">
+          <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1fr_360px]">
             {/* Left Column - Forms */}
             <div className="space-y-6">
               <CheckoutContactForm
@@ -554,73 +525,73 @@ export function CheckoutPageEnhanced() {
             </div>
           </div>
         )}
+      </Container>
 
-        {/* Confirmation Modal */}
-        {showConfirmModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <MotionBox
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.2 }}
-              className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl"
-            >
-              <div className="mb-6">
-                <h3 className="text-xl font-bold mb-2">Confirm Your Order</h3>
-                <p className="text-sm text-muted-foreground">
-                  Place order for LKR {total.toFixed(2)} to{' '}
-                  {city || 'your address'}
-                </p>
-              </div>
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <MotionBox
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+            className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl"
+          >
+            <div className="mb-6">
+              <h3 className="text-xl font-bold mb-2">Confirm Your Order</h3>
+              <p className="text-sm text-muted-foreground">
+                Place order for LKR {total.toFixed(2)} to{' '}
+                {city || 'your address'}
+              </p>
+            </div>
 
-              <div className="space-y-3 mb-6 rounded-lg border border-border/60 bg-muted/20 p-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Items</span>
-                  <span className="font-medium">{items.length}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Delivery to</span>
-                  <span className="font-medium">{city}</span>
-                </div>
-                <div className="flex justify-between border-t border-border pt-3">
-                  <span className="font-semibold">Total</span>
-                  <span className="text-lg font-bold text-primary">
-                    LKR {total.toFixed(2)}
-                  </span>
-                </div>
+            <div className="space-y-3 mb-6 rounded-xl border border-border/60 bg-muted/20 p-4">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Items</span>
+                <span className="font-medium">{items.length}</span>
               </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Delivery to</span>
+                <span className="font-medium">{city}</span>
+              </div>
+              <div className="flex justify-between border-t border-border pt-3">
+                <span className="font-semibold">Total</span>
+                <span className="text-lg font-bold text-primary tabular-nums">
+                  LKR {total.toFixed(2)}
+                </span>
+              </div>
+            </div>
 
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setShowConfirmModal(false)}
-                  disabled={isPlacing}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  colorPalette="primary"
-                  className="flex-1"
-                  onClick={handleConfirmOrder}
-                  disabled={isPlacing}
-                >
-                  {isPlacing ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Placing...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Confirm Order
-                    </>
-                  )}
-                </Button>
-              </div>
-            </MotionBox>
-          </div>
-        )}
-      </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowConfirmModal(false)}
+                disabled={isPlacing}
+              >
+                Cancel
+              </Button>
+              <Button
+                colorPalette="primary"
+                className="flex-1"
+                onClick={handleConfirmOrder}
+                disabled={isPlacing}
+              >
+                {isPlacing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Placing...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
+                    Confirm Order
+                  </>
+                )}
+              </Button>
+            </div>
+          </MotionBox>
+        </div>
+      )}
     </div>
   )
 }
