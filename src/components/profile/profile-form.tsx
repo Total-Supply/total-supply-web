@@ -43,21 +43,23 @@ export function ProfileForm({
     <MotionBox
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.1 }}
-      className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-lg"
+      transition={{ duration: 0.4 }}
+      className="rounded-xl sm:rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
     >
       <div className="mb-6">
-        <h2 className="text-xl font-semibold">My Profile</h2>
+        <h2 className="text-lg sm:text-xl font-semibold">
+          Personal Information
+        </h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Update your details and keep your account current.
+          Update your details and keep your account current
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <form onSubmit={onSubmit} className="space-y-5 sm:space-y-6">
+        <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground flex items-center gap-2">
-              <Mail className="h-4 w-4 text-muted-foreground" />
+              <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               Email
             </label>
             <Input
@@ -73,7 +75,7 @@ export function ProfileForm({
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground flex items-center gap-2">
-              <User className="h-4 w-4 text-muted-foreground" />
+              <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               Name <span className="text-destructive">*</span>
             </label>
             <Input
@@ -86,7 +88,7 @@ export function ProfileForm({
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground flex items-center gap-2">
-              <Phone className="h-4 w-4 text-muted-foreground" />
+              <Phone className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               Phone
             </label>
             <Input
@@ -99,7 +101,7 @@ export function ProfileForm({
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               Address
             </label>
             <Input
@@ -112,7 +114,7 @@ export function ProfileForm({
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-muted-foreground" />
+              <Building2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               City
             </label>
             <Input
@@ -125,7 +127,7 @@ export function ProfileForm({
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground flex items-center gap-2">
-              <Code className="h-4 w-4 text-muted-foreground" />
+              <Code className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               Postal Code
             </label>
             <Input
@@ -139,18 +141,18 @@ export function ProfileForm({
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground flex items-center gap-2">
-            <ImageIcon className="h-4 w-4 text-muted-foreground" />
+            <ImageIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             Profile Picture
           </label>
-          <div className="rounded-xl border border-dashed border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-4">
+          <div className="rounded-lg sm:rounded-xl border border-dashed border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-4">
             {formData.profileImage && (
               <div className="mb-4 flex items-center gap-3 rounded-lg bg-muted/30 p-3">
                 <img
                   src={formData.profileImage}
                   alt="Profile"
-                  className="h-16 w-16 rounded-full object-cover ring-2 ring-primary/20"
+                  className="h-14 w-14 sm:h-16 sm:w-16 rounded-full object-cover ring-2 ring-primary/20"
                 />
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-medium">Current Profile Picture</p>
                   <p className="text-xs text-muted-foreground">
                     Upload a new image to replace
@@ -162,8 +164,12 @@ export function ProfileForm({
           </div>
         </div>
 
-        <div className="flex justify-end">
-          <Button type="submit" loading={isSaving} className="min-w-[120px]">
+        <div className="flex justify-end pt-4 border-t border-border/60">
+          <Button
+            type="submit"
+            loading={isSaving}
+            className="w-full sm:w-auto min-w-[120px]"
+          >
             Save Changes
           </Button>
         </div>

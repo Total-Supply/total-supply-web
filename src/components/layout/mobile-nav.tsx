@@ -4,14 +4,7 @@ import { MotionBox } from '@/src/components/motion/box'
 import siteConfig from '@/src/data/config'
 import { useColorMode } from '@/src/hooks/color-mode'
 import useRouteChanged from '@/src/hooks/use-route-changed'
-import {
-  Info,
-  Mail,
-  Moon,
-  Phone,
-  Sun,
-  X,
-} from 'lucide-react'
+import { Info, Mail, Moon, Phone, Sun, X } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { RemoveScroll } from 'react-remove-scroll'
@@ -42,7 +35,7 @@ export function MobileNavContent({ isOpen, onClose }: MobileNavContentProps) {
 
   if (!isOpen) return null
 
-  const navItems = siteConfig.header.primaryNav
+  // const navItems = siteConfig.header.primaryNav
 
   return (
     <RemoveScroll forwardProps>
@@ -89,7 +82,7 @@ export function MobileNavContent({ isOpen, onClose }: MobileNavContentProps) {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+            {/* <nav className="flex-1 overflow-y-auto p-4 space-y-2">
               {navItems.map((item) => {
                 const isActive = pathname === item.href
                 const Icon = item.icon
@@ -120,7 +113,7 @@ export function MobileNavContent({ isOpen, onClose }: MobileNavContentProps) {
                   </a>
                 )
               })}
-            </nav>
+            </nav> */}
 
             {/* Footer Actions */}
             <div className="border-t border-border p-4 space-y-3">

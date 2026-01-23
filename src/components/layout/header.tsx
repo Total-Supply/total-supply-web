@@ -49,22 +49,26 @@ export function HeaderEnhanced() {
   const mobileNav = useDisclosure()
   const cartDrawer = useDisclosure()
   const { data: session } = useSession()
-  // const primaryNav = siteConfig.header?.primaryNav ?? []
+
+  // Scrollspy for home page sections
   const activeId = useScrollSpy(
     siteConfig.header.links
       .filter(({ id }) => id)
       .map(({ id }) => `[id="${id}"]`),
     { threshold: 0.75 },
   )
+
   const isAuthenticated = Boolean(session?.user)
   const showDashboardLink =
     session?.user?.role && session.user.role !== 'CUSTOMER'
+
+  // Filter nav links based on authentication
   const navLinks = siteConfig.header.links.filter(
     (link) =>
       (link.label !== 'Login' && link.label !== 'Sign Up') || !isAuthenticated,
   )
-  const handleSignOut = () =>
-    signOut({ callbackUrl: pathname === '/' ? '/' : '/services' })
+
+  const handleSignOut = () => signOut({ callbackUrl: '/' })
 
   const cartCount = useSelector((state: RootState) =>
     state.cart.items.reduce((sum, item) => sum + item.quantity, 0),
@@ -82,6 +86,36 @@ export function HeaderEnhanced() {
 
   const isScrolled = y > height
 
+  // Improved active state detection
+  const getIsActive = (link: (typeof navLinks)[0]) => {
+    const { href, id } = link
+
+    // For home page
+    if (pathname === '/') {
+      // If link has an id (section-based), check scrollspy
+      if (id) {
+        return activeId === id
+      }
+      // If link is home page itself
+      if (href === '/') {
+        return !activeId // Active when no section is active
+      }
+      return false
+    }
+
+    // For other pages
+    if (href) {
+      // Exact match for home
+      if (href === '/') {
+        return pathname === '/'
+      }
+      // Exact match or starts with for other routes
+      return pathname === href || pathname?.startsWith(`${href}/`)
+    }
+
+    return false
+  }
+
   return (
     <>
       <MotionBox
@@ -95,7 +129,7 @@ export function HeaderEnhanced() {
             : 'bg-transparent'
         }`}
       >
-        <Container maxW="container.2xl" className="px-4 md:px-8">
+        <Container maxW="container.2xl" className="px-4 sm:px-6 md:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link
@@ -106,9 +140,9 @@ export function HeaderEnhanced() {
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }
               }}
-              className="flex items-center gap-3 group"
+              className="flex items-center gap-2 sm:gap-3 group"
             >
-              <div className="relative h-10 w-10 md:h-12 md:w-12 rounded-xl overflow-hidden ring-2 ring-primary/20 transition-all duration-300 group-hover:ring-primary/40 group-hover:scale-105">
+              <div className="relative h-9 w-9 sm:h-10 sm:w-10 md:h-12 md:w-12 rounded-xl overflow-hidden ring-2 ring-primary/20 transition-all duration-300 group-hover:ring-primary/40 group-hover:scale-105">
                 <Image
                   src="/images/logo/logo.png"
                   alt="Total Supply Logo"
@@ -118,42 +152,20 @@ export function HeaderEnhanced() {
                 />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                   Total Supply
                 </h1>
-                <p className="text-xs text-muted-foreground -mt-1">
+                <p className="text-[10px] sm:text-xs text-muted-foreground -mt-1">
                   Fresh & Fast
                 </p>
               </div>
             </Link>
 
-            {/* Primary navigation */}
-            {/* <nav className="hidden lg:flex items-center gap-4 mr-3">
-              {primaryNav.map(({ href, label, icon: Icon }, i) => {
-                const isActive = href ? pathname?.startsWith(href) : false
-
-                return (
-                  <a
-                    key={i}
-                    href={href}
-                    className={`flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition-all duration-200 ${
-                      isActive ? 'text-primary' : 'hover:text-foreground'
-                    }`}
-                  >
-                    {Icon && <Icon className="h-4 w-4" aria-hidden />}
-                    {label}
-                  </a>
-                )
-              })}
-            </nav> */}
-
-            {/* Section navigation */}
+            {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map(({ href, id, label }, i) => {
-                const linkHref = href || `/#${id}`
-                const isActive =
-                  (id && activeId === id) ||
-                  (href && pathname?.match(new RegExp(href)))
+              {navLinks.map((link, i) => {
+                const linkHref = link.href || `/#${link.id}`
+                const isActive = getIsActive(link)
 
                 return (
                   <a
@@ -165,7 +177,7 @@ export function HeaderEnhanced() {
                         : 'text-muted-foreground hover:text-foreground'
                     }`}
                   >
-                    {label}
+                    {link.label}
                     {isActive && (
                       <MotionBox
                         layoutId="activeNav"
@@ -188,19 +200,21 @@ export function HeaderEnhanced() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {/* CTA Button */}
               {isAuthenticated && (
                 <Link
                   href="/services"
-                  className="hidden lg:inline-flex items-center rounded-full border border-primary/40 px-3 py-1 text-xs font-semibold text-primary transition-all duration-200 hover:text-primary/80 hover:scale-105"
+                  className="hidden lg:inline-flex items-center rounded-full border border-primary/40 px-3 py-1.5 text-xs font-semibold text-primary transition-all duration-200 hover:bg-primary/5 hover:scale-105"
                 >
-                  Ready to Get Started?
+                  Get Started
                 </Link>
               )}
+
               {/* Theme Toggle */}
               <button
                 onClick={toggleColorMode}
-                className="hidden cursor-pointer sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
+                className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                 aria-label="Toggle theme"
               >
                 {colorMode === 'light' ? (
@@ -213,22 +227,23 @@ export function HeaderEnhanced() {
               {/* Cart Button */}
               <button
                 onClick={cartDrawer.onOpen}
-                className="relative cursor-pointer flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
+                className="relative flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                 aria-label="View cart"
               >
                 <ShoppingCart className="h-4 w-4" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white ring-2 ring-background">
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white ring-2 ring-background animate-in zoom-in-50 duration-200">
                     {cartCount > 9 ? '9+' : cartCount}
                   </span>
                 )}
               </button>
 
+              {/* Desktop User Menu */}
               {isAuthenticated ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
-                      className="hidden cursor-pointer sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
+                      className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                       aria-label="Account"
                     >
                       <User className="h-4 w-4" />
@@ -236,10 +251,18 @@ export function HeaderEnhanced() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuLabel inset>
-                      {session?.user?.name || 'Account'}
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {session?.user?.name || 'Account'}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {session?.user?.email}
+                        </p>
+                      </div>
                     </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                      <DropdownMenuItem asChild inset>
+                      <DropdownMenuItem asChild>
                         <Link
                           href="/profile"
                           className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors"
@@ -248,29 +271,29 @@ export function HeaderEnhanced() {
                           Profile
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild inset>
+                      <DropdownMenuItem asChild>
                         <Link
                           href="/orders"
                           className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors"
                         >
                           <Package className="h-4 w-4 text-muted-foreground" />
-                          My orders
+                          My Orders
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild inset>
+                      <DropdownMenuItem asChild>
                         <Link
                           href="/wishlist"
                           className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors"
                         >
                           <Heart className="h-4 w-4 text-muted-foreground" />
-                          Wish list
+                          Wishlist
                         </Link>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
-                    <DropdownMenuSeparator />
                     {showDashboardLink && (
                       <>
-                        <DropdownMenuItem asChild inset>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
                           <Link
                             href="/dashboard"
                             className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors"
@@ -279,49 +302,39 @@ export function HeaderEnhanced() {
                             Dashboard
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
                       </>
                     )}
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem
-                      inset
                       variant="destructive"
                       onSelect={(event) => {
                         event.preventDefault()
                         handleSignOut()
                       }}
-                      className="hover:text-destructive cursor-pointer transition-colors"
+                      className="cursor-pointer"
                     >
                       <LogOut className="h-4 w-4 text-destructive" />
-                      <span className="text-sm text-destructive">Sign out</span>
+                      <span className="text-sm text-destructive">Sign Out</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
                 <Link
                   href="/login"
-                  className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
+                  className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                   aria-label="Log in"
                 >
                   <User className="h-4 w-4" />
                 </Link>
               )}
 
-              {/* Orders */}
-              {/* <Link
-                href="/orders"
-                className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
-                aria-label="Orders"
-              >
-                <Package className="h-4 w-4" />
-              </Link> */}
-
               {/* Mobile Menu Button */}
               <button
                 onClick={mobileNav.onOpen}
-                className="flex lg:hidden items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
+                className="flex lg:hidden items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                 aria-label="Open menu"
               >
-                <Menu className="h-4 w-4" />
+                <Menu className="h-5 w-5" />
               </button>
             </div>
           </div>
@@ -329,7 +342,12 @@ export function HeaderEnhanced() {
       </MotionBox>
 
       {/* Mobile Navigation Drawer */}
-      <MobileNavContent isOpen={mobileNav.open} onClose={mobileNav.onClose} />
+      <MobileNavContent
+        isOpen={mobileNav.open}
+        onClose={mobileNav.onClose}
+        session={session}
+        onSignOut={handleSignOut}
+      />
 
       {/* Cart Drawer */}
       <CartDrawerEnhanced
