@@ -1,7 +1,5 @@
-import { ShopDetailPage } from '@/src/components/shop/shop-detail-page'
+import { ShopDetailPageEnhanced } from '@/src/components/shop/details/shop-detail-page'
 
 export default function ShopDetail() {
-  return <ShopDetailPage />
+  return <ShopDetailPageEnhanced />
 }
-
-
