@@ -22,12 +22,11 @@ export const MarketingLayout: React.FC<LayoutProps> = (props) => {
   const { children, announcementProps, headerProps, footerProps } = props
 
   return (
-    <Box>
+    <Box suppressHydrationWarning>
       <SkipNavLink>Skip to content</SkipNavLink>
 
-      {announcementProps ? <AnnouncementBanner {...announcementProps} /> : null}
+      {announcementProps && <AnnouncementBanner {...announcementProps} />}
 
-      {/* ✅ Safe spread even when undefined */}
       <Header {...(headerProps ?? {})} />
 
       <Box as="main">
@@ -35,7 +34,6 @@ export const MarketingLayout: React.FC<LayoutProps> = (props) => {
         {children}
       </Box>
 
-      {/* ✅ Safe spread even when undefined */}
       <Footer {...(footerProps ?? {})} />
     </Box>
   )

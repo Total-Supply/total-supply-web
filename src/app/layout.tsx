@@ -5,6 +5,7 @@ import { ReduxProvider } from '@/src/providers/redux-provider'
 import { SessionProvider } from '@/src/providers/session-provider'
 import '@fontsource-variable/inter'
 import type { Metadata } from 'next'
+import 'swagger-ui-react/swagger-ui.css'
 
 import './globals.css'
 
@@ -20,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <Provider>
           <SessionProvider>
             <ReduxProvider>
