@@ -2,7 +2,6 @@
 
 import { Badge } from '@/src/components/ui/badge'
 import { Button } from '@/src/components/ui/button'
-import { NumberInput } from '@chakra-ui/react'
 import { AlertTriangle, Minus, Package, Plus, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -50,14 +49,14 @@ export function CartItemCard({
   }
 
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 shadow-sm transition-all duration-300 hover:shadow-md">
-      <div className="flex gap-5">
+    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4 sm:p-5 shadow-sm transition-all duration-300 hover:shadow-md">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
         {/* Product Image */}
         <Link
           href={item.slug ? `/shop/${item.slug}` : '#'}
-          className="relative flex-shrink-0"
+          className="relative flex-shrink-0 mx-auto sm:mx-0"
         >
-          <div className="relative h-28 w-28 overflow-hidden rounded-lg bg-muted ring-1 ring-border transition-all group-hover:ring-2 group-hover:ring-primary">
+          <div className="relative h-24 w-24 sm:h-28 sm:w-28 overflow-hidden rounded-xl bg-muted ring-1 ring-border transition-all group-hover:ring-2 group-hover:ring-primary">
             {item.image ? (
               <img
                 src={item.image}
@@ -78,14 +77,14 @@ export function CartItemCard({
         </Link>
 
         {/* Product Details */}
-        <div className="flex flex-1 flex-col justify-between">
+        <div className="flex flex-1 flex-col justify-between space-y-3">
           <div className="space-y-2">
             <div className="flex items-start justify-between gap-4">
               <Link
                 href={item.slug ? `/shop/${item.slug}` : '#'}
-                className="group/link"
+                className="group/link flex-1"
               >
-                <h3 className="text-lg font-semibold transition-colors group-hover/link:text-primary">
+                <h3 className="text-base sm:text-lg font-semibold transition-colors group-hover/link:text-primary line-clamp-2">
                   {item.name}
                 </h3>
               </Link>
@@ -94,13 +93,13 @@ export function CartItemCard({
                 size="sm"
                 onClick={onRemove}
                 colorPalette="red"
-                className="flex-shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                className="flex-shrink-0"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm text-muted-foreground">
                 LKR {item.price.toFixed(2)} per unit
               </p>
@@ -120,16 +119,16 @@ export function CartItemCard({
 
             {/* Stock Warnings */}
             {isOutOfStock && (
-              <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-2.5">
-                <p className="text-sm font-medium text-red-600 dark:text-red-400">
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-2.5">
+                <p className="text-xs sm:text-sm font-medium text-red-600 dark:text-red-400">
                   Out of stock - Remove this item to continue
                 </p>
               </div>
             )}
 
             {isOverLimit && !isOutOfStock && (
-              <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-2.5">
-                <p className="text-sm font-medium text-amber-700 dark:text-amber-300">
+              <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-2.5">
+                <p className="text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-300">
                   Only {item.stock} left - Adjust quantity to continue
                 </p>
               </div>
@@ -137,17 +136,17 @@ export function CartItemCard({
           </div>
 
           {/* Quantity Controls & Price */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 justify-center sm:justify-start">
               <button
                 onClick={handleDecrement}
                 disabled={item.quantity <= 1 || isOutOfStock}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background transition-all hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background transition-all hover:bg-muted active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Minus className="h-4 w-4" />
               </button>
 
-              <div className="flex h-9 min-w-[4rem] items-center justify-center rounded-lg border border-border bg-background px-3">
+              <div className="flex h-9 min-w-[3.5rem] items-center justify-center rounded-lg border border-border bg-background px-3">
                 <span className="font-semibold tabular-nums">
                   {item.quantity}
                 </span>
@@ -156,15 +155,17 @@ export function CartItemCard({
               <button
                 onClick={handleIncrement}
                 disabled={item.quantity >= maxQuantity || isOutOfStock}
-                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background transition-all hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background transition-all hover:bg-muted active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Plus className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Subtotal</p>
-              <p className="text-xl font-bold tabular-nums">
+            <div className="text-center sm:text-right">
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Subtotal
+              </p>
+              <p className="text-lg sm:text-xl font-bold tabular-nums">
                 LKR {(item.price * item.quantity).toFixed(2)}
               </p>
             </div>

@@ -9,6 +9,7 @@ import {
   syncCartItems,
   updateQuantity,
 } from '@/src/store/slices/cartSlice'
+import { Container } from '@chakra-ui/react'
 import { AlertCircle, ShoppingCart } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
@@ -127,20 +128,33 @@ export function CartPage() {
   )
 
   return (
-    <div className="min-h-screen relative py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <CartHeader
-          itemCount={items.length}
-          totalItems={items.reduce((sum, item) => sum + item.quantity, 0)}
-          onClearCart={handleClearCart}
-          isClearing={isClearing}
-          isSyncing={isSyncing}
-        />
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      {/* Hero Section - Match Shop/Service Pages */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28 pb-12"
+        >
+          <CartHeader
+            itemCount={items.length}
+            totalItems={items.reduce((sum, item) => sum + item.quantity, 0)}
+            onClearCart={handleClearCart}
+            isClearing={isClearing}
+            isSyncing={isSyncing}
+          />
+        </Container>
+      </div>
 
+      {/* Main Content - Match Shop/Service Pages */}
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 py-6 lg:py-8"
+      >
         {items.length === 0 ? (
           <EmptyCart onContinueShopping={() => router.push('/shop')} />
         ) : (
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px]">
+          <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1fr_360px]">
             {/* Items List */}
             <div className="space-y-4">
               {/* Stock Warnings */}
@@ -148,7 +162,7 @@ export function CartPage() {
                 <MotionBox
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4"
+                  className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4"
                 >
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
@@ -169,7 +183,7 @@ export function CartPage() {
 
               {/* Syncing Indicator */}
               {isSyncing && (
-                <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-3">
+                <div className="rounded-2xl bg-blue-500/10 border border-blue-500/20 p-3">
                   <div className="flex items-center gap-2">
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
                     <p className="text-sm text-blue-700 dark:text-blue-300">
@@ -217,27 +231,31 @@ export function CartPage() {
             </div>
           </div>
         )}
+      </Container>
 
-        {/* Mobile Sticky Checkout */}
-        {items.length > 0 && (
-          <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-lg px-4 py-3 shadow-2xl lg:hidden">
+      {/* Mobile Sticky Checkout - Enhanced */}
+      {items.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-lg shadow-2xl lg:hidden safe-bottom">
+          <div className="px-4 py-3 sm:px-6">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-xs text-muted-foreground">Total</p>
-                <p className="text-lg font-bold">LKR {grandTotal.toFixed(2)}</p>
+                <p className="text-xs text-muted-foreground">Total Amount</p>
+                <p className="text-xl font-bold tabular-nums">
+                  LKR {grandTotal.toFixed(2)}
+                </p>
               </div>
               <button
                 onClick={() => router.push('/checkout')}
                 disabled={hasOutOfStock || hasOverLimit}
-                className="rounded-lg bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
               >
-                <ShoppingCart className="mr-2 inline h-4 w-4" />
-                Checkout
+                <ShoppingCart className="h-5 w-5" />
+                <span className="hidden xs:inline">Checkout</span>
               </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
