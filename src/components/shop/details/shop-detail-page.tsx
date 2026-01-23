@@ -4,7 +4,7 @@ import { MotionBox } from '@/src/components/motion/box'
 import { useToast } from '@/src/hooks/use-toast'
 import { addToCart } from '@/src/store/slices/cartSlice'
 import { Container } from '@chakra-ui/react'
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import { ArrowLeft, Loader2, Minus, Plus } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 
@@ -128,10 +128,22 @@ export function ShopDetailPageEnhanced() {
     }
   }
 
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1)
+    }
+  }
+
+  const handleIncrement = () => {
+    if (item && quantity < Math.min(item.stock, 100)) {
+      setQuantity(quantity + 1)
+    }
+  }
+
   if (isLoading) {
     return (
-      <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
-        <Container maxW="container.xl" className="px-4 py-16">
+      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+        <Container maxW="container.xl" className="px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex flex-col items-center justify-center gap-4 py-20">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
             <p className="text-lg text-muted-foreground">Loading product...</p>
@@ -143,8 +155,8 @@ export function ShopDetailPageEnhanced() {
 
   if (!item) {
     return (
-      <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
-        <Container maxW="container.xl" className="px-4 py-16">
+      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+        <Container maxW="container.xl" className="px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center py-20">
             <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
             <p className="text-muted-foreground mb-6">
@@ -160,14 +172,17 @@ export function ShopDetailPageEnhanced() {
     )
   }
 
+  const isOutOfStock = item.stock === 0
+  const maxQuantity = Math.min(item.stock, 100)
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
-      {/* Hero Section */}
+      {/* Hero Section - Minimal with Breadcrumb */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         <Container
           maxW="container.xl"
-          className="relative px-8 sm:px-10 lg:px-12 pb-6 pt-20 sm:pt-24 lg:pt-28"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28 pb-6"
         >
           <Button
             variant="ghost"
@@ -186,9 +201,9 @@ export function ShopDetailPageEnhanced() {
       {/* Main Content */}
       <Container
         maxW="container.xl"
-        className="py-8 md:py-12 relative px-4 sm:px-6 lg:px-8"
+        className="relative px-4 sm:px-6 lg:px-8 py-6 lg:py-8"
       >
-        <div className="grid gap-8 lg:grid-cols-2 mb-12">
+        <div className="grid gap-6 lg:gap-8 lg:grid-cols-2 mb-8 lg:mb-12">
           {/* Image Gallery */}
           <ProductImageGallery item={item} />
 
@@ -230,27 +245,61 @@ export function ShopDetailPageEnhanced() {
             }}
           />
         )}
+
+        {/* Mobile Bottom Spacing */}
+        <div className="h-24 md:hidden" />
       </Container>
 
-      {/* Mobile Sticky Footer */}
+      {/* Mobile Sticky Footer - Enhanced */}
       {item && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border/60 p-4 shadow-2xl md:hidden">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm text-muted-foreground">Price</p>
-              <p className="text-xl font-bold text-primary tabular-nums">
-                LKR {Number(item.price).toFixed(2)}
-              </p>
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/98 backdrop-blur-xl border-t border-border/60 shadow-2xl md:hidden">
+          <div className="px-4 py-3">
+            {/* Quantity Selector */}
+            {!isOutOfStock && (
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Quantity
+                </span>
+                <div className="flex items-center rounded-full border border-border/60 bg-muted/30">
+                  <button
+                    onClick={handleDecrement}
+                    disabled={quantity <= 1}
+                    className="flex h-9 w-9 items-center justify-center rounded-l-full hover:bg-muted transition-colors disabled:opacity-50"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="flex h-9 w-12 items-center justify-center text-sm font-bold tabular-nums">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={handleIncrement}
+                    disabled={quantity >= maxQuantity}
+                    className="flex h-9 w-9 items-center justify-center rounded-r-full hover:bg-muted transition-colors disabled:opacity-50"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Price & Add to Cart */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground">Total Price</p>
+                <p className="text-xl font-bold text-primary tabular-nums">
+                  LKR {(Number(item.price) * quantity).toFixed(2)}
+                </p>
+              </div>
+              <Button
+                colorPalette="primary"
+                size="lg"
+                disabled={isOutOfStock}
+                onClick={handleAddToCart}
+                className="flex-1"
+              >
+                Add to Cart
+              </Button>
             </div>
-            <Button
-              colorPalette="primary"
-              size="lg"
-              disabled={item.stock === 0}
-              onClick={handleAddToCart}
-              className="flex-1"
-            >
-              Add to Cart
-            </Button>
           </div>
         </div>
       )}

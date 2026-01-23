@@ -40,10 +40,10 @@ export function ProductImageGallery({ item }: ProductImageGalleryProps) {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
-        className="space-y-4"
+        className="space-y-3 sm:space-y-4"
       >
         {/* Main Image */}
-        <div className="relative aspect-square overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-muted to-muted/50">
+        <div className="relative aspect-square overflow-hidden rounded-xl sm:rounded-2xl border border-border/60 bg-gradient-to-br from-muted to-muted/50 shadow-sm">
           {activeImage && !imageError ? (
             <>
               <img
@@ -56,9 +56,9 @@ export function ProductImageGallery({ item }: ProductImageGalleryProps) {
               {/* Zoom Button */}
               <button
                 onClick={() => setIsZoomed(true)}
-                className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-colors"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-colors"
               >
-                <ZoomIn className="h-5 w-5" />
+                <ZoomIn className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
 
               {/* Navigation Arrows */}
@@ -66,22 +66,22 @@ export function ProductImageGallery({ item }: ProductImageGalleryProps) {
                 <>
                   <button
                     onClick={handlePrevious}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-all duration-200 hover:scale-110"
+                    className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-all duration-200 hover:scale-110"
                   >
-                    <ChevronLeft className="h-6 w-6" />
+                    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
                   <button
                     onClick={handleNext}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-all duration-200 hover:scale-110"
+                    className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 transition-all duration-200 hover:scale-110"
                   >
-                    <ChevronRight className="h-6 w-6" />
+                    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
                   </button>
                 </>
               )}
 
               {/* Image Counter */}
               {hasMultipleImages && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-sm font-semibold text-white backdrop-blur-sm">
+                <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-2.5 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm font-semibold text-white backdrop-blur-sm">
                   {activeIndex + 1} / {gallery.length}
                 </div>
               )}
@@ -89,7 +89,7 @@ export function ProductImageGallery({ item }: ProductImageGalleryProps) {
           ) : (
             <div className="flex h-full w-full items-center justify-center">
               <div className="text-center space-y-3">
-                <Package className="h-20 w-20 mx-auto text-muted-foreground/30" />
+                <Package className="h-16 w-16 sm:h-20 sm:w-20 mx-auto text-muted-foreground/30" />
                 <p className="text-sm text-muted-foreground">
                   No image available
                 </p>
@@ -100,7 +100,7 @@ export function ProductImageGallery({ item }: ProductImageGalleryProps) {
 
         {/* Thumbnail Grid */}
         {hasMultipleImages && (
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 sm:gap-3">
             {gallery.map((url, index) => (
               <button
                 key={index}
@@ -133,18 +133,18 @@ export function ProductImageGallery({ item }: ProductImageGalleryProps) {
         >
           <button
             onClick={() => setIsZoomed(false)}
-            className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+            className="absolute top-4 right-4 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
           <Image
             src={activeImage}
             alt={item.name}
-            className="max-h-[90vh] max-w-[90vw] object-contain rounded-2xl"
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-xl sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
             width={900}
             height={900}
-            style={{ objectFit: 'contain', borderRadius: '1rem' }}
+            style={{ objectFit: 'contain' }}
             priority
           />
         </div>
