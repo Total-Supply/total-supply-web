@@ -86,6 +86,32 @@ const navMain = [
     ],
   },
   {
+    title: 'Services',
+    url: '/dashboard/cleaner/services',
+    icon: Wrench,
+    roles: ['CLEANER'],
+    items: [
+      {
+        title: 'Service Requests',
+        url: '/dashboard/cleaner/services',
+        roles: ['CLEANER'],
+      },
+    ],
+  },
+  {
+    title: 'Deliveries',
+    url: '/dashboard/driver/deliveries',
+    icon: Truck,
+    roles: ['DRIVER'],
+    items: [
+      {
+        title: 'Delivery Requests',
+        url: '/dashboard/driver/deliveries',
+        roles: ['DRIVER'],
+      },
+    ],
+  },
+  {
     title: 'IT Services',
     url: '/dashboard/it',
     icon: Wrench,
