@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { LandingCTA } from './landing-cta'
+import { LandingCTAEnhanced } from './landing-cta'
 import { LandingFeaturedProducts } from './landing-featured-products'
 import { LandingFeatures } from './landing-features'
 import { LandingHero } from './landing-hero'
@@ -43,7 +43,7 @@ export function LandingPage() {
       <LandingServices />
       <LandingFeaturedProducts />
       <LandingTestimonials />
-      <LandingCTA />
+      <LandingCTAEnhanced />
     </div>
   )
 }
