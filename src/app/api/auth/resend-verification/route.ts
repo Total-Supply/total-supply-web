@@ -8,6 +8,15 @@ import { getRateLimitKey, rateLimiters } from '@/src/middleware/rate-limit'
 import { randomBytes } from 'crypto'
 import { NextRequest } from 'next/server'
 
+/**
+ * Resend Verification Email
+ * @description Re-sends an email verification token if the user exists and is not yet verified.
+ * @body ResendVerificationBody
+ * @response ResendVerificationSuccessResponse
+ * @responseSet public
+ * @tag Auth
+ * @openapi
+ */
 async function handler(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || 'unknown'
   const rateLimitKey = getRateLimitKey(undefined, ip, 'resend-verification')
@@ -18,12 +27,7 @@ async function handler(request: NextRequest) {
 
   const user = await prisma.user.findUnique({
     where: { email: data.email },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      emailVerified: true,
-    },
+    select: { id: true, email: true, name: true, emailVerified: true },
   })
 
   if (!user || user.emailVerified) {
@@ -33,19 +37,13 @@ async function handler(request: NextRequest) {
     )
   }
 
-  await prisma.emailVerificationToken.deleteMany({
-    where: { userId: user.id },
-  })
+  await prisma.emailVerificationToken.deleteMany({ where: { userId: user.id } })
 
   const token = randomBytes(32).toString('hex')
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
 
   await prisma.emailVerificationToken.create({
-    data: {
-      token,
-      userId: user.id,
-      expiresAt,
-    },
+    data: { token, userId: user.id, expiresAt },
   })
 
   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
@@ -69,5 +67,3 @@ async function handler(request: NextRequest) {
 }
 
 export const POST = withErrorHandler(handler)
-
-

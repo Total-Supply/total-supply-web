@@ -1,9 +1,6 @@
 import { ApiResponse } from '@/src/lib/api/response'
 import { validateBody } from '@/src/lib/api/validator'
-import {
-  buildPasswordResetEmail,
-  sendEmail,
-} from '@/src/lib/email'
+import { buildPasswordResetEmail, sendEmail } from '@/src/lib/email'
 import prisma from '@/src/lib/prisma'
 import { forgotPasswordSchema } from '@/src/lib/validations/auth.schema'
 import { withErrorHandler } from '@/src/middleware/error-handler'
@@ -11,6 +8,15 @@ import { getRateLimitKey, rateLimiters } from '@/src/middleware/rate-limit'
 import { randomBytes } from 'crypto'
 import { NextRequest } from 'next/server'
 
+/**
+ * Forgot Password
+ * @description Sends a password reset link to the user email (always returns success to prevent email enumeration).
+ * @body ForgotPasswordBody
+ * @response ForgotPasswordSuccessResponse
+ * @responseSet public
+ * @tag Auth
+ * @openapi
+ */
 async function handler(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') || 'unknown'
   const rateLimitKey = getRateLimitKey(undefined, ip, 'forgot-password')
@@ -21,11 +27,7 @@ async function handler(request: NextRequest) {
 
   const user = await prisma.user.findUnique({
     where: { email: data.email },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-    },
+    select: { id: true, email: true, name: true },
   })
 
   if (!user) {
@@ -35,27 +37,18 @@ async function handler(request: NextRequest) {
     )
   }
 
-  await prisma.passwordResetToken.deleteMany({
-    where: { userId: user.id },
-  })
+  await prisma.passwordResetToken.deleteMany({ where: { userId: user.id } })
 
   const token = randomBytes(32).toString('hex')
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000)
 
   await prisma.passwordResetToken.create({
-    data: {
-      token,
-      userId: user.id,
-      expiresAt,
-    },
+    data: { token, userId: user.id, expiresAt },
   })
 
   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
   const resetUrl = `${baseUrl}/reset-password?token=${token}`
-  const { text, html } = buildPasswordResetEmail({
-    name: user.name,
-    resetUrl,
-  })
+  const { text, html } = buildPasswordResetEmail({ name: user.name, resetUrl })
 
   await sendEmail({
     to: user.email,
@@ -71,5 +64,3 @@ async function handler(request: NextRequest) {
 }
 
 export const POST = withErrorHandler(handler)
-
-

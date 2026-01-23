@@ -6,16 +6,23 @@ import { requireAuth } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
+/**
+ * Update Profile
+ * @description Updates the authenticated user's profile (name/phone/profile image).
+ * @auth bearer
+ * @body UpdateProfileBody
+ * @response UpdateProfileSuccessResponse
+ * @responseSet auth
+ * @tag Auth
+ * @openapi
+ */
 async function handler(request: NextRequest) {
-  // Get authenticated user
   const authRequest = await requireAuth(request)
   const userId = parseInt(authRequest.user.id)
 
-  // Validate request body
   const body = await request.json()
   const data = await validateBody(body, updateProfileSchema)
 
-  // Update user profile
   const user = await prisma.user.update({
     where: { id: userId },
     data: {
@@ -35,7 +42,6 @@ async function handler(request: NextRequest) {
     },
   })
 
-  // Create audit log
   const ip = request.headers.get('x-forwarded-for') || 'unknown'
   await prisma.auditLog.create({
     data: {
@@ -56,5 +62,3 @@ async function handler(request: NextRequest) {
 }
 
 export const PUT = withErrorHandler(handler)
-
-

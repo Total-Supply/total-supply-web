@@ -1,18 +1,18 @@
-import { NotFoundError } from '@/src/lib/api/errors'
 import { ApiResponse } from '@/src/lib/api/response'
-import { buildApprovalEmail, sendEmail } from '@/src/lib/email'
 import prisma from '@/src/lib/prisma'
 import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
+type Params = { params: Promise<{ id: string }> }
+
 /**
- * Approve User
+ * Reactivate User (Admin)
  *
- * @description Approves a pending user (email must be verified). Admin only.
+ * @description Reactivates a user (status = ACTIVE). Admin only.
  *
  * @params UserIdParams
- * @response 200 - ApproveUserSuccessResponse - User approved
+ * @response 200 - ReactivateUserSuccessResponse - Reactivated user
  * @responseSet adminCrud
  *
  * @auth bearer
@@ -20,17 +20,14 @@ import { NextRequest } from 'next/server'
  * @tag Users
  * @openapi
  */
-async function handler(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+async function handler(request: NextRequest, { params }: Params) {
   const authRequest = await requireAdmin(request)
-  const adminId = parseInt(authRequest.user.id, 10)
+  const adminId = Number(authRequest.user.id)
 
   const { id } = await params
-  const userId = parseInt(id, 10)
+  const userId = Number(id)
 
-  if (!Number.isFinite(userId)) {
+  if (Number.isNaN(userId)) {
     return ApiResponse.badRequest('Invalid user id')
   }
 
@@ -38,30 +35,42 @@ async function handler(
     where: { id: userId },
     select: {
       id: true,
-      email: true,
-      name: true,
       status: true,
       emailVerified: true,
     },
   })
 
   if (!user) {
-    throw new NotFoundError('User not found')
+    return ApiResponse.notFound('User not found')
+  }
+
+  if (user.status === 'ACTIVE') {
+    return ApiResponse.conflict('User is already active')
+  }
+
+  if (user.status === 'PENDING_APPROVAL') {
+    return ApiResponse.badRequest(
+      'Pending users must be approved (use approve route)',
+    )
   }
 
   if (!user.emailVerified) {
-    return ApiResponse.badRequest('User email not verified')
+    return ApiResponse.badRequest('User email is not verified')
   }
 
-  const updatedUser = await prisma.user.update({
+  const updated = await prisma.user.update({
     where: { id: userId },
     data: { status: 'ACTIVE' },
     select: {
       id: true,
       email: true,
       name: true,
+      phone: true,
+      profileImage: true,
       role: true,
       status: true,
+      emailVerified: true,
+      createdAt: true,
       updatedAt: true,
     },
   })
@@ -78,22 +87,14 @@ async function handler(
       details: {
         from: user.status,
         to: 'ACTIVE',
-        action: 'approved',
+        action: 'reactivated',
         result: 'SUCCESS',
         actorName: authRequest.user.name,
       },
     },
   })
 
-  const { text, html } = buildApprovalEmail({ name: updatedUser.name })
-  await sendEmail({
-    to: updatedUser.email,
-    subject: 'Your account has been approved',
-    text,
-    html,
-  })
-
-  return ApiResponse.success(updatedUser, 'User approved successfully')
+  return ApiResponse.success(updated, 'User reactivated successfully')
 }
 
 export const POST = withErrorHandler(handler)
