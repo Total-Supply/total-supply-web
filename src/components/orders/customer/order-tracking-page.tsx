@@ -3,6 +3,7 @@
 import { MotionBox } from '@/src/components/motion/box'
 import { Button } from '@/src/components/ui/button'
 import { useToast } from '@/src/hooks/use-toast'
+import { Container } from '@chakra-ui/react'
 import {
   AlertCircle,
   ArrowLeft,
@@ -19,10 +20,10 @@ import { CancelOrderModal } from './cancel-order-modal'
 import { DeliveryAddressCard } from './delivery-address-card'
 import { DeliveryProof } from './delivery-proof'
 import { ImageModal } from './image-modal'
-// Modular Components
 import { OrderHeaderCard } from './order-header-card'
 import { OrderItems } from './order-items'
 import { OrderTimeline } from './order-timeline'
+import { OrderTrackingHeader } from './order-tracking-header'
 import { PreparationUpdate } from './preparation-update'
 
 type OrderDetail = {
@@ -165,7 +166,7 @@ export function OrderTrackingEnhanced() {
     }
 
     load()
-  }, [orderNumber])
+  }, [orderNumber, toast])
 
   const handleCancelOrder = async (reason: string) => {
     if (!order) return
@@ -216,10 +217,12 @@ export function OrderTrackingEnhanced() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center relative py-20 sm:py-24 lg:py-28 justify-center bg-gradient-to-b from-muted/20 to-background">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading order details...</p>
+      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading order details...</p>
+          </div>
         </div>
       </div>
     )
@@ -227,28 +230,57 @@ export function OrderTrackingEnhanced() {
 
   if (!order) {
     return (
-      <div className="min-h-screen flex items-center relative py-20 sm:py-24 lg:py-28 justify-center bg-gradient-to-b from-muted/20 to-background">
-        <div className="text-center max-w-md">
-          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-red-500/20 to-red-600/10 ring-1 ring-red-500/30">
-            <AlertCircle className="h-10 w-10 text-red-500" />
+      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+        <Container
+          maxW="container.xl"
+          className="relative px-4 sm:px-6 lg:px-8 py-20"
+        >
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <div className="text-center max-w-md">
+              <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-red-500/20 to-red-600/10 ring-1 ring-red-500/30">
+                <AlertCircle className="h-10 w-10 text-red-500" />
+              </div>
+              <h2 className="text-2xl font-bold mb-3">Order Not Found</h2>
+              <p className="text-muted-foreground mb-6">
+                The order you&apos;re looking for doesn&apos;t exist or you don&apos;t have
+                permission to view it.
+              </p>
+              <Button
+                colorPalette="primary"
+                onClick={() => router.push('/orders')}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Orders
+              </Button>
+            </div>
           </div>
-          <h2 className="text-2xl font-bold mb-3">Order Not Found</h2>
-          <p className="text-muted-foreground mb-6">
-            The order you&#39;re looking for doesn&#39;t exist or you don&#39;t
-            have permission to view it.
-          </p>
-          <Button colorPalette="primary" onClick={() => router.push('/orders')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Orders
-          </Button>
-        </div>
+        </Container>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
-      <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      {/* Hero Section - Match Other Pages */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28 pb-12"
+        >
+          <OrderTrackingHeader
+            orderNumber={order.orderNumber}
+            status={order.status}
+            itemCount={order.items.length}
+          />
+        </Container>
+      </div>
+
+      {/* Main Content */}
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 py-6 lg:py-8"
+      >
         {/* Back Button */}
         <MotionBox
           initial={{ opacity: 0, x: -20 }}
@@ -278,15 +310,15 @@ export function OrderTrackingEnhanced() {
           onCancel={() => setShowCancelModal(true)}
         />
 
-        <div className="grid gap-6 lg:grid-cols-3 mt-6">
+        <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1fr_360px] mt-6">
           {/* Left Column - Status & Address */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6">
             {/* Timeline */}
             <MotionBox
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-sm"
+              className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
             >
               <OrderTimeline
                 currentStatus={order.status}
@@ -300,7 +332,7 @@ export function OrderTrackingEnhanced() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
-                className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-sm"
+                className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
               >
                 <DeliveryAddressCard address={order.address} />
               </MotionBox>
@@ -313,7 +345,7 @@ export function OrderTrackingEnhanced() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 }}
-                  className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-sm"
+                  className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
                 >
                   <PreparationUpdate
                     meta={preparationMeta}
@@ -328,7 +360,7 @@ export function OrderTrackingEnhanced() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.4 }}
-                className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-sm"
+                className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
               >
                 <DeliveryProof
                   proof={order.deliveryProof}
@@ -339,13 +371,13 @@ export function OrderTrackingEnhanced() {
           </div>
 
           {/* Right Column - Order Items & Actions */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
             {/* Order Items */}
             <MotionBox
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
-              className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-sm"
+              className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
             >
               <OrderItems items={order.items} notes={order.notes} />
             </MotionBox>
@@ -355,7 +387,7 @@ export function OrderTrackingEnhanced() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.3 }}
-              className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-sm space-y-3"
+              className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm space-y-3"
             >
               <Button
                 variant="outline"
@@ -389,7 +421,7 @@ export function OrderTrackingEnhanced() {
             </MotionBox>
           </div>
         </div>
-      </div>
+      </Container>
 
       {/* Modals */}
       <CancelOrderModal

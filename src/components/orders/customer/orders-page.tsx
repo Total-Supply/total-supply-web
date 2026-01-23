@@ -5,19 +5,17 @@ import { AppSelect } from '@/src/components/ui/app-select'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
 import { useToast } from '@/src/hooks/use-toast'
+import { Container } from '@chakra-ui/react'
 import {
-  AlertCircle,
   Calendar,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
   Clock,
   DollarSign,
-  Download,
   Eye,
   Filter,
   Package,
-  RefreshCw,
   Search,
   ShoppingBag,
   Truck,
@@ -27,6 +25,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 
 import { OrderStatusBadge } from './order-status-badge'
+import { OrdersListHeader } from './orders-list-header'
 
 type OrderSummary = {
   id: number
@@ -56,39 +55,6 @@ const STATUS_FILTERS = [
   'CANCELED',
 ]
 
-const STATUS_CONFIG = {
-  PENDING: {
-    label: 'Pending',
-    color: 'bg-amber-500/20 text-amber-400 ring-amber-500/40',
-    icon: Clock,
-  },
-  ACCEPTED: {
-    label: 'Accepted',
-    color: 'bg-blue-500/20 text-blue-400 ring-blue-500/40',
-    icon: CheckCircle2,
-  },
-  PREPARING: {
-    label: 'Preparing',
-    color: 'bg-purple-500/20 text-purple-400 ring-purple-500/40',
-    icon: Package,
-  },
-  OUT_FOR_DELIVERY: {
-    label: 'Out for Delivery',
-    color: 'bg-cyan-500/20 text-cyan-400 ring-cyan-500/40',
-    icon: Truck,
-  },
-  DELIVERED: {
-    label: 'Delivered',
-    color: 'bg-emerald-500/20 text-emerald-400 ring-emerald-500/40',
-    icon: CheckCircle2,
-  },
-  CANCELED: {
-    label: 'Canceled',
-    color: 'bg-red-500/20 text-red-400 ring-red-500/40',
-    icon: AlertCircle,
-  },
-}
-
 export function OrdersPageEnhanced() {
   const router = useRouter()
   const toast = useToast()
@@ -111,7 +77,6 @@ export function OrdersPageEnhanced() {
   const [toDate, setToDate] = useState(toParam)
   const [page, setPage] = useState(pageParam)
   const [totalPages, setTotalPages] = useState(1)
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
 
   // Stats
   const orderStats = useMemo(() => {
@@ -244,55 +209,37 @@ export function OrdersPageEnhanced() {
   const emptyState = !isLoading && orders.length === 0
 
   return (
-    <div className="min-h-screen relative py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <MotionBox
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mb-8"
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      {/* Hero Section - Match Other Pages */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28 pb-12"
         >
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
-                <Package className="h-7 w-7 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold">My Orders</h1>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Track and manage your orders
-                </p>
-              </div>
-            </div>
+          <OrdersListHeader
+            onExport={handleExport}
+            onRefresh={handleRefresh}
+            isRefreshing={isRefreshing}
+            hasOrders={orders.length > 0}
+          />
+        </Container>
+      </div>
 
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExport}
-                disabled={orders.length === 0}
-              >
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-              >
-                <RefreshCw
-                  className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`}
-                />
-                Refresh
-              </Button>
-            </div>
-          </div>
-
-          {/* Stats Cards */}
-          {!isLoading && orders.length > 0 && (
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {/* Main Content */}
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 py-6 lg:py-8"
+      >
+        {/* Stats Cards */}
+        {!isLoading && orders.length > 0 && (
+          <MotionBox
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="mb-6"
+          >
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               {[
                 {
                   label: 'Total Orders',
@@ -328,26 +275,28 @@ export function OrdersPageEnhanced() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
-                  className="group relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+                  className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-3 sm:p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
                 >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         {stat.label}
                       </p>
-                      <p className="mt-1 text-2xl font-bold">{stat.value}</p>
+                      <p className="mt-1 text-xl sm:text-2xl font-bold">
+                        {stat.value}
+                      </p>
                     </div>
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ring-1 transition-transform duration-300 group-hover:scale-110 ${stat.color}`}
+                      className={`flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br ring-1 transition-transform duration-300 group-hover:scale-110 ${stat.color}`}
                     >
-                      <stat.icon className="h-5 w-5" />
+                      <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
                     </div>
                   </div>
                 </MotionBox>
               ))}
             </div>
-          )}
-        </MotionBox>
+          </MotionBox>
+        )}
 
         {/* Filters */}
         <MotionBox
@@ -357,7 +306,7 @@ export function OrdersPageEnhanced() {
           className="mb-6"
         >
           <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4 shadow-sm">
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -412,7 +361,7 @@ export function OrdersPageEnhanced() {
             </div>
 
             {hasFilters && (
-              <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-3">
+              <div className="mt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-border/60 pt-3 gap-3">
                 <p className="text-sm text-muted-foreground">
                   {orders.length} result{orders.length !== 1 ? 's' : ''} found
                 </p>
@@ -441,7 +390,7 @@ export function OrdersPageEnhanced() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="rounded-2xl border border-dashed border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-16 text-center">
+            <div className="rounded-2xl border border-dashed border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-12 sm:p-16 text-center">
               <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
                 <Package className="h-10 w-10 text-primary" />
               </div>
@@ -479,20 +428,20 @@ export function OrdersPageEnhanced() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   onClick={() => router.push(`/orders/${order.orderNumber}`)}
-                  className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-border hover:-translate-y-1 cursor-pointer"
+                  className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4 sm:p-5 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-border hover:-translate-y-1 cursor-pointer"
                 >
                   {/* Decorative background */}
                   <div className="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 blur-2xl" />
 
                   <div className="relative space-y-3">
                     {/* Header */}
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
                           <Package className="h-5 w-5 text-primary" />
                         </div>
-                        <div>
-                          <p className="font-mono text-sm font-semibold">
+                        <div className="min-w-0">
+                          <p className="font-mono text-sm font-semibold truncate">
                             {order.orderNumber}
                           </p>
                           <p className="text-xs text-muted-foreground">
@@ -504,10 +453,10 @@ export function OrdersPageEnhanced() {
                     </div>
 
                     {/* Details */}
-                    <div className="flex items-center gap-4 text-sm">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm">
                       <div className="flex items-center gap-1.5 text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        <span>
+                        <Calendar className="h-4 w-4 flex-shrink-0" />
+                        <span className="text-xs sm:text-sm">
                           {new Date(order.createdAt).toLocaleDateString(
                             'en-US',
                             {
@@ -519,8 +468,8 @@ export function OrdersPageEnhanced() {
                         </span>
                       </div>
                       <div className="flex items-center gap-1.5 font-semibold">
-                        <DollarSign className="h-4 w-4" />
-                        <span>
+                        <DollarSign className="h-4 w-4 flex-shrink-0" />
+                        <span className="text-xs sm:text-sm">
                           LKR{' '}
                           {Number(order.totalPrice).toLocaleString('en-US', {
                             minimumFractionDigits: 2,
@@ -554,20 +503,21 @@ export function OrdersPageEnhanced() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.3 }}
-                className="mt-8"
+                className="mt-6 sm:mt-8"
               >
-                <div className="flex items-center justify-between rounded-xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-xl sm:rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setPage(Math.max(1, page - 1))}
                     disabled={page === 1}
+                    className="w-full sm:w-auto"
                   >
                     <ChevronLeft className="h-4 w-4 mr-2" />
                     Previous
                   </Button>
 
-                  <span className="text-sm font-medium text-muted-foreground">
+                  <span className="text-sm font-medium text-muted-foreground order-first sm:order-none">
                     Page <span className="text-foreground">{page}</span> of{' '}
                     <span className="text-foreground">{totalPages}</span>
                   </span>
@@ -577,6 +527,7 @@ export function OrdersPageEnhanced() {
                     size="sm"
                     onClick={() => setPage(Math.min(totalPages, page + 1))}
                     disabled={page === totalPages}
+                    className="w-full sm:w-auto"
                   >
                     Next
                     <ChevronRight className="h-4 w-4 ml-2" />
@@ -586,7 +537,7 @@ export function OrdersPageEnhanced() {
             )}
           </>
         )}
-      </div>
+      </Container>
     </div>
   )
 }
