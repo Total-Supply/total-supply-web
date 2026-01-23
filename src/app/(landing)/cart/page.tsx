@@ -1,7 +1,10 @@
 import { CartPage } from '@/src/components/cart/cart-page'
 
-export default function CartRoute() {
-  return <CartPage />
+export const metadata = {
+  title: 'Shopping Cart | Total Supply',
+  description: 'Review your items and proceed to checkout',
 }
 
-
+export default function Cart() {
+  return <CartPage />
+}

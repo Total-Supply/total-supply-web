@@ -4,7 +4,8 @@ import { RootState } from '@/src/store'
 import { Badge, Box, IconButton, useDisclosure } from '@chakra-ui/react'
 import { FiShoppingCart } from 'react-icons/fi'
 import { useSelector } from 'react-redux'
-import { CartDrawer } from './cart-drawer'
+
+import { CartDrawerEnhanced } from './cart-drawer'
 
 export function CartButton() {
   const drawer = useDisclosure()
@@ -36,9 +37,7 @@ export function CartButton() {
           </Badge>
         )}
       </Box>
-      <CartDrawer isOpen={drawer.open} onClose={drawer.onClose} />
+      <CartDrawerEnhanced isOpen={drawer.open} onClose={drawer.onClose} />
     </>
   )
 }
-
-
