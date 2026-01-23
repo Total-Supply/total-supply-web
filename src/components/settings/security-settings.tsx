@@ -3,7 +3,7 @@
 import { MotionBox } from '@/src/components/motion/box'
 import { Button } from '@/src/components/ui/button'
 import { Input } from '@/src/components/ui/input'
-import { AlertTriangle, Key, Shield, Smartphone } from 'lucide-react'
+import { AlertTriangle, Key, Smartphone } from 'lucide-react'
 
 import { useState } from 'react'
 
@@ -41,11 +41,11 @@ export function SecuritySettings({
       className="space-y-6"
     >
       {/* Change Password */}
-      <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-lg">
+      <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Key className="h-5 w-5" />
-            Change Password
+          <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+            <Key className="h-5 w-5 flex-shrink-0" />
+            <span>Change Password</span>
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
             Update your password regularly for better security
@@ -89,24 +89,26 @@ export function SecuritySettings({
             />
           </div>
 
-          <div className="flex justify-end">
-            <Button onClick={handlePasswordChange}>Update Password</Button>
+          <div className="flex justify-end pt-4 border-t border-border/60">
+            <Button onClick={handlePasswordChange} className="w-full sm:w-auto">
+              Update Password
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Two-Factor Authentication */}
-      <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-lg">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 ring-1 ring-emerald-500/30">
+      <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div className="flex items-start gap-3 flex-1">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 ring-1 ring-emerald-500/30">
               <Smartphone className="h-5 w-5 text-emerald-400" />
             </div>
-            <div>
-              <h3 className="font-semibold text-foreground">
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-foreground text-sm sm:text-base">
                 Two-Factor Authentication
               </h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                 Add an extra layer of security to your account
               </p>
               <div className="mt-3">
@@ -126,6 +128,8 @@ export function SecuritySettings({
             variant={twoFactorEnabled ? 'outline' : 'solid'}
             colorPalette={twoFactorEnabled ? 'red' : 'green'}
             onClick={onToggleTwoFactor}
+            size="sm"
+            className="w-full sm:w-auto"
           >
             {twoFactorEnabled ? 'Disable' : 'Enable'}
           </Button>
@@ -133,14 +137,14 @@ export function SecuritySettings({
       </div>
 
       {/* Security Alert */}
-      <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-amber-600/5 p-6">
+      <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-amber-600/5 p-5 sm:p-6">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="h-5 w-5 text-amber-400 mt-0.5" />
-          <div>
-            <h3 className="font-semibold text-amber-600 dark:text-amber-400">
+          <AlertTriangle className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-amber-600 dark:text-amber-400 text-sm sm:text-base">
               Security Tips
             </h3>
-            <ul className="mt-2 space-y-1 text-sm text-amber-600/80 dark:text-amber-400/80">
+            <ul className="mt-2 space-y-1 text-xs sm:text-sm text-amber-600/80 dark:text-amber-400/80">
               <li>• Use a strong, unique password</li>
               <li>• Enable two-factor authentication</li>
               <li>• Never share your password with anyone</li>

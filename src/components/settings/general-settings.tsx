@@ -29,19 +29,19 @@ export function GeneralSettings({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-lg"
+      className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
     >
       <div className="mb-6">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <User className="h-5 w-5" />
-          General Settings
+        <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+          <User className="h-5 w-5 flex-shrink-0" />
+          <span>General Settings</span>
         </h2>
         <p className="text-sm text-muted-foreground mt-1">
           Manage your account settings and preferences
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 sm:space-y-5">
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground">
             Display Name
@@ -55,7 +55,7 @@ export function GeneralSettings({
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground flex items-center gap-2">
-            <Mail className="h-4 w-4 text-muted-foreground" />
+            <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             Email Address
           </label>
           <Input
@@ -73,7 +73,7 @@ export function GeneralSettings({
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground flex items-center gap-2">
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
+            <Briefcase className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             Company
           </label>
           <Input
@@ -93,8 +93,12 @@ export function GeneralSettings({
           />
         </div>
 
-        <div className="flex justify-end pt-4">
-          <Button onClick={onSave} loading={isSaving}>
+        <div className="flex justify-end pt-4 border-t border-border/60">
+          <Button
+            onClick={onSave}
+            loading={isSaving}
+            className="w-full sm:w-auto"
+          >
             Save Changes
           </Button>
         </div>

@@ -72,12 +72,12 @@ export function NotificationSettings({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-lg"
+      className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
     >
       <div className="mb-6">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <Bell className="h-5 w-5" />
-          Notification Preferences
+        <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+          <Bell className="h-5 w-5 flex-shrink-0" />
+          <span>Notification Preferences</span>
         </h2>
         <p className="text-sm text-muted-foreground mt-1">
           Choose how you want to be notified
@@ -93,24 +93,22 @@ export function NotificationSettings({
               return (
                 <div
                   key={type.key}
-                  className="flex items-start justify-between rounded-lg border border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-4"
+                  className="flex items-start gap-3 rounded-xl border border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-3 sm:p-4"
                 >
-                  <div className="flex items-start gap-3">
-                    <Icon className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {type.label}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {type.description}
-                      </p>
-                    </div>
+                  <Icon className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground text-sm sm:text-base">
+                      {type.label}
+                    </p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                      {type.description}
+                    </p>
                   </div>
                   <input
                     type="checkbox"
                     checked={preferences[type.key as keyof typeof preferences]}
                     onChange={(e) => onChange(type.key, e.target.checked)}
-                    className="h-5 w-5 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    className="h-5 w-5 flex-shrink-0 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 mt-0.5"
                   />
                 </div>
               )
@@ -126,24 +124,22 @@ export function NotificationSettings({
               return (
                 <div
                   key={pref.key}
-                  className="flex items-start justify-between rounded-lg border border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-4"
+                  className="flex items-start gap-3 rounded-xl border border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-3 sm:p-4"
                 >
-                  <div className="flex items-start gap-3">
-                    <Icon className="h-5 w-5 text-muted-foreground mt-0.5" />
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {pref.label}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {pref.description}
-                      </p>
-                    </div>
+                  <Icon className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground text-sm sm:text-base">
+                      {pref.label}
+                    </p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+                      {pref.description}
+                    </p>
                   </div>
                   <input
                     type="checkbox"
                     checked={preferences[pref.key as keyof typeof preferences]}
                     onChange={(e) => onChange(pref.key, e.target.checked)}
-                    className="h-5 w-5 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                    className="h-5 w-5 flex-shrink-0 rounded border-border text-primary focus:ring-2 focus:ring-primary focus:ring-offset-2 mt-0.5"
                   />
                 </div>
               )
@@ -151,8 +147,12 @@ export function NotificationSettings({
           </div>
         </div>
 
-        <div className="flex justify-end pt-4">
-          <Button onClick={onSave} loading={isSaving}>
+        <div className="flex justify-end pt-4 border-t border-border/60">
+          <Button
+            onClick={onSave}
+            loading={isSaving}
+            className="w-full sm:w-auto"
+          >
             Save Preferences
           </Button>
         </div>
