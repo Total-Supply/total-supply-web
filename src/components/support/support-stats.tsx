@@ -32,21 +32,21 @@ const stats = [
 
 export function SupportStats() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {stats.map((stat, index) => (
         <MotionBox
           key={stat.label}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, delay: index * 0.1 }}
-          className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 text-center shadow-sm"
+          className="group rounded-xl sm:rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4 sm:p-6 text-center shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
         >
           <div
-            className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ring-1 mb-3 ${stat.color}`}
+            className={`inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br ring-1 mb-2 sm:mb-3 transition-transform duration-300 group-hover:scale-110 ${stat.color}`}
           >
-            <stat.icon className="h-6 w-6" />
+            <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
-          <p className="text-2xl font-bold mb-1">{stat.value}</p>
+          <p className="text-xl sm:text-2xl font-bold mb-1">{stat.value}</p>
           <p className="text-xs text-muted-foreground">{stat.label}</p>
         </MotionBox>
       ))}

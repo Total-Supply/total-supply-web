@@ -28,7 +28,7 @@ export function SupportPageEnhanced() {
     // Smooth scroll to FAQ section
     const faqSection = document.getElementById('faq-section')
     if (faqSection) {
-      faqSection.scrollIntoView({ behavior: 'smooth' })
+      faqSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
   }
 
@@ -82,7 +82,10 @@ export function SupportPageEnhanced() {
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        <Container maxW="container.xl" className="relative px-4 py-12 md:py-16">
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28 pb-12"
+        >
           <SupportHero
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
@@ -91,8 +94,11 @@ export function SupportPageEnhanced() {
       </div>
 
       {/* Main Content */}
-      <Container maxW="container.xl" className="px-4 py-8 md:py-12">
-        <div className="space-y-12">
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 py-6 lg:py-8"
+      >
+        <div className="space-y-8 lg:space-y-12">
           {/* Stats */}
           <SupportStats />
 
@@ -102,7 +108,7 @@ export function SupportPageEnhanced() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6">
               Browse by Category
             </h2>
             <SupportCategories
@@ -125,7 +131,7 @@ export function SupportPageEnhanced() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6">
               Get in Touch
             </h2>
             <ContactOptions

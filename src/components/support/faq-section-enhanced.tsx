@@ -116,11 +116,11 @@ export function FAQSection({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
-      <div className="flex items-center gap-3 mb-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
-          <HelpCircle className="h-5 w-5 text-primary" />
+      <div className="flex items-center gap-3 mb-4 sm:mb-6">
+        <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
+          <HelpCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
         </div>
-        <h2 className="text-2xl md:text-3xl font-bold">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">
           Frequently Asked Questions
         </h2>
       </div>
@@ -136,13 +136,13 @@ export function FAQSection({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 overflow-hidden shadow-sm"
+                className="rounded-xl sm:rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 overflow-hidden shadow-sm"
               >
                 <button
                   onClick={() => setOpenId(isOpen ? null : faq.id)}
-                  className="w-full flex items-center justify-between gap-4 p-6 text-left hover:bg-muted/50 transition-colors"
+                  className="w-full flex items-center justify-between gap-4 p-4 sm:p-6 text-left hover:bg-muted/50 transition-colors"
                 >
-                  <span className="text-base font-semibold pr-4">
+                  <span className="text-sm sm:text-base font-semibold pr-4">
                     {faq.question}
                   </span>
                   <ChevronDown
@@ -157,8 +157,8 @@ export function FAQSection({
                     isOpen ? 'max-h-96' : 'max-h-0'
                   }`}
                 >
-                  <div className="px-6 pb-6 pt-0">
-                    <div className="rounded-lg border border-border/60 bg-muted/20 p-4">
+                  <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
+                    <div className="rounded-lg border border-border/60 bg-muted/20 p-3 sm:p-4">
                       <p className="text-sm leading-relaxed text-muted-foreground">
                         {faq.answer}
                       </p>
@@ -170,10 +170,12 @@ export function FAQSection({
           })}
         </div>
       ) : (
-        <div className="rounded-2xl border-2 border-dashed border-border/60 bg-muted/20 p-12 text-center">
-          <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground/30" />
-          <h3 className="text-xl font-semibold mb-2">No FAQs Found</h3>
-          <p className="text-muted-foreground">
+        <div className="rounded-xl sm:rounded-2xl border-2 border-dashed border-border/60 bg-muted/20 p-8 sm:p-12 text-center">
+          <Search className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-4 text-muted-foreground/30" />
+          <h3 className="text-lg sm:text-xl font-semibold mb-2">
+            No FAQs Found
+          </h3>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
             {searchQuery
               ? `No results for "${searchQuery}". Try different keywords.`
               : 'No FAQs available for this category.'}

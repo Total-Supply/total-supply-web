@@ -90,7 +90,7 @@ export function SupportCategories({
   selectedCategory,
 }: SupportCategoriesProps) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
       {categories.map((category, index) => {
         const isSelected = selectedCategory === category.id
         const Icon = category.icon
@@ -104,7 +104,7 @@ export function SupportCategories({
           >
             <button
               onClick={() => onCategoryClick(category.id)}
-              className={`group relative w-full rounded-2xl border p-6 text-left transition-all duration-300 ${
+              className={`group relative w-full rounded-xl sm:rounded-2xl border p-4 sm:p-6 text-left transition-all duration-300 ${
                 isSelected
                   ? 'border-primary bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg shadow-primary/20 scale-105'
                   : 'border-border/60 bg-gradient-to-br from-card/90 to-card/60 hover:border-border hover:shadow-lg hover:scale-105'
@@ -112,28 +112,32 @@ export function SupportCategories({
             >
               {/* Icon */}
               <div
-                className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ring-1 mb-4 transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'} ${category.color}`}
+                className={`inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br ring-1 mb-3 sm:mb-4 transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-110'} ${category.color}`}
               >
-                <Icon className="h-6 w-6" />
+                <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </div>
 
               {/* Content */}
               <div className="space-y-1">
-                <h3 className="text-base font-semibold">{category.name}</h3>
-                <p className="text-xs text-muted-foreground line-clamp-2">
+                <h3 className="text-sm sm:text-base font-semibold">
+                  {category.name}
+                </h3>
+                <p className="text-xs text-muted-foreground line-clamp-2 hidden sm:block">
                   {category.description}
                 </p>
               </div>
 
               {/* Article Count */}
-              <div className="mt-4 inline-flex items-center gap-1 rounded-full bg-muted px-2 py-1 text-xs font-medium">
+              <div className="mt-3 sm:mt-4 inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 sm:py-1 text-xs font-medium">
                 <span>{category.count}</span>
-                <span className="text-muted-foreground">articles</span>
+                <span className="text-muted-foreground hidden sm:inline">
+                  articles
+                </span>
               </div>
 
               {/* Selected Indicator */}
               {isSelected && (
-                <div className="absolute inset-0 rounded-2xl ring-2 ring-primary pointer-events-none" />
+                <div className="absolute inset-0 rounded-xl sm:rounded-2xl ring-2 ring-primary pointer-events-none" />
               )}
             </button>
           </MotionBox>

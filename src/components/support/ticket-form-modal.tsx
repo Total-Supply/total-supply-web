@@ -71,16 +71,18 @@ export function TicketFormModal({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         transition={{ duration: 0.2 }}
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border/60 bg-card shadow-2xl"
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl sm:rounded-2xl border border-border/60 bg-card shadow-2xl"
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/60 bg-card/95 backdrop-blur-sm p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
-              <FileText className="h-5 w-5 text-primary" />
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border/60 bg-card/95 backdrop-blur-sm p-4 sm:p-6">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
+              <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             </div>
-            <div>
-              <h2 className="text-xl font-bold">Submit Support Ticket</h2>
+            <div className="min-w-0">
+              <h2 className="text-lg sm:text-xl font-bold truncate">
+                Submit Support Ticket
+              </h2>
               <p className="text-xs text-muted-foreground">
                 We&#39;ll respond within 24 hours
               </p>
@@ -88,14 +90,17 @@ export function TicketFormModal({
           </div>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-muted transition-colors"
+            className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg hover:bg-muted transition-colors ml-2"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 sm:p-6 space-y-4 sm:space-y-6"
+        >
           {/* Subject */}
           <div className="space-y-2">
             <label className="text-sm font-semibold">
@@ -112,7 +117,7 @@ export function TicketFormModal({
           </div>
 
           {/* Category & Priority */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-semibold">Category</label>
               <select
@@ -173,9 +178,9 @@ export function TicketFormModal({
             <label className="text-sm font-semibold">
               Attachments (Optional)
             </label>
-            <div className="rounded-lg border-2 border-dashed border-border/60 bg-muted/20 p-6 text-center hover:bg-muted/30 transition-colors cursor-pointer">
-              <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground mb-1">
+            <div className="rounded-lg border-2 border-dashed border-border/60 bg-muted/20 p-4 sm:p-6 text-center hover:bg-muted/30 transition-colors cursor-pointer">
+              <Upload className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-xs sm:text-sm text-muted-foreground mb-1">
                 Click to upload or drag and drop
               </p>
               <p className="text-xs text-muted-foreground">
@@ -185,12 +190,12 @@ export function TicketFormModal({
           </div>
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1"
+              className="w-full sm:flex-1"
               disabled={isSubmitting}
             >
               Cancel
@@ -198,7 +203,7 @@ export function TicketFormModal({
             <Button
               type="submit"
               colorPalette="primary"
-              className="flex-1"
+              className="w-full sm:flex-1"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
