@@ -1,4 +1,4 @@
-import { ServiceRequestsPage } from '@/src/components/services/service-requests-page'
+import { ServiceRequestsPage } from '@/src/components/services/requests/service-requests-page'
 
 import { Suspense } from 'react'
 

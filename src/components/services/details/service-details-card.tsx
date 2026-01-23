@@ -1,7 +1,7 @@
 import { MotionBox } from '@/src/components/motion/box'
 import { Calendar, FileText, MapPin, StickyNote } from 'lucide-react'
 
-import type { ServiceDetail } from './service-request-detail-page-enhanced'
+import { ServiceDetail } from './service-request-detail-page'
 
 type ServiceDetailsCardProps = {
   service: ServiceDetail
