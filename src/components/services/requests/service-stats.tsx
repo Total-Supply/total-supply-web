@@ -45,30 +45,32 @@ export function ServiceStats({ stats, isLoading }: ServiceStatsProps) {
   ]
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       {statCards.map((stat, index) => (
         <MotionBox
           key={stat.label}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, delay: index * 0.05 }}
-          className="group relative overflow-hidden rounded-xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
+          className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-3 sm:p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <div className="min-w-0">
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground truncate">
                 {stat.label}
               </p>
               {isLoading ? (
-                <div className="mt-1.5 h-7 w-12 animate-pulse rounded bg-muted/50" />
+                <div className="mt-1.5 h-6 sm:h-7 w-10 sm:w-12 animate-pulse rounded bg-muted/50" />
               ) : (
-                <p className="mt-1 text-2xl font-bold">{stat.value}</p>
+                <p className="mt-1 text-xl sm:text-2xl font-bold">
+                  {stat.value}
+                </p>
               )}
             </div>
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br ring-1 transition-transform duration-300 group-hover:scale-110 ${stat.color}`}
+              className={`flex h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br ring-1 transition-transform duration-300 group-hover:scale-110 ${stat.color}`}
             >
-              <stat.icon className="h-5 w-5" />
+              <stat.icon className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
           </div>
         </MotionBox>

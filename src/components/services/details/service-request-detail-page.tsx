@@ -5,7 +5,7 @@ import { Button } from '@/src/components/ui/button'
 import { useToast } from '@/src/hooks/use-toast'
 import { Container } from '@chakra-ui/react'
 import { ArrowLeft, Loader2 } from 'lucide-react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 import { useEffect, useState } from 'react'
 
@@ -90,6 +90,7 @@ export const STATUS_STEPS = ['RECEIVED', 'ASSIGNED', 'IN_PROGRESS', 'RESOLVED']
 
 export default function ServiceRequestDetailPageEnhanced() {
   const params = useParams()
+  const router = useRouter()
   const requestId = params?.id as string | undefined
   const toast = useToast()
 
@@ -160,8 +161,8 @@ export default function ServiceRequestDetailPageEnhanced() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
-        <Container maxW="container.xl" className="px-4 py-16">
+      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+        <Container maxW="container.xl" className="px-4 sm:px-6 lg:px-8 py-16">
           <div className="flex flex-col items-center justify-center gap-4 py-20">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
             <p className="text-lg text-muted-foreground">
@@ -175,19 +176,19 @@ export default function ServiceRequestDetailPageEnhanced() {
 
   if (!service) {
     return (
-      <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
-        <Container maxW="container.xl" className="px-4 py-16">
+      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+        <Container maxW="container.xl" className="px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center py-20">
             <h2 className="text-2xl font-bold mb-4">
               Service Request Not Found
             </h2>
             <p className="text-muted-foreground mb-6">
-              This service request doesn&#39;t exist or you don&#39;t have
+              This service request doesn&apos;t exist or you don&apos;t have
               access to it.
             </p>
-            <Button onClick={() => window.history.back()}>
+            <Button onClick={() => router.push('/services/requests')}>
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Go Back
+              Back to Services
             </Button>
           </div>
         </Container>
@@ -196,16 +197,19 @@ export default function ServiceRequestDetailPageEnhanced() {
   }
 
   return (
-    <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        <Container maxW="container.xl" className="relative px-4 py-8 md:py-12">
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28 pb-12"
+        >
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => window.history.back()}
-            className="mb-4"
+            onClick={() => router.push('/services/requests')}
+            className="mb-6"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Services
@@ -216,10 +220,13 @@ export default function ServiceRequestDetailPageEnhanced() {
       </div>
 
       {/* Main Content */}
-      <Container maxW="container.xl" className="px-4 py-8 md:py-12">
-        <div className="grid gap-6 lg:grid-cols-3">
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 py-6 lg:py-8"
+      >
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
           {/* Main Column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6">
             {/* Progress Tracker */}
             <ServiceProgressTracker
               status={service.status}
@@ -256,13 +263,12 @@ export default function ServiceRequestDetailPageEnhanced() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
+          <div className="lg:sticky lg:top-24 lg:self-start">
             <MotionBox
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4 }}
-              className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-6 shadow-sm sticky top-24"
+              className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-5 sm:p-6 shadow-sm"
             >
               <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
               <div className="space-y-3">

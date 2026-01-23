@@ -32,7 +32,8 @@ export function ServiceFilters({
   statusOptions,
 }: ServiceFiltersProps) {
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -43,8 +44,9 @@ export function ServiceFilters({
         />
       </div>
 
+      {/* Type Filter */}
       <div className="relative">
-        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
         <AppSelect
           value={type}
           onChange={onTypeChange}
@@ -55,8 +57,9 @@ export function ServiceFilters({
         />
       </div>
 
+      {/* Priority Filter */}
       <div className="relative">
-        <AlertCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+        <AlertCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
         <AppSelect
           value={priority}
           onChange={onPriorityChange}
@@ -67,8 +70,9 @@ export function ServiceFilters({
         />
       </div>
 
+      {/* Status Filter */}
       <div className="relative">
-        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
         <AppSelect
           value={status}
           onChange={onStatusChange}

@@ -9,7 +9,7 @@ import {
 } from '@/src/components/services/requests/service-requests-skeleton'
 import { ServiceStats } from '@/src/components/services/requests/service-stats'
 import { useToast } from '@/src/hooks/use-toast'
-import { Container, Stack, useBreakpointValue } from '@chakra-ui/react'
+import { Container, useBreakpointValue } from '@chakra-ui/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 import { useEffect, useMemo, useState } from 'react'
@@ -141,10 +141,8 @@ export function ServiceRequestsPage() {
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
-    setIsLoading(true)
     await loadRequests(false)
     setIsRefreshing(false)
-    setIsLoading(false)
     toast({
       title: 'Requests refreshed',
       status: 'success',
@@ -179,21 +177,35 @@ export function ServiceRequestsPage() {
   const emptyState = !isLoading && items.length === 0
 
   return (
-    <Stack
-      className="relative px-8 sm:px-10 lg:px-12 py-8 sm:py-12 lg:py-16"
-      gap={10}
-    >
-      <Container maxW="container.xl" pt={{ base: 8, md: 12 }} pb={16}>
-        <Stack gap={6}>
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28 pb-12"
+        >
           <ServiceRequestsHeader
             onRefresh={handleRefresh}
             isRefreshing={isRefreshing}
           />
+        </Container>
+      </div>
 
-          {!isLoading && !emptyState && (
+      {/* Main Content */}
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 py-6 lg:py-8"
+      >
+        {/* Stats Cards */}
+        {!isLoading && !emptyState && (
+          <div className="mb-6">
             <ServiceStats stats={serviceStats} isLoading={isLoading} />
-          )}
+          </div>
+        )}
 
+        {/* Filters */}
+        <div className="mb-6 rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-4 shadow-sm">
           <ServiceFilters
             search={search}
             type={type}
@@ -207,39 +219,43 @@ export function ServiceRequestsPage() {
             priorityOptions={PRIORITY_OPTIONS}
             statusOptions={STATUS_OPTIONS}
           />
+        </div>
 
-          {isLoading ? (
-            isMobile ? (
-              <ServiceRequestsCardSkeleton />
-            ) : (
-              <ServiceRequestsTableSkeleton />
-            )
-          ) : emptyState ? (
-            <ServiceRequestsEmptyState hasFilters={!!hasFilters} />
-          ) : isMobile ? (
-            <div className="space-y-4">
-              {items.map((item, index) => (
-                <ServiceRequestCard
-                  key={item.id}
-                  request={item}
-                  onView={handleView}
-                  index={index}
-                />
-              ))}
-            </div>
+        {/* Content */}
+        {isLoading ? (
+          isMobile ? (
+            <ServiceRequestsCardSkeleton />
           ) : (
-            <ServiceRequestsTable requests={items} onView={handleView} />
-          )}
+            <ServiceRequestsTableSkeleton />
+          )
+        ) : emptyState ? (
+          <ServiceRequestsEmptyState hasFilters={!!hasFilters} />
+        ) : isMobile ? (
+          <div className="space-y-4">
+            {items.map((item, index) => (
+              <ServiceRequestCard
+                key={item.id}
+                request={item}
+                onView={handleView}
+                index={index}
+              />
+            ))}
+          </div>
+        ) : (
+          <ServiceRequestsTable requests={items} onView={handleView} />
+        )}
 
-          {!emptyState && !isLoading && (
+        {/* Pagination */}
+        {!emptyState && !isLoading && totalPages > 1 && (
+          <div className="mt-6">
             <OrdersPagination
               page={page}
               totalPages={totalPages}
               onPageChange={setPage}
             />
-          )}
-        </Stack>
+          </div>
+        )}
       </Container>
-    </Stack>
+    </div>
   )
 }
