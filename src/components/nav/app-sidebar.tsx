@@ -57,7 +57,7 @@ const navMain = [
     items: [
       {
         title: 'Assigned Queue',
-        url: '/dashboard/salesman',
+        url: '/dashboard/salesman/orders',
         roles: ['SALESMAN'],
       },
     ],
