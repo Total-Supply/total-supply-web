@@ -1,11 +1,17 @@
-import { VerifyEmailPage } from '@/src/components/auth/verify-email/verify-email-page'
+'use client'
+
+import { VerifyEmailPageEnhanced } from '@/src/components/auth/verify-email/verify-email-page'
 
 import { Suspense } from 'react'
 
-export default function VerifyEmail() {
+const VerifyEmailContent = () => {
+  return <VerifyEmailPageEnhanced />
+}
+
+export default function VerifyEmailPage() {
   return (
-    <Suspense fallback={<div />}>
-      <VerifyEmailPage />
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
     </Suspense>
   )
 }

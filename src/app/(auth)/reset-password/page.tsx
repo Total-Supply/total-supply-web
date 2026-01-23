@@ -1,4 +1,5 @@
-import { ResetPasswordPage } from '@/src/components/auth/password/reset-password-page'
+import ResetPasswordPage from '@/src/components/auth/password/reset-password-page'
+
 import { Suspense } from 'react'
 
 export default function ResetPassword() {
@@ -8,5 +9,3 @@ export default function ResetPassword() {
     </Suspense>
   )
 }
-
-
