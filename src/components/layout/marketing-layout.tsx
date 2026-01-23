@@ -8,18 +8,16 @@ import {
   AnnouncementBanner,
   type AnnouncementBannerProps,
 } from '../announcement-banner'
-import { Footer, type FooterProps } from './footer'
-import { Header, type HeaderProps } from './header'
+import { Footer } from './footer'
+import { HeaderEnhanced } from './header'
 
 interface LayoutProps {
   children: ReactNode
   announcementProps?: AnnouncementBannerProps
-  headerProps?: HeaderProps
-  footerProps?: FooterProps
 }
 
 export const MarketingLayout: React.FC<LayoutProps> = (props) => {
-  const { children, announcementProps, headerProps, footerProps } = props
+  const { children, announcementProps } = props
 
   return (
     <Box suppressHydrationWarning>
@@ -27,14 +25,14 @@ export const MarketingLayout: React.FC<LayoutProps> = (props) => {
 
       {announcementProps && <AnnouncementBanner {...announcementProps} />}
 
-      <Header {...(headerProps ?? {})} />
+      <HeaderEnhanced />
 
       <Box as="main">
         <SkipNavContent />
         {children}
       </Box>
 
-      <Footer {...(footerProps ?? {})} />
+      <Footer />
     </Box>
   )
 }

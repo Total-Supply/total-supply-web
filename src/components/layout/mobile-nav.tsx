@@ -6,9 +6,11 @@ import { useColorMode } from '@/src/hooks/color-mode'
 import useRouteChanged from '@/src/hooks/use-route-changed'
 import {
   Home,
+  Info,
   Mail,
   Moon,
   Package,
+  Phone,
   ShoppingBag,
   Sun,
   User,
@@ -49,6 +51,7 @@ export function MobileNavContent({ isOpen, onClose }: MobileNavContentProps) {
     { label: 'Shop', href: '/shop', icon: ShoppingBag },
     { label: 'Orders', href: '/orders', icon: Package },
     { label: 'Profile', href: '/profile', icon: User },
+    { label: 'About', href: '/about', icon: Info },
     { label: 'Contact', href: '/contact', icon: Mail },
   ]
 
@@ -148,9 +151,19 @@ export function MobileNavContent({ isOpen, onClose }: MobileNavContentProps) {
                 </span>
               </button>
 
-              <div className="rounded-lg bg-muted/50 p-3 text-center">
-                <p className="text-xs text-muted-foreground">
-                  © 2026 Total Supply. All rights reserved.
+              {/* Contact Info */}
+              <div className="rounded-lg bg-muted/50 p-3 space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <Phone className="h-4 w-4 text-primary" />
+                  <a
+                    href="tel:+94771234567"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    +94 77 123 4567
+                  </a>
+                </div>
+                <p className="text-xs text-muted-foreground text-center">
+                  © 2026 Total Supply
                 </p>
               </div>
             </div>
