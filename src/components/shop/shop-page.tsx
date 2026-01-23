@@ -323,7 +323,10 @@ export function ShopPageEnhanced() {
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        <Container maxW="container.xl" className="relative px-4 py-12 md:py-16">
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28"
+        >
           <ShopHeader
             searchValue={searchInput}
             onSearchChange={handleSearchChange}
@@ -340,7 +343,10 @@ export function ShopPageEnhanced() {
       </div>
 
       {/* Main Content */}
-      <Container maxW="container.xl" className="px-4 py-8 md:py-12">
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 pt-2 py-6 lg:py-8"
+      >
         <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
           {/* Filters Sidebar */}
           <ShopFiltersPanel

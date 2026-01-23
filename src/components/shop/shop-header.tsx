@@ -1,5 +1,8 @@
+'use client'
+
 import { MotionBox } from '@/src/components/motion/box'
-import { Filter, Search, Sparkles, Store, X } from 'lucide-react'
+import { HStack, Text } from '@chakra-ui/react'
+import { Filter, Search, Sparkles, X } from 'lucide-react'
 
 import { Button } from '../ui/button'
 
@@ -37,11 +40,6 @@ export function ShopHeader({
     >
       {/* Title Section */}
       <div className="text-center space-y-3">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
-            <Store className="h-7 w-7 text-primary" />
-          </div>
-        </div>
         <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
           Total Supply Catalog
         </h1>
@@ -78,8 +76,7 @@ export function ShopHeader({
           <p className="text-sm text-muted-foreground mt-3 text-center">
             <Sparkles className="inline h-4 w-4 mr-1" />
             Found {resultsCount} product{resultsCount !== 1 ? 's' : ''} for
-            &quot;
-            {searchValue}&quot;
+            &quot;{searchValue}&quot;
           </p>
         )}
 
@@ -104,8 +101,32 @@ export function ShopHeader({
         )}
       </div>
 
+      {/* Stats Row - Fixed */}
+      <div className="flex justify-center">
+        <div className="flex items-center gap-6 flex-wrap text-sm">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+            <Text color="muted">Fresh daily inventory</Text>
+          </div>
+
+          <div className="hidden sm:block h-4 w-px bg-border/60" />
+
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-blue-500" />
+            <Text color="muted">Fast delivery available</Text>
+          </div>
+
+          <div className="hidden sm:block h-4 w-px bg-border/60" />
+
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-purple-500" />
+            <Text color="muted">Quality guaranteed</Text>
+          </div>
+        </div>
+      </div>
+
       {/* Action Bar */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 mb-6">
         <button
           onClick={onToggleFilters}
           className="flex items-center gap-2 rounded-full bg-card border border-border/60 px-4 py-2 text-sm font-medium hover:bg-muted transition-colors lg:hidden"
