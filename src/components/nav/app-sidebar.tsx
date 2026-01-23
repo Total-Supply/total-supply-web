@@ -117,7 +117,11 @@ const navMain = [
     icon: Wrench,
     roles: ['IT_STAFF'],
     items: [
-      { title: 'My IT Services', url: '/dashboard/it', roles: ['IT_STAFF'] },
+      {
+        title: 'My IT Services',
+        url: '/dashboard/it/services',
+        roles: ['IT_STAFF'],
+      },
       { title: 'Tickets', url: '/dashboard/it/tickets', roles: ['IT_STAFF'] },
     ],
   },
