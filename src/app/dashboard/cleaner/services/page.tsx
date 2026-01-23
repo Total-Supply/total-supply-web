@@ -1,7 +1,5 @@
-import { CleanerServicesPage } from '@/src/components/cleaner/cleaner-services-page'
+import CleanerServicesPage from '@/src/components/cleaner/services/cleaner-services-page'
 
 export default function CleanerServicesRoute() {
   return <CleanerServicesPage />
 }
-
-
