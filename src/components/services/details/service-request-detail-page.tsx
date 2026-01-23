@@ -160,7 +160,7 @@ export default function ServiceRequestDetailPageEnhanced() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
         <Container maxW="container.xl" className="px-4 py-16">
           <div className="flex flex-col items-center justify-center gap-4 py-20">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -175,7 +175,7 @@ export default function ServiceRequestDetailPageEnhanced() {
 
   if (!service) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
         <Container maxW="container.xl" className="px-4 py-16">
           <div className="text-center py-20">
             <h2 className="text-2xl font-bold mb-4">
@@ -196,7 +196,7 @@ export default function ServiceRequestDetailPageEnhanced() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+    <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />

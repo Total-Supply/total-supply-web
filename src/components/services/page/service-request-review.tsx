@@ -202,7 +202,7 @@ export function ServiceRequestReview({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {photoUrls.map((url, index) => (
               <div
                 key={index}
@@ -223,7 +223,7 @@ export function ServiceRequestReview({
       )}
 
       {/* Action Buttons */}
-      <div className="flex gap-3 pt-4">
+      <div className="flex flex-col gap-3 pt-4 sm:flex-row">
         <Button variant="outline" size="lg" onClick={onBack} className="flex-1">
           <ArrowLeft className="mr-2 h-5 w-5" />
           Back to Edit

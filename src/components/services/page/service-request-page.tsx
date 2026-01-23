@@ -1,12 +1,15 @@
 'use client'
 
-import { MotionBox } from '@/src/components/motion/box'
 import { useToast } from '@/src/hooks/use-toast'
-import { Box, Container, HStack, Stack, Text } from '@chakra-ui/react'
+import { Container } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
 
 import { useEffect, useState } from 'react'
 
+import { ServiceHeader } from './service-header'
+import { ServiceInfoSidebar } from './service-info-sidebar'
+import { ServiceLoadingSkeleton } from './service-loading-skeleton'
+import { ServiceOfferingsGrid } from './service-offerings-grid'
 import {
   ServiceRequestForm,
   ServiceRequestFormData,
@@ -59,6 +62,7 @@ export function ServiceRequestPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [offerings, setOfferings] = useState<ServiceOfferingOption[]>([])
   const [isLoadingOfferings, setIsLoadingOfferings] = useState(false)
+  const [showInfo, setShowInfo] = useState(false)
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -310,107 +314,96 @@ export function ServiceRequestPage() {
   }
 
   return (
-    <Stack gap={10}>
-      <Container maxW="container.xl" pt={{ base: 8, md: 12 }} pb={16}>
-        <Stack gap={3} textAlign={{ base: 'left', md: 'center' }}>
-          <MotionBox
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Text fontSize={{ base: '2xl', md: '3xl' }} fontWeight="bold">
-              Request a service
-            </Text>
-          </MotionBox>
-          <Text color="muted">
-            Book cleaning or IT support with a quick request and photos.
-          </Text>
-        </Stack>
-
-        <Stack
-          direction={{ base: 'column', lg: 'row' }}
-          gap={{ base: 6, lg: 10 }}
-          mt={10}
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      {/* Hero Section - Match Shop Page Exactly */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28"
         >
-          <Stack gap={6} flex="1">
-            <Box
-              borderRadius="2xl"
-              minH="240px"
-              bg="linear-gradient(135deg, rgba(14, 116, 144, 0.85), rgba(30, 41, 59, 0.9))"
-              position="relative"
-            >
-              <Box position="absolute" inset="0" opacity="0.25" bg="black" />
-              <Box position="relative" p={6}>
-                <Text fontSize="xl" fontWeight="700" color="white">
-                  Cleaning and IT support on demand
-                </Text>
-                <Text fontSize="sm" color="whiteAlpha.800" mt={2}>
-                  Send photos, set priority, and get a confirmed time slot.
-                </Text>
-              </Box>
-            </Box>
-            <Stack gap={3}>
-              <Text fontSize="lg" fontWeight="600">
-                What happens next?
-              </Text>
-              <Text color="muted" fontSize="sm">
-                Our team reviews your request, confirms availability, and
-                assigns the right specialist.
-              </Text>
-              <HStack gap={4}>
-                <Text fontSize="sm" color="muted">
-                  Response time: under 2 hours
-                </Text>
-                <Text fontSize="sm" color="muted">
-                  Support: 011 000 0000
-                </Text>
-              </HStack>
-            </Stack>
-          </Stack>
+          <ServiceHeader
+            showInfo={showInfo}
+            onToggleInfo={() => setShowInfo(!showInfo)}
+          />
+        </Container>
+      </div>
 
-          <Stack flex="1" gap={6}>
-            {step === 'form' ? (
-              <ServiceRequestForm
-                data={formData}
-                addresses={addresses.map((address) => ({
-                  id: String(address.id),
-                  label: address.label || address.line1,
-                  line1: address.line1,
-                  line2: address.line2,
-                  city: address.city,
-                  postalCode: address.postalCode,
-                }))}
-                selectedAddressId={selectedAddressId}
-                isUploading={isUploading}
-                offerings={offerings}
-                isLoadingOfferings={isLoadingOfferings}
-                onSelectAddress={handleSelectAddress}
-                onChange={(next) =>
-                  setFormData((prev) => ({ ...prev, ...next }))
-                }
-                onUploadPhotos={handleUploadPhotos}
-                photoUrls={photoUrls}
-                onRemovePhoto={(index: number) =>
-                  setPhotoUrls((prev) => prev.filter((_, i) => i !== index))
-                }
-                onContinue={() => {
-                  if (validateForm()) {
-                    setStep('review')
-                  }
-                }}
-              />
+      {/* Main Content - Match Shop Page Layout */}
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 pt-2 py-6 lg:py-8"
+      >
+        <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
+          {/* Info Sidebar - Match Shop Filters Panel */}
+          <ServiceInfoSidebar isVisible={showInfo} />
+
+          {/* Main Content */}
+          <div className="space-y-6">
+            {isLoadingOfferings ? (
+              <ServiceLoadingSkeleton />
             ) : (
-              <ServiceRequestReview
-                data={formData}
-                photoUrls={photoUrls}
-                isSubmitting={isSubmitting}
-                onBack={() => setStep('form')}
-                onSubmit={handleSubmit}
-              />
+              <>
+                {/* Service Offerings Grid */}
+                {offerings.length > 0 && step === 'form' && (
+                  <ServiceOfferingsGrid
+                    offerings={offerings}
+                    selectedId={formData.serviceOfferingId ?? ''}
+                    onSelect={(offering) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        serviceOfferingId: offering.id,
+                        serviceOfferingName: offering.name,
+                      }))
+                    }
+                  />
+                )}
+
+                {/* Form or Review */}
+                {step === 'form' ? (
+                  <ServiceRequestForm
+                    data={formData}
+                    addresses={addresses.map((address) => ({
+                      id: String(address.id),
+                      label: address.label || address.line1,
+                      line1: address.line1,
+                      line2: address.line2,
+                      city: address.city,
+                      postalCode: address.postalCode,
+                    }))}
+                    selectedAddressId={selectedAddressId}
+                    isUploading={isUploading}
+                    offerings={offerings}
+                    isLoadingOfferings={isLoadingOfferings}
+                    onSelectAddress={handleSelectAddress}
+                    onChange={(next) =>
+                      setFormData((prev) => ({ ...prev, ...next }))
+                    }
+                    onUploadPhotos={handleUploadPhotos}
+                    photoUrls={photoUrls}
+                    onRemovePhoto={(index: number) =>
+                      setPhotoUrls((prev) => prev.filter((_, i) => i !== index))
+                    }
+                    onContinue={() => {
+                      if (validateForm()) {
+                        setStep('review')
+                      }
+                    }}
+                  />
+                ) : (
+                  <ServiceRequestReview
+                    data={formData}
+                    photoUrls={photoUrls}
+                    isSubmitting={isSubmitting}
+                    onBack={() => setStep('form')}
+                    onSubmit={handleSubmit}
+                  />
+                )}
+              </>
             )}
-          </Stack>
-        </Stack>
+          </div>
+        </div>
       </Container>
-    </Stack>
+    </div>
   )
 }

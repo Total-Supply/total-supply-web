@@ -130,7 +130,7 @@ export function ShopDetailPageEnhanced() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
         <Container maxW="container.xl" className="px-4 py-16">
           <div className="flex flex-col items-center justify-center gap-4 py-20">
             <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -143,7 +143,7 @@ export function ShopDetailPageEnhanced() {
 
   if (!item) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      <div className="min-h-screen relative px-8 sm:px-10 lg:px-12 py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
         <Container maxW="container.xl" className="px-4 py-16">
           <div className="text-center py-20">
             <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
@@ -165,7 +165,10 @@ export function ShopDetailPageEnhanced() {
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-        <Container maxW="container.xl" className="relative px-4 py-8">
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pb-6 pt-20 sm:pt-24 lg:pt-28"
+        >
           <Button
             variant="ghost"
             size="sm"
@@ -181,7 +184,10 @@ export function ShopDetailPageEnhanced() {
       </div>
 
       {/* Main Content */}
-      <Container maxW="container.xl" className="px-4 py-8 md:py-12">
+      <Container
+        maxW="container.xl"
+        className="py-8 md:py-12 relative px-4 sm:px-6 lg:px-8"
+      >
         <div className="grid gap-8 lg:grid-cols-2 mb-12">
           {/* Image Gallery */}
           <ProductImageGallery item={item} />

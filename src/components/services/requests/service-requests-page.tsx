@@ -179,7 +179,10 @@ export function ServiceRequestsPage() {
   const emptyState = !isLoading && items.length === 0
 
   return (
-    <Stack gap={10}>
+    <Stack
+      className="relative px-8 sm:px-10 lg:px-12 py-8 sm:py-12 lg:py-16"
+      gap={10}
+    >
       <Container maxW="container.xl" pt={{ base: 8, md: 12 }} pb={16}>
         <Stack gap={6}>
           <ServiceRequestsHeader
