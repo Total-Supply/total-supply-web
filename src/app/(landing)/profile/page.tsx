@@ -297,14 +297,22 @@ export default function CustomerProfilePage() {
 
   if (isLoading) {
     return (
-      <Container maxW="container.xl" py={6}>
+      <Container
+        maxW="container.xl"
+        className="relative py-20 sm:py-24 lg:py-28"
+        py={6}
+      >
         <ProfileSkeleton />
       </Container>
     )
   }
 
   return (
-    <Container maxW="container.xl" py={6}>
+    <Container
+      maxW="container.xl"
+      className="relative py-20 sm:py-24 lg:py-28"
+      py={6}
+    >
       <div className="space-y-6">
         <ProfileHeader
           name={formData.name}

@@ -135,7 +135,7 @@
     "adminCrud": ["400", "401", "403", "404", "409", "422", "500"]
   },
 
-  "schemaFiles": ["./openapi.responses.yaml"],
+  "schemaFiles": ["./src/lib/schemas/openapi.responses.yaml"],
   "apiDir": "./src/app/api",
   "schemaDir": "./src/lib/schemas",
   "schemaType": "zod",

@@ -1,0 +1,225 @@
+/* src/styles/swagger-dark.css */
+
+/* Scope everything under .swagger-dark so it doesn't affect the whole app */
+.swagger-dark {
+  background: #0b0f16;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+/* Base swagger layout */
+.swagger-dark .swagger-ui {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Helvetica,
+    Arial,
+    'Apple Color Emoji',
+    'Segoe UI Emoji';
+  color: #e5e7eb;
+}
+
+/* Topbar */
+.swagger-dark .swagger-ui .topbar {
+  background: #0b0f16 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.swagger-dark .swagger-ui .topbar a {
+  color: #e5e7eb !important;
+}
+
+.swagger-dark .swagger-ui .topbar .download-url-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.swagger-dark .swagger-ui .topbar .download-url-wrapper input {
+  background: #111827 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #e5e7eb !important;
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+}
+
+.swagger-dark .swagger-ui .topbar .download-url-wrapper .download-url-button {
+  background: #2563eb !important;
+  border-radius: 10px !important;
+  border: none !important;
+  color: white !important;
+  padding: 10px 14px !important;
+}
+
+/* Main containers */
+.swagger-dark .swagger-ui .wrapper {
+  max-width: 1200px;
+}
+
+.swagger-dark .swagger-ui .info {
+  margin: 20px 0;
+}
+
+.swagger-dark .swagger-ui .info .title {
+  color: #f9fafb !important;
+}
+
+.swagger-dark .swagger-ui .info p,
+.swagger-dark .swagger-ui .info li {
+  color: #cbd5e1 !important;
+}
+
+/* Section headers */
+.swagger-dark .swagger-ui .opblock-tag {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #f3f4f6 !important;
+  padding: 14px 8px !important;
+}
+
+/* Each endpoint block */
+.swagger-dark .swagger-ui .opblock {
+  border-radius: 16px !important;
+  overflow: hidden;
+  box-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin: 14px 0 !important;
+}
+
+/* Method colors (cleaner dark look) */
+.swagger-dark .swagger-ui .opblock.opblock-get {
+  background: rgba(16, 185, 129, 0.08) !important;
+}
+.swagger-dark .swagger-ui .opblock.opblock-post {
+  background: rgba(59, 130, 246, 0.08) !important;
+}
+.swagger-dark .swagger-ui .opblock.opblock-put {
+  background: rgba(245, 158, 11, 0.08) !important;
+}
+.swagger-dark .swagger-ui .opblock.opblock-delete {
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+
+/* Endpoint header row */
+.swagger-dark .swagger-ui .opblock .opblock-summary {
+  background: rgba(0, 0, 0, 0.15) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.swagger-dark .swagger-ui .opblock-summary-method {
+  border-radius: 10px !important;
+  padding: 7px 12px !important;
+  font-weight: 700 !important;
+}
+
+/* Endpoint path text */
+.swagger-dark .swagger-ui .opblock-summary-path,
+.swagger-dark .swagger-ui .opblock-summary-path * {
+  color: #f3f4f6 !important;
+}
+
+/* Endpoint description */
+.swagger-dark .swagger-ui .opblock-description-wrapper,
+.swagger-dark .swagger-ui .opblock-description-wrapper p,
+.swagger-dark .swagger-ui .opblock-description-wrapper li {
+  color: #cbd5e1 !important;
+}
+
+/* Buttons */
+.swagger-dark .swagger-ui .btn {
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #e5e7eb !important;
+  background: rgba(17, 24, 39, 0.9) !important;
+  box-shadow: none !important;
+}
+
+.swagger-dark .swagger-ui .btn:hover {
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  background: rgba(31, 41, 55, 0.95) !important;
+}
+
+/* "Try it out" + Execute */
+.swagger-dark .swagger-ui .btn.execute {
+  background: #2563eb !important;
+  border: none !important;
+  color: white !important;
+}
+.swagger-dark .swagger-ui .btn.execute:hover {
+  background: #1d4ed8 !important;
+}
+
+/* Inputs and selects */
+.swagger-dark .swagger-ui input,
+.swagger-dark .swagger-ui textarea,
+.swagger-dark .swagger-ui select {
+  background: #111827 !important;
+  color: #e5e7eb !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.swagger-dark .swagger-ui input::placeholder,
+.swagger-dark .swagger-ui textarea::placeholder {
+  color: rgba(229, 231, 235, 0.45) !important;
+}
+
+/* Models + schemas panel */
+.swagger-dark .swagger-ui .model-box,
+.swagger-dark .swagger-ui .models,
+.swagger-dark .swagger-ui .model-container {
+  background: rgba(17, 24, 39, 0.75) !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.swagger-dark .swagger-ui .model-title,
+.swagger-dark .swagger-ui .models h4 {
+  color: #f3f4f6 !important;
+}
+
+/* Tables */
+.swagger-dark .swagger-ui table thead tr th {
+  color: #e5e7eb !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+.swagger-dark .swagger-ui table tbody tr td {
+  color: #cbd5e1 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Response blocks */
+.swagger-dark .swagger-ui .responses-wrapper,
+.swagger-dark .swagger-ui .responses-inner {
+  background: rgba(17, 24, 39, 0.55) !important;
+  border-radius: 14px !important;
+  padding: 12px;
+}
+
+.swagger-dark .swagger-ui .response-col_status {
+  color: #f3f4f6 !important;
+}
+
+.swagger-dark .swagger-ui .highlight-code {
+  background: #0a0f1a !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Code blocks */
+.swagger-dark .swagger-ui pre,
+.swagger-dark .swagger-ui code {
+  background: #0a0f1a !important;
+  color: #e5e7eb !important;
+  border-radius: 12px !important;
+}
+
+/* Small labels and text */
+.swagger-dark .swagger-ui label,
+.swagger-dark .swagger-ui .parameter__name,
+.swagger-dark .swagger-ui .parameter__type,
+.swagger-dark .swagger-ui .parameter__deprecated {
+  color: #cbd5e1 !important;
+}

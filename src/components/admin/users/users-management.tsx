@@ -7,11 +7,12 @@ import { UserStats } from '@/src/components/admin/users/user-stats'
 import { UsersEmptyState } from '@/src/components/admin/users/users-empty-state'
 import { UsersHeader } from '@/src/components/admin/users/users-header'
 import { UsersTable } from '@/src/components/admin/users/users-table'
-import { OrdersPagination } from '@/src/components/orders/orders-pagination'
 import { useToast } from '@/src/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 
 import { useEffect, useMemo, useState } from 'react'
+
+import { OrdersPagination } from '../../orders/order-pagination'
 
 type AdminUser = {
   id: number
@@ -289,7 +290,10 @@ export function UsersManagement() {
         description="Manage user accounts and permissions."
       >
         {users.length === 0 && !isLoading ? (
-          <UsersEmptyState hasFilters={!!hasFilters} onAddUser={handleAddUser} />
+          <UsersEmptyState
+            hasFilters={!!hasFilters}
+            onAddUser={handleAddUser}
+          />
         ) : (
           <>
             <UsersTable

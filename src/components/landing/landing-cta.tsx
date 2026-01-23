@@ -23,7 +23,7 @@ export function LandingCTAEnhanced() {
   ]
 
   return (
-    <section className="relative py-20 sm:py-28 overflow-hidden">
+    <section className="relative py-20 sm:py-28 overflow-hidden px-8 sm:px-10 lg:px-12">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/10 to-background" />
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />

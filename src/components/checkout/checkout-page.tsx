@@ -388,8 +388,8 @@ export function CheckoutPageEnhanced() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
-      <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen relative py-20 sm:py-24 lg:py-28 bg-gradient-to-b from-muted/20 to-background">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <MotionBox
           initial={{ opacity: 0, y: 20 }}

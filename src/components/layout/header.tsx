@@ -1,6 +1,15 @@
 'use client'
 
 import { MotionBox } from '@/src/components/motion/box'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/src/components/ui/dropdown-menu'
 import siteConfig from '@/src/data/config'
 import { useColorMode } from '@/src/hooks/color-mode'
 import { useScrollSpy } from '@/src/hooks/use-scrollspy'
@@ -8,7 +17,18 @@ import { RootState } from '@/src/store'
 import { Container } from '@chakra-ui/react'
 import { useDisclosure } from '@chakra-ui/react'
 import { useScroll } from 'framer-motion'
-import { Menu, Moon, Package, ShoppingCart, Sun, User } from 'lucide-react'
+import {
+  Heart,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Moon,
+  Package,
+  ShoppingCart,
+  Sun,
+  User,
+} from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -28,13 +48,23 @@ export function HeaderEnhanced() {
   const pathname = usePathname()
   const mobileNav = useDisclosure()
   const cartDrawer = useDisclosure()
-
+  const { data: session } = useSession()
+  // const primaryNav = siteConfig.header?.primaryNav ?? []
   const activeId = useScrollSpy(
     siteConfig.header.links
       .filter(({ id }) => id)
       .map(({ id }) => `[id="${id}"]`),
     { threshold: 0.75 },
   )
+  const isAuthenticated = Boolean(session?.user)
+  const showDashboardLink =
+    session?.user?.role && session.user.role !== 'CUSTOMER'
+  const navLinks = siteConfig.header.links.filter(
+    (link) =>
+      (link.label !== 'Login' && link.label !== 'Sign Up') || !isAuthenticated,
+  )
+  const handleSignOut = () =>
+    signOut({ callbackUrl: pathname === '/' ? '/' : '/services' })
 
   const cartCount = useSelector((state: RootState) =>
     state.cart.items.reduce((sum, item) => sum + item.quantity, 0),
@@ -97,9 +127,29 @@ export function HeaderEnhanced() {
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Primary navigation */}
+            {/* <nav className="hidden lg:flex items-center gap-4 mr-3">
+              {primaryNav.map(({ href, label, icon: Icon }, i) => {
+                const isActive = href ? pathname?.startsWith(href) : false
+
+                return (
+                  <a
+                    key={i}
+                    href={href}
+                    className={`flex items-center gap-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground transition-all duration-200 ${
+                      isActive ? 'text-primary' : 'hover:text-foreground'
+                    }`}
+                  >
+                    {Icon && <Icon className="h-4 w-4" aria-hidden />}
+                    {label}
+                  </a>
+                )
+              })}
+            </nav> */}
+
+            {/* Section navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              {siteConfig.header.links.map(({ href, id, label }, i) => {
+              {navLinks.map(({ href, id, label }, i) => {
                 const linkHref = href || `/#${id}`
                 const isActive =
                   (id && activeId === id) ||
@@ -139,10 +189,18 @@ export function HeaderEnhanced() {
 
             {/* Actions */}
             <div className="flex items-center gap-2">
+              {isAuthenticated && (
+                <Link
+                  href="/services"
+                  className="hidden lg:inline-flex items-center rounded-full border border-primary/40 px-3 py-1 text-xs font-semibold text-primary transition-all duration-200 hover:text-primary/80 hover:scale-105"
+                >
+                  Ready to Get Started?
+                </Link>
+              )}
               {/* Theme Toggle */}
               <button
                 onClick={toggleColorMode}
-                className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 active:scale-95"
+                className="hidden cursor-pointer sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
                 aria-label="Toggle theme"
               >
                 {colorMode === 'light' ? (
@@ -155,7 +213,7 @@ export function HeaderEnhanced() {
               {/* Cart Button */}
               <button
                 onClick={cartDrawer.onOpen}
-                className="relative flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 active:scale-95"
+                className="relative cursor-pointer flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
                 aria-label="View cart"
               >
                 <ShoppingCart className="h-4 w-4" />
@@ -166,28 +224,101 @@ export function HeaderEnhanced() {
                 )}
               </button>
 
-              {/* User Menu */}
-              <a
-                href="/profile"
-                className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 active:scale-95"
-                aria-label="Profile"
-              >
-                <User className="h-4 w-4" />
-              </a>
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="hidden cursor-pointer sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
+                      aria-label="Account"
+                    >
+                      <User className="h-4 w-4" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel inset>
+                      {session?.user?.name || 'Account'}
+                    </DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem asChild inset>
+                        <Link
+                          href="/profile"
+                          className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors"
+                        >
+                          <User className="h-4 w-4 text-muted-foreground" />
+                          Profile
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild inset>
+                        <Link
+                          href="/orders"
+                          className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors"
+                        >
+                          <Package className="h-4 w-4 text-muted-foreground" />
+                          My orders
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild inset>
+                        <Link
+                          href="/wishlist"
+                          className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors"
+                        >
+                          <Heart className="h-4 w-4 text-muted-foreground" />
+                          Wish list
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    {showDashboardLink && (
+                      <>
+                        <DropdownMenuItem asChild inset>
+                          <Link
+                            href="/dashboard"
+                            className="flex cursor-pointer items-center gap-2 text-sm hover:text-primary transition-colors"
+                          >
+                            <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+                            Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                      </>
+                    )}
+                    <DropdownMenuItem
+                      inset
+                      variant="destructive"
+                      onSelect={(event) => {
+                        event.preventDefault()
+                        handleSignOut()
+                      }}
+                      className="hover:text-destructive cursor-pointer transition-colors"
+                    >
+                      <LogOut className="h-4 w-4 text-destructive" />
+                      <span className="text-sm text-destructive">Sign out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  href="/login"
+                  className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
+                  aria-label="Log in"
+                >
+                  <User className="h-4 w-4" />
+                </Link>
+              )}
 
               {/* Orders */}
-              <Link
+              {/* <Link
                 href="/orders"
-                className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 active:scale-95"
+                className="hidden md:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
                 aria-label="Orders"
               >
                 <Package className="h-4 w-4" />
-              </Link>
+              </Link> */}
 
               {/* Mobile Menu Button */}
               <button
                 onClick={mobileNav.onOpen}
-                className="flex lg:hidden items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 hover:scale-105 active:scale-95"
+                className="flex lg:hidden items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary transition-all duration-200 hover:scale-110 active:scale-95"
                 aria-label="Open menu"
               >
                 <Menu className="h-4 w-4" />

@@ -17,7 +17,7 @@ export function LandingHero() {
   const router = useRouter()
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
+    <div className="relative px-8 sm:px-10 lg:px-12 overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
       <BackgroundGradient height="100%" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">

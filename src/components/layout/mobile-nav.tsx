@@ -5,15 +5,11 @@ import siteConfig from '@/src/data/config'
 import { useColorMode } from '@/src/hooks/color-mode'
 import useRouteChanged from '@/src/hooks/use-route-changed'
 import {
-  Home,
   Info,
   Mail,
   Moon,
-  Package,
   Phone,
-  ShoppingBag,
   Sun,
-  User,
   X,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -46,14 +42,7 @@ export function MobileNavContent({ isOpen, onClose }: MobileNavContentProps) {
 
   if (!isOpen) return null
 
-  const navItems = [
-    { label: 'Home', href: '/', icon: Home },
-    { label: 'Shop', href: '/shop', icon: ShoppingBag },
-    { label: 'Orders', href: '/orders', icon: Package },
-    { label: 'Profile', href: '/profile', icon: User },
-    { label: 'About', href: '/about', icon: Info },
-    { label: 'Contact', href: '/contact', icon: Mail },
-  ]
+  const navItems = siteConfig.header.primaryNav
 
   return (
     <RemoveScroll forwardProps>

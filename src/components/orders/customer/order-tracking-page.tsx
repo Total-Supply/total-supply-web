@@ -216,7 +216,7 @@ export function OrderTrackingEnhanced() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-muted/20 to-background">
+      <div className="min-h-screen flex items-center relative py-20 sm:py-24 lg:py-28 justify-center bg-gradient-to-b from-muted/20 to-background">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
           <p className="text-muted-foreground">Loading order details...</p>
@@ -227,7 +227,7 @@ export function OrderTrackingEnhanced() {
 
   if (!order) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-muted/20 to-background">
+      <div className="min-h-screen flex items-center relative py-20 sm:py-24 lg:py-28 justify-center bg-gradient-to-b from-muted/20 to-background">
         <div className="text-center max-w-md">
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-red-500/20 to-red-600/10 ring-1 ring-red-500/30">
             <AlertCircle className="h-10 w-10 text-red-500" />

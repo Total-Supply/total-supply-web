@@ -26,7 +26,10 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["success", "error"],
+              "required": [
+                "success",
+                "error"
+              ],
               "properties": {
                 "success": {
                   "type": "boolean",
@@ -34,7 +37,9 @@
                 },
                 "error": {
                   "type": "object",
-                  "required": ["message"],
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string",
@@ -58,7 +63,10 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["success", "error"],
+              "required": [
+                "success",
+                "error"
+              ],
               "properties": {
                 "success": {
                   "type": "boolean",
@@ -66,7 +74,9 @@
                 },
                 "error": {
                   "type": "object",
-                  "required": ["message"],
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string",
@@ -90,7 +100,10 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["success", "error"],
+              "required": [
+                "success",
+                "error"
+              ],
               "properties": {
                 "success": {
                   "type": "boolean",
@@ -98,7 +111,9 @@
                 },
                 "error": {
                   "type": "object",
-                  "required": ["message"],
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string",
@@ -122,7 +137,10 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": ["success", "error"],
+              "required": [
+                "success",
+                "error"
+              ],
               "properties": {
                 "success": {
                   "type": "boolean",
@@ -130,7 +148,9 @@
                 },
                 "error": {
                   "type": "object",
-                  "required": ["message"],
+                  "required": [
+                    "message"
+                  ],
                   "properties": {
                     "message": {
                       "type": "string",
@@ -172,7 +192,10 @@
             "description": "Search by name or slug"
           }
         },
-        "required": ["page", "limit"]
+        "required": [
+          "page",
+          "limit"
+        ]
       },
       "CreateCategoryBody": {
         "$ref": "#/components/schemas/createFoodCategorySchema"
@@ -185,7 +208,9 @@
             "description": "Category id"
           }
         },
-        "required": ["id"]
+        "required": [
+          "id"
+        ]
       },
       "UpdateCategoryBody": {
         "$ref": "#/components/schemas/updateFoodCategorySchema"
@@ -220,12 +245,18 @@
           },
           "isActive": {
             "type": "string",
-            "enum": ["true", "false"],
+            "enum": [
+              "true",
+              "false"
+            ],
             "nullable": true,
             "description": "Filter by active status"
           }
         },
-        "required": ["page", "limit"]
+        "required": [
+          "page",
+          "limit"
+        ]
       },
       "CreateItemBody": {
         "$ref": "#/components/schemas/createFoodItemSchema"
@@ -238,7 +269,9 @@
             "description": "Item id"
           }
         },
-        "required": ["id"]
+        "required": [
+          "id"
+        ]
       },
       "UpdateItemBody": {
         "$ref": "#/components/schemas/updateFoodItemSchema"
@@ -303,7 +336,10 @@
             "description": "Search by title / description / requestNumber"
           }
         },
-        "required": ["page", "limit"],
+        "required": [
+          "page",
+          "limit"
+        ],
         "description": "Query parameters for listing service requests (Admin)"
       },
       "CreateServiceRequestBody": {
@@ -317,7 +353,9 @@
             "description": "Service request ID"
           }
         },
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "description": "Path parameters for service routes"
       },
       "AssignServiceBody": {
@@ -358,7 +396,12 @@
             "minimum": 0
           }
         },
-        "required": ["page", "limit", "total", "totalPages"]
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages"
+        ]
       },
       "cancelSchema": {
         "type": "object",
@@ -369,7 +412,9 @@
             "maxLength": 200
           }
         },
-        "required": ["reason"]
+        "required": [
+          "reason"
+        ]
       },
       "AddressResponse": {
         "type": "object",
@@ -438,7 +483,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/AddressesListData"
@@ -449,7 +496,11 @@
             "description": "Total number of addresses"
           }
         },
-        "required": ["success", "data", "total"],
+        "required": [
+          "success",
+          "data",
+          "total"
+        ],
         "description": "Successful addresses list response"
       },
       "ListAddressesQuery": {
@@ -462,7 +513,11 @@
           },
           "sortBy": {
             "type": "string",
-            "enum": ["default", "newest", "oldest"],
+            "enum": [
+              "default",
+              "newest",
+              "oldest"
+            ],
             "nullable": true,
             "description": "Sort order: \"default\" (isDefault first, then newest), \"newest\", or \"oldest\""
           }
@@ -666,7 +721,10 @@
             "description": "Number of orders with this status"
           }
         },
-        "required": ["status", "count"],
+        "required": [
+          "status",
+          "count"
+        ],
         "description": "Order count grouped by status"
       },
       "ServiceTypeStat": {
@@ -682,7 +740,10 @@
             "description": "Number of service requests of this type"
           }
         },
-        "required": ["type", "count"],
+        "required": [
+          "type",
+          "count"
+        ],
         "description": "Service request count grouped by type"
       },
       "DailyRevenue": {
@@ -703,7 +764,11 @@
             "description": "Number of delivered orders for this date"
           }
         },
-        "required": ["date", "revenue", "orders"],
+        "required": [
+          "date",
+          "revenue",
+          "orders"
+        ],
         "description": "Daily revenue statistics"
       },
       "DailyUserGrowth": {
@@ -719,7 +784,10 @@
             "description": "Number of new users registered on this date"
           }
         },
-        "required": ["date", "count"],
+        "required": [
+          "date",
+          "count"
+        ],
         "description": "Daily user registration statistics"
       },
       "RecentActivity": {
@@ -784,12 +852,23 @@
                 "description": "Actor user role"
               }
             },
-            "required": ["id", "name", "email", "role"],
+            "required": [
+              "id",
+              "name",
+              "email",
+              "role"
+            ],
             "nullable": true,
             "description": "User who performed the action"
           }
         },
-        "required": ["id", "entityType", "entityId", "action", "createdAt"],
+        "required": [
+          "id",
+          "entityType",
+          "entityId",
+          "action",
+          "createdAt"
+        ],
         "description": "Audit log entry"
       },
       "AnalyticsData": {
@@ -862,13 +941,18 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/AnalyticsData"
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Successful analytics response"
       },
       "AuditEntityTypeEnum": {
@@ -961,7 +1045,12 @@
             "description": "User role (CUSTOMER, ADMIN, SALESMAN, DRIVER, CLEANER, IT_STAFF)"
           }
         },
-        "required": ["id", "name", "email", "role"],
+        "required": [
+          "id",
+          "name",
+          "email",
+          "role"
+        ],
         "description": "User who performed the action"
       },
       "AuditLogEntry": {
@@ -1013,7 +1102,13 @@
             "description": "User who performed the action (null if actorId is null)"
           }
         },
-        "required": ["id", "entityType", "entityId", "action", "createdAt"],
+        "required": [
+          "id",
+          "entityType",
+          "entityId",
+          "action",
+          "createdAt"
+        ],
         "description": "Single audit log entry"
       },
       "AuditLogsSuccessResponse": {
@@ -1021,7 +1116,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "array",
@@ -1034,7 +1131,11 @@
             "$ref": "#/components/schemas/PaginationMeta"
           }
         },
-        "required": ["success", "data", "meta"],
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
         "description": "Successful audit logs response with pagination"
       },
       "AuthUserResponse": {
@@ -1090,7 +1191,13 @@
             "description": "Last update timestamp"
           }
         },
-        "required": ["id", "email", "name", "role", "status"],
+        "required": [
+          "id",
+          "email",
+          "name",
+          "role",
+          "status"
+        ],
         "description": "User profile returned by authentication APIs"
       },
       "LoginBody": {
@@ -1107,7 +1214,10 @@
             "description": "User password"
           }
         },
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "description": "Login request body"
       },
       "LoginSuccessResponse": {
@@ -1115,7 +1225,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1129,14 +1241,19 @@
                 "description": "Authenticated user profile"
               }
             },
-            "required": ["user"]
+            "required": [
+              "user"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Successful login response"
       },
       "MeSuccessResponse": {
@@ -1144,7 +1261,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1217,11 +1336,22 @@
                     "description": "Total saved addresses count"
                   }
                 },
-                "required": ["orders", "serviceRequests", "addresses"],
+                "required": [
+                  "orders",
+                  "serviceRequests",
+                  "addresses"
+                ],
                 "description": "Entity count summary"
               }
             },
-            "required": ["id", "email", "name", "role", "status", "_count"],
+            "required": [
+              "id",
+              "email",
+              "name",
+              "role",
+              "status",
+              "_count"
+            ],
             "description": "User profile returned by authentication APIs"
           },
           "message": {
@@ -1229,7 +1359,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Authenticated user full profile response"
       },
       "ForgotPasswordBody": {
@@ -1241,7 +1374,9 @@
             "description": "User email address"
           }
         },
-        "required": ["email"],
+        "required": [
+          "email"
+        ],
         "description": "Forgot password request body"
       },
       "ForgotPasswordSuccessResponse": {
@@ -1249,7 +1384,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1260,14 +1397,19 @@
                 "description": "Requested email address"
               }
             },
-            "required": ["email"]
+            "required": [
+              "email"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Forgot password response (always returns success even if email does not exist)"
       },
       "RegisterBody": {
@@ -1299,7 +1441,11 @@
             "description": "reCAPTCHA token (optional)"
           }
         },
-        "required": ["email", "password", "name"],
+        "required": [
+          "email",
+          "password",
+          "name"
+        ],
         "description": "User registration request body"
       },
       "RegisterSuccessResponse": {
@@ -1307,7 +1453,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1340,14 +1488,24 @@
                 "description": "Created timestamp"
               }
             },
-            "required": ["id", "email", "name", "role", "status", "createdAt"]
+            "required": [
+              "id",
+              "email",
+              "name",
+              "role",
+              "status",
+              "createdAt"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Successful registration response"
       },
       "ResendVerificationBody": {
@@ -1359,7 +1517,9 @@
             "description": "User email address"
           }
         },
-        "required": ["email"],
+        "required": [
+          "email"
+        ],
         "description": "Resend verification request body"
       },
       "ResendVerificationSuccessResponse": {
@@ -1367,7 +1527,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1378,14 +1540,19 @@
                 "description": "Requested email address"
               }
             },
-            "required": ["email"]
+            "required": [
+              "email"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Resend verification response"
       },
       "ResetPasswordBody": {
@@ -1402,7 +1569,10 @@
             "description": "New password"
           }
         },
-        "required": ["token", "password"],
+        "required": [
+          "token",
+          "password"
+        ],
         "description": "Reset password request body"
       },
       "ResetPasswordSuccessResponse": {
@@ -1410,7 +1580,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1421,14 +1593,19 @@
                 "description": "User email address"
               }
             },
-            "required": ["email"]
+            "required": [
+              "email"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Reset password response"
       },
       "VerifyEmailBody": {
@@ -1440,7 +1617,9 @@
             "description": "Email verification token"
           }
         },
-        "required": ["token"],
+        "required": [
+          "token"
+        ],
         "description": "Verify email request body"
       },
       "VerifyEmailSuccessResponse": {
@@ -1448,7 +1627,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1464,14 +1645,19 @@
                 "description": "True if email was already verified"
               }
             },
-            "required": ["email"]
+            "required": [
+              "email"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Verify email response"
       },
       "UpdateProfileBody": {
@@ -1502,7 +1688,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/AuthUserResponse"
@@ -1512,7 +1700,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Update profile response"
       },
       "SignoutSuccessResponse": {
@@ -1520,7 +1711,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "null"
@@ -1530,7 +1723,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Signout response"
       },
       "CategoryResponse": {
@@ -1562,14 +1758,22 @@
             "type": "string"
           }
         },
-        "required": ["id", "name", "slug", "createdAt", "updatedAt"]
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt",
+          "updatedAt"
+        ]
       },
       "ListCategoriesSuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "array",
@@ -1581,27 +1785,38 @@
             "$ref": "#/components/schemas/PaginationMeta"
           }
         },
-        "required": ["success", "data", "meta"]
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ]
       },
       "GetCategorySuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/CategoryWithCountResponse"
           }
         },
-        "required": ["success", "data"]
+        "required": [
+          "success",
+          "data"
+        ]
       },
       "CreateCategorySuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/CategoryResponse"
@@ -1611,14 +1826,19 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"]
+        "required": [
+          "success",
+          "data"
+        ]
       },
       "UpdateCategorySuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/CategoryResponse"
@@ -1628,14 +1848,19 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"]
+        "required": [
+          "success",
+          "data"
+        ]
       },
       "DeleteCategorySuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1646,14 +1871,19 @@
                 "exclusiveMinimum": true
               }
             },
-            "required": ["id"]
+            "required": [
+              "id"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"]
+        "required": [
+          "success",
+          "data"
+        ]
       },
       "ItemCategoryMini": {
         "type": "object",
@@ -1670,7 +1900,11 @@
             "type": "string"
           }
         },
-        "required": ["id", "name", "slug"]
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
       },
       "ItemImageResponse": {
         "type": "object",
@@ -1688,7 +1922,11 @@
             "minimum": 0
           }
         },
-        "required": ["id", "url", "position"]
+        "required": [
+          "id",
+          "url",
+          "position"
+        ]
       },
       "DecimalLike": {
         "oneOf": [
@@ -1911,7 +2149,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "array",
@@ -1923,27 +2163,38 @@
             "$ref": "#/components/schemas/PaginationMeta"
           }
         },
-        "required": ["success", "data", "meta"]
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ]
       },
       "GetItemSuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/ItemDetailsResponse"
           }
         },
-        "required": ["success", "data"]
+        "required": [
+          "success",
+          "data"
+        ]
       },
       "CreateItemSuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/ItemDbResponse"
@@ -1953,14 +2204,19 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"]
+        "required": [
+          "success",
+          "data"
+        ]
       },
       "UpdateItemSuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/ItemDbResponse"
@@ -1970,14 +2226,19 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"]
+        "required": [
+          "success",
+          "data"
+        ]
       },
       "DeleteItemSuccessResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -1988,14 +2249,19 @@
                 "exclusiveMinimum": true
               }
             },
-            "required": ["id"]
+            "required": [
+              "id"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"]
+        "required": [
+          "success",
+          "data"
+        ]
       },
       "CategoryWithCountResponse": {
         "type": "object",
@@ -2044,7 +2310,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [false]
+            "enum": [
+              false
+            ]
           },
           "error": {
             "type": "object",
@@ -2063,17 +2331,24 @@
                 "description": "Additional error context"
               }
             },
-            "required": ["message"]
+            "required": [
+              "message"
+            ]
           }
         },
-        "required": ["success", "error"]
+        "required": [
+          "success",
+          "error"
+        ]
       },
       "ValidationErrorResponse": {
         "type": "object",
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [false]
+            "enum": [
+              false
+            ]
           },
           "error": {
             "type": "object",
@@ -2084,7 +2359,9 @@
               },
               "code": {
                 "type": "string",
-                "enum": ["VALIDATION_ERROR"]
+                "enum": [
+                  "VALIDATION_ERROR"
+                ]
               },
               "details": {
                 "type": "array",
@@ -2114,15 +2391,26 @@
                       "description": "Field-specific error message"
                     }
                   },
-                  "required": ["code", "path", "message"]
+                  "required": [
+                    "code",
+                    "path",
+                    "message"
+                  ]
                 },
                 "description": "Array of validation issues"
               }
             },
-            "required": ["message", "code", "details"]
+            "required": [
+              "message",
+              "code",
+              "details"
+            ]
           }
         },
-        "required": ["success", "error"],
+        "required": [
+          "success",
+          "error"
+        ],
         "description": "Validation failed on request body or parameters"
       },
       "DataRetentionJobResult": {
@@ -2139,7 +2427,10 @@
             "description": "How many users were purged"
           }
         },
-        "required": ["anonymizedCount", "purgedCount"],
+        "required": [
+          "anonymizedCount",
+          "purgedCount"
+        ],
         "description": "Data retention job result summary"
       },
       "DataRetentionSuccessResponse": {
@@ -2147,7 +2438,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/DataRetentionJobResult"
@@ -2158,7 +2451,10 @@
             "description": "Optional response message"
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Successful execution of data retention job"
       },
       "OrderStatusEnum": {
@@ -2185,7 +2481,10 @@
                   "description": "Quantity (min 1)"
                 }
               },
-              "required": ["foodItemId", "quantity"]
+              "required": [
+                "foodItemId",
+                "quantity"
+              ]
             },
             "minItems": 1,
             "description": "Order items"
@@ -2233,7 +2532,11 @@
                 "description": "Set as default address"
               }
             },
-            "required": ["line1", "city", "postalCode"],
+            "required": [
+              "line1",
+              "city",
+              "postalCode"
+            ],
             "nullable": true,
             "description": "Inline address payload"
           },
@@ -2255,7 +2558,9 @@
             "description": "Optional order photo URL"
           }
         },
-        "required": ["items"],
+        "required": [
+          "items"
+        ],
         "description": "Create order request body"
       },
       "ListCustomerOrdersQuery": {
@@ -2284,18 +2589,30 @@
           },
           "sortBy": {
             "type": "string",
-            "enum": ["createdAt", "totalPrice", "orderNumber"],
+            "enum": [
+              "createdAt",
+              "totalPrice",
+              "orderNumber"
+            ],
             "default": "createdAt",
             "description": "Sort field"
           },
           "sortOrder": {
             "type": "string",
-            "enum": ["asc", "desc"],
+            "enum": [
+              "asc",
+              "desc"
+            ],
             "default": "desc",
             "description": "Sort order"
           }
         },
-        "required": ["page", "limit", "sortBy", "sortOrder"],
+        "required": [
+          "page",
+          "limit",
+          "sortBy",
+          "sortOrder"
+        ],
         "description": "Query parameters for listing customer orders"
       },
       "OrderIdParams": {
@@ -2306,7 +2623,9 @@
             "description": "Order ID"
           }
         },
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "description": "Path params for order details"
       },
       "OrderItemResponse": {
@@ -2341,12 +2660,21 @@
                 "type": "string"
               }
             },
-            "required": ["id", "name", "slug"],
+            "required": [
+              "id",
+              "name",
+              "slug"
+            ],
             "nullable": true,
             "description": "Food item minimal details"
           }
         },
-        "required": ["id", "foodItemId", "quantity", "unitPrice"],
+        "required": [
+          "id",
+          "foodItemId",
+          "quantity",
+          "unitPrice"
+        ],
         "description": "Order item response"
       },
       "OrderDeliveryAddressResponse": {
@@ -2376,7 +2704,13 @@
             "type": "string"
           }
         },
-        "required": ["id", "line1", "city", "postalCode", "country"],
+        "required": [
+          "id",
+          "line1",
+          "city",
+          "postalCode",
+          "country"
+        ],
         "nullable": true,
         "description": "Delivery address used for this order"
       },
@@ -2456,7 +2790,12 @@
             "type": "integer"
           }
         },
-        "required": ["page", "limit", "total", "totalPages"],
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages"
+        ],
         "description": "Pagination meta"
       },
       "ListCustomerOrdersSuccessResponse": {
@@ -2464,7 +2803,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "array",
@@ -2484,7 +2825,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "List customer orders success response"
       },
       "CreateOrderSuccessResponse": {
@@ -2492,7 +2836,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/OrderResponse"
@@ -2502,7 +2848,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Create order success response"
       },
       "GetOrderSuccessResponse": {
@@ -2510,7 +2859,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/OrderResponse"
@@ -2520,7 +2871,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Get order success response"
       },
       "ListCustomerServicesQuery": {
@@ -2555,7 +2909,10 @@
             "description": "Filter by priority"
           }
         },
-        "required": ["page", "limit"],
+        "required": [
+          "page",
+          "limit"
+        ],
         "description": "Customer service list query parameters"
       },
       "ServicePhotoResponse": {
@@ -2577,7 +2934,12 @@
             "type": "string"
           }
         },
-        "required": ["id", "url", "type", "createdAt"],
+        "required": [
+          "id",
+          "url",
+          "type",
+          "createdAt"
+        ],
         "description": "Service photo (BEFORE/PROGRESS/AFTER)"
       },
       "AssignmentSummaryResponse": {
@@ -2600,7 +2962,12 @@
             "type": "string"
           }
         },
-        "required": ["id", "staffId", "status", "assignedAt"],
+        "required": [
+          "id",
+          "staffId",
+          "status",
+          "assignedAt"
+        ],
         "description": "Latest staff assignment summary (if assigned)"
       },
       "CustomerServiceRequestResponse": {
@@ -2687,7 +3054,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "array",
@@ -2703,7 +3072,11 @@
             "nullable": true
           }
         },
-        "required": ["success", "data", "meta"],
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
         "description": "List customer services success response"
       },
       "CreateCustomerServiceSuccessResponse": {
@@ -2711,7 +3084,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/CustomerServiceRequestResponse"
@@ -2721,7 +3096,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Create customer service success response"
       },
       "ServiceRatingResponse": {
@@ -2779,7 +3157,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/ServiceRatingResponse"
@@ -2789,7 +3169,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Rate service success response"
       },
       "ServiceTypeEnum": {
@@ -2888,7 +3271,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "array",
@@ -2904,7 +3289,11 @@
             "nullable": true
           }
         },
-        "required": ["success", "data", "meta"],
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
         "description": "List service requests response"
       },
       "CreateServiceSuccessResponse": {
@@ -2912,7 +3301,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/ServiceRequestResponse"
@@ -2922,7 +3313,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Service request created response"
       },
       "UpdateServiceSuccessResponse": {
@@ -2930,7 +3324,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/ServiceRequestResponse"
@@ -2940,7 +3336,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Service request updated response"
       },
       "DeleteServiceSuccessResponse": {
@@ -2948,7 +3347,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -2959,14 +3360,19 @@
                 "exclusiveMinimum": true
               }
             },
-            "required": ["id"]
+            "required": [
+              "id"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Service request deleted/canceled response"
       },
       "ServiceAssignmentResponse": {
@@ -3027,7 +3433,12 @@
             "nullable": true
           }
         },
-        "required": ["id", "staffId", "assignedAt", "status"]
+        "required": [
+          "id",
+          "staffId",
+          "assignedAt",
+          "status"
+        ]
       },
       "ServiceRequestAdminDetailResponse": {
         "type": "object",
@@ -3123,7 +3534,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/ServiceRequestAdminDetailResponse"
@@ -3133,7 +3546,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Service action success response (Admin detail view)"
       },
       "UserRoleEnum": {
@@ -3152,7 +3568,9 @@
             "description": "User ID"
           }
         },
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "description": "Path params containing the user id"
       },
       "AdminUserListItem": {
@@ -3259,7 +3677,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/AdminUserResponse"
@@ -3269,7 +3689,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Admin create user success response"
       },
       "GetAdminUserSuccessResponse": {
@@ -3277,7 +3700,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/AdminUserResponse"
@@ -3287,7 +3712,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Admin get user by id success response"
       },
       "DeleteAdminUserSuccessResponse": {
@@ -3295,7 +3723,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "object",
@@ -3307,14 +3737,19 @@
                 "description": "Deleted user id"
               }
             },
-            "required": ["id"]
+            "required": [
+              "id"
+            ]
           },
           "message": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Admin delete user success response"
       },
       "ListAdminUsersSuccessResponse": {
@@ -3322,7 +3757,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "type": "array",
@@ -3338,7 +3775,11 @@
             "nullable": true
           }
         },
-        "required": ["success", "data", "meta"],
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
         "description": "Admin users list success response"
       },
       "UpdateAdminUserSuccessResponse": {
@@ -3346,7 +3787,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/AdminUserResponse"
@@ -3356,7 +3799,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "Admin user updated success response"
       },
       "SuspendUserSuccessResponse": {
@@ -3364,7 +3810,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/AdminUserResponse"
@@ -3374,7 +3822,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "User suspended success response"
       },
       "ReactivateUserSuccessResponse": {
@@ -3382,7 +3833,9 @@
         "properties": {
           "success": {
             "type": "boolean",
-            "enum": [true]
+            "enum": [
+              true
+            ]
           },
           "data": {
             "$ref": "#/components/schemas/AdminUserResponse"
@@ -3392,7 +3845,10 @@
             "nullable": true
           }
         },
-        "required": ["success", "data"],
+        "required": [
+          "success",
+          "data"
+        ],
         "description": "User reactivated success response"
       },
       "openapi": "3.0.0",
@@ -3409,15 +3865,22 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["success", "error"],
+                  "required": [
+                    "success",
+                    "error"
+                  ],
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [false]
+                      "enum": [
+                        false
+                      ]
                     },
                     "error": {
                       "type": "object",
-                      "required": ["message"],
+                      "required": [
+                        "message"
+                      ],
                       "properties": {
                         "message": {
                           "type": "string",
@@ -3443,15 +3906,22 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["success", "error"],
+                  "required": [
+                    "success",
+                    "error"
+                  ],
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [false]
+                      "enum": [
+                        false
+                      ]
                     },
                     "error": {
                       "type": "object",
-                      "required": ["message"],
+                      "required": [
+                        "message"
+                      ],
                       "properties": {
                         "message": {
                           "type": "string",
@@ -3477,15 +3947,22 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["success", "error"],
+                  "required": [
+                    "success",
+                    "error"
+                  ],
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [false]
+                      "enum": [
+                        false
+                      ]
                     },
                     "error": {
                       "type": "object",
-                      "required": ["message"],
+                      "required": [
+                        "message"
+                      ],
                       "properties": {
                         "message": {
                           "type": "string",
@@ -3511,15 +3988,22 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["success", "error"],
+                  "required": [
+                    "success",
+                    "error"
+                  ],
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [false]
+                      "enum": [
+                        false
+                      ]
                     },
                     "error": {
                       "type": "object",
-                      "required": ["message"],
+                      "required": [
+                        "message"
+                      ],
                       "properties": {
                         "message": {
                           "type": "string",
@@ -3545,15 +4029,22 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["success", "error"],
+                  "required": [
+                    "success",
+                    "error"
+                  ],
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [false]
+                      "enum": [
+                        false
+                      ]
                     },
                     "error": {
                       "type": "object",
-                      "required": ["message"],
+                      "required": [
+                        "message"
+                      ],
                       "properties": {
                         "message": {
                           "type": "string",
@@ -3579,15 +4070,24 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["success", "error"],
+                  "required": [
+                    "success",
+                    "error"
+                  ],
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [false]
+                      "enum": [
+                        false
+                      ]
                     },
                     "error": {
                       "type": "object",
-                      "required": ["message", "code", "details"],
+                      "required": [
+                        "message",
+                        "code",
+                        "details"
+                      ],
                       "properties": {
                         "message": {
                           "type": "string",
@@ -3601,7 +4101,11 @@
                           "type": "array",
                           "items": {
                             "type": "object",
-                            "required": ["code", "path", "message"],
+                            "required": [
+                              "code",
+                              "path",
+                              "message"
+                            ],
                             "properties": {
                               "code": {
                                 "type": "string",
@@ -3619,7 +4123,11 @@
                                     }
                                   ]
                                 },
-                                "example": ["items", 0, "quantity"]
+                                "example": [
+                                  "items",
+                                  0,
+                                  "quantity"
+                                ]
                               },
                               "message": {
                                 "type": "string",
@@ -3641,15 +4149,22 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["success", "error"],
+                  "required": [
+                    "success",
+                    "error"
+                  ],
                   "properties": {
                     "success": {
                       "type": "boolean",
-                      "enum": [false]
+                      "enum": [
+                        false
+                      ]
                     },
                     "error": {
                       "type": "object",
-                      "required": ["message"],
+                      "required": [
+                        "message"
+                      ],
                       "properties": {
                         "message": {
                           "type": "string",
@@ -3679,7 +4194,9 @@
         "operationId": "get-addresses",
         "summary": "",
         "description": "",
-        "tags": ["Addresses"],
+        "tags": [
+          "Addresses"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -3696,7 +4213,9 @@
         "operationId": "get-admin-analytics",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -3713,7 +4232,9 @@
         "operationId": "get-admin-audit-logs",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -3730,7 +4251,9 @@
         "operationId": "post-admin-data-retention",
         "summary": "Run Data Retention Job",
         "description": "Runs your data retention process (anonymize + purge).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -3788,7 +4311,9 @@
         "operationId": "get-admin-services",
         "summary": "List Service Requests (Admin)\r",
         "description": "Lists service requests with pagination + filters (Admin only).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -3891,7 +4416,9 @@
         "operationId": "post-admin-services",
         "summary": "Create Service Request (Admin)\r",
         "description": "Creates a service request (Admin only).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "security": [
           {
@@ -3947,7 +4474,9 @@
         "operationId": "get-admin-users",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -3962,7 +4491,9 @@
         "operationId": "post-admin-users",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -3979,7 +4510,9 @@
         "operationId": "get-admin-catalog-categories",
         "summary": "List Food Categories (Admin)",
         "description": "Returns paginated list of categories with itemCount.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -4055,7 +4588,9 @@
         "operationId": "post-admin-catalog-categories",
         "summary": "Create Food Category (Admin)",
         "description": "Creates a category (slug must be unique).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "security": [
           {
@@ -4111,7 +4646,9 @@
         "operationId": "get-admin-catalog-items",
         "summary": "List Food Items (Admin)",
         "description": "Returns paginated food items with merged categories.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "query",
@@ -4158,7 +4695,10 @@
             "name": "isActive",
             "schema": {
               "type": "string",
-              "enum": ["true", "false"],
+              "enum": [
+                "true",
+                "false"
+              ],
               "description": "Filter by active status"
             },
             "required": false,
@@ -4208,7 +4748,9 @@
         "operationId": "post-admin-catalog-items",
         "summary": "Create Food Item (Admin)",
         "description": "Creates a food item with optional extra categories + images.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "security": [
           {
@@ -4264,7 +4806,9 @@
         "operationId": "get-admin-services-offerings",
         "summary": "List Service Offerings",
         "description": "Returns all service offerings (ADMIN only).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "security": [
           {
@@ -4309,7 +4853,9 @@
         "operationId": "post-admin-services-offerings",
         "summary": "Create Service Offering",
         "description": "Creates a new service offering (ADMIN only).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "security": [
           {
@@ -4365,7 +4911,9 @@
         "operationId": "put-admin-services-{id}",
         "summary": "Update Service Request (Admin)\r",
         "description": "Updates a service request by ID (Admin only).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -4431,7 +4979,9 @@
         "operationId": "delete-admin-services-{id}",
         "summary": "Cancel Service Request (Admin)\r",
         "description": "Cancels a service request by setting status = CANCELED.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -4490,7 +5040,9 @@
         "operationId": "post-admin-users-bulk-approve",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -4507,7 +5059,9 @@
         "operationId": "get-admin-users-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -4522,7 +5076,9 @@
         "operationId": "patch-admin-users-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -4537,7 +5093,9 @@
         "operationId": "delete-admin-users-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "204": {
@@ -4557,7 +5115,9 @@
         "operationId": "get-admin-catalog-categories-{id}",
         "summary": "Get Food Category (Admin)",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -4614,7 +5174,9 @@
         "operationId": "patch-admin-catalog-categories-{id}",
         "summary": "Update Food Category (Admin)",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -4680,7 +5242,9 @@
         "operationId": "delete-admin-catalog-categories-{id}",
         "summary": "Delete Food Category (Admin)",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -4739,7 +5303,9 @@
         "operationId": "get-admin-catalog-items-{id}",
         "summary": "Get Food Item (Admin)",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -4796,7 +5362,9 @@
         "operationId": "patch-admin-catalog-items-{id}",
         "summary": "Update Food Item (Admin)",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -4862,7 +5430,9 @@
         "operationId": "delete-admin-catalog-items-{id}",
         "summary": "Delete Food Item (Admin)",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -4921,7 +5491,9 @@
         "operationId": "get-admin-services-offerings-{id}",
         "summary": "Get Service Offering by ID",
         "description": "Fetch a single service offering (ADMIN only).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "security": [
           {
@@ -4966,7 +5538,9 @@
         "operationId": "patch-admin-services-offerings-{id}",
         "summary": "Update Service Offering",
         "description": "Updates a service offering by ID (ADMIN only).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "security": [
           {
@@ -5020,7 +5594,9 @@
         "operationId": "delete-admin-services-offerings-{id}",
         "summary": "Delete Service Offering",
         "description": "Deletes a service offering by ID (ADMIN only).",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "security": [
           {
@@ -5067,7 +5643,9 @@
         "operationId": "post-admin-services-{id}-assign",
         "summary": "Assign Service Request (Admin)\r",
         "description": "Assigns a staff member to a service request.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -5135,7 +5713,9 @@
         "operationId": "post-admin-services-{id}-complete",
         "summary": "Complete Service Request (Cleaning) - Admin\r",
         "description": "Marks the service request as RESOLVED and saves AFTER photos.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -5203,7 +5783,9 @@
         "operationId": "post-admin-services-{id}-it-complete",
         "summary": "Complete Service Request (IT) - Admin\r",
         "description": "Marks IT service request as RESOLVED and stores completion details.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -5271,7 +5853,9 @@
         "operationId": "post-admin-services-{id}-it-progress",
         "summary": "IT Progress Update (Admin)\r",
         "description": "Adds IT progress update including time spent and photos.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -5339,7 +5923,9 @@
         "operationId": "post-admin-services-{id}-progress",
         "summary": "Progress Service Request (Admin)\r",
         "description": "Adds progress notes/photos and sets status to IN_PROGRESS.",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [
           {
             "in": "path",
@@ -5407,7 +5993,9 @@
         "operationId": "post-admin-users-approve-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5424,7 +6012,9 @@
         "operationId": "post-admin-users-reactivate-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5441,7 +6031,9 @@
         "operationId": "post-admin-users-reject-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5458,7 +6050,9 @@
         "operationId": "post-admin-users-suspend-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Admin"],
+        "tags": [
+          "Admin"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5475,7 +6069,9 @@
         "operationId": "post-auth-forgot-password",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5492,7 +6088,9 @@
         "operationId": "post-auth-login",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5509,7 +6107,9 @@
         "operationId": "get-auth-me",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5526,7 +6126,9 @@
         "operationId": "post-auth-register",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5543,7 +6145,9 @@
         "operationId": "post-auth-resend-verification",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5560,7 +6164,9 @@
         "operationId": "post-auth-reset-password",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5577,7 +6183,9 @@
         "operationId": "post-auth-signout",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5594,7 +6202,9 @@
         "operationId": "put-auth-update-profile",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5611,7 +6221,9 @@
         "operationId": "post-auth-verify-email",
         "summary": "",
         "description": "",
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5628,7 +6240,9 @@
         "operationId": "post-contact",
         "summary": "",
         "description": "",
-        "tags": ["Contact"],
+        "tags": [
+          "Contact"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5645,7 +6259,9 @@
         "operationId": "post-cron-data-retention",
         "summary": "",
         "description": "",
-        "tags": ["Cron"],
+        "tags": [
+          "Cron"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5662,7 +6278,9 @@
         "operationId": "get-customer-orders",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5677,7 +6295,9 @@
         "operationId": "post-customer-orders",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5694,7 +6314,9 @@
         "operationId": "get-customer-services",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5709,7 +6331,9 @@
         "operationId": "post-customer-services",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5726,7 +6350,9 @@
         "operationId": "get-customer-orders-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5743,7 +6369,9 @@
         "operationId": "get-customer-services-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5760,7 +6388,9 @@
         "operationId": "put-customer-services-{id}-cancel",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5777,7 +6407,9 @@
         "operationId": "post-customer-services-{id}-rate",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5794,7 +6426,9 @@
         "operationId": "get-customer-services-{id}-timeline",
         "summary": "",
         "description": "",
-        "tags": ["Customer"],
+        "tags": [
+          "Customer"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5811,7 +6445,9 @@
         "operationId": "get-food-categories",
         "summary": "",
         "description": "",
-        "tags": ["Food-categories"],
+        "tags": [
+          "Food-categories"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5828,7 +6464,9 @@
         "operationId": "get-food-items",
         "summary": "",
         "description": "",
-        "tags": ["Food-items"],
+        "tags": [
+          "Food-items"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5845,7 +6483,9 @@
         "operationId": "get-food-items-{slug}",
         "summary": "",
         "description": "",
-        "tags": ["Food-items"],
+        "tags": [
+          "Food-items"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5862,7 +6502,9 @@
         "operationId": "post-orders",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5877,7 +6519,9 @@
         "operationId": "get-orders",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5894,7 +6538,9 @@
         "operationId": "get-orders-{orderNumber}",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5909,7 +6555,9 @@
         "operationId": "patch-orders-{orderNumber}",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5926,7 +6574,9 @@
         "operationId": "post-orders-{orderNumber}-cancel",
         "summary": "",
         "description": "",
-        "tags": ["Orders"],
+        "tags": [
+          "Orders"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5943,7 +6593,9 @@
         "operationId": "get-profile",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5958,7 +6610,9 @@
         "operationId": "put-profile",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5975,7 +6629,9 @@
         "operationId": "post-profile-delete",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -5992,7 +6648,9 @@
         "operationId": "get-profile-export",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6009,7 +6667,9 @@
         "operationId": "put-profile-marketing",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6026,7 +6686,9 @@
         "operationId": "post-profile-restore",
         "summary": "",
         "description": "",
-        "tags": ["Profile"],
+        "tags": [
+          "Profile"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6043,7 +6705,9 @@
         "operationId": "post-service-requests",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6058,7 +6722,9 @@
         "operationId": "get-service-requests",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6075,7 +6741,9 @@
         "operationId": "get-service-requests-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6090,7 +6758,9 @@
         "operationId": "post-service-requests-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6105,7 +6775,9 @@
         "operationId": "patch-service-requests-{id}",
         "summary": "",
         "description": "",
-        "tags": ["Service-requests"],
+        "tags": [
+          "Service-requests"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6122,7 +6794,9 @@
         "operationId": "get-services-offerings",
         "summary": "",
         "description": "",
-        "tags": ["Services"],
+        "tags": [
+          "Services"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6139,7 +6813,9 @@
         "operationId": "get-staff-cleaner-services",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6156,7 +6832,9 @@
         "operationId": "get-staff-cleaner-stats",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6173,7 +6851,9 @@
         "operationId": "get-staff-driver-deliveries",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6190,7 +6870,9 @@
         "operationId": "get-staff-driver-stats",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6207,7 +6889,9 @@
         "operationId": "get-staff-it-services",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6224,7 +6908,9 @@
         "operationId": "get-staff-it-stats",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6241,7 +6927,9 @@
         "operationId": "get-staff-salesman-orders",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6258,7 +6946,9 @@
         "operationId": "get-staff-salesman-stats",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6275,7 +6965,9 @@
         "operationId": "post-staff-cleaner-services-{id}-accept",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6292,7 +6984,9 @@
         "operationId": "post-staff-cleaner-services-{id}-complete",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6309,7 +7003,9 @@
         "operationId": "post-staff-cleaner-services-{id}-progress",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6326,7 +7022,9 @@
         "operationId": "post-staff-cleaner-services-{id}-start",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6343,7 +7041,9 @@
         "operationId": "post-staff-driver-deliveries-{orderNumber}-accept",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6360,7 +7060,9 @@
         "operationId": "post-staff-driver-deliveries-{orderNumber}-confirm",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6377,7 +7079,9 @@
         "operationId": "post-staff-it-services-{id}-accept",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6394,7 +7098,9 @@
         "operationId": "post-staff-it-services-{id}-complete",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6411,7 +7117,9 @@
         "operationId": "post-staff-it-services-{id}-progress",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6428,7 +7136,9 @@
         "operationId": "post-staff-salesman-orders-{orderNumber}-accept",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6445,7 +7155,9 @@
         "operationId": "post-staff-salesman-orders-{orderNumber}-decline",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6462,7 +7174,9 @@
         "operationId": "post-staff-salesman-orders-{orderNumber}-prepare",
         "summary": "",
         "description": "",
-        "tags": ["Staff"],
+        "tags": [
+          "Staff"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6479,7 +7193,9 @@
         "operationId": "get-test-db",
         "summary": "",
         "description": "",
-        "tags": ["Test-db"],
+        "tags": [
+          "Test-db"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6496,7 +7212,9 @@
         "operationId": "get-unsubscribe",
         "summary": "",
         "description": "",
-        "tags": ["Unsubscribe"],
+        "tags": [
+          "Unsubscribe"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6513,7 +7231,9 @@
         "operationId": "post-upload",
         "summary": "",
         "description": "",
-        "tags": ["Upload"],
+        "tags": [
+          "Upload"
+        ],
         "parameters": [],
         "responses": {
           "400": {
@@ -6530,7 +7250,9 @@
         "operationId": "get-users",
         "summary": "",
         "description": "",
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "parameters": [],
         "responses": {
           "400": {

@@ -44,8 +44,8 @@ export function LandingStats({ stats }: LandingStatsProps) {
   ]
 
   return (
-    <div className="border-y border-border bg-muted/20 py-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="border-y border-border bg-muted/20 py-16 px-8 sm:px-10 lg:px-12">
+      <div className="container">
         <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
           {statCards.map((stat, index) => (
             <MotionBox

@@ -6,7 +6,7 @@ import { AuditFilters } from '@/src/components/admin/audit/audit-filters'
 import { AuditHeader } from '@/src/components/admin/audit/audit-header'
 import { AuditStats } from '@/src/components/admin/audit/audit-stats'
 import { AuditTable } from '@/src/components/admin/audit/audit-table'
-import { OrdersPagination } from '@/src/components/orders/orders-pagination'
+import { OrdersPagination } from '@/src/components/orders/order-pagination'
 import { useToast } from '@/src/hooks/use-toast'
 
 import { useEffect, useMemo, useState } from 'react'
