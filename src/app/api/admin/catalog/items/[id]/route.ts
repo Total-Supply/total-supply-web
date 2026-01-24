@@ -8,7 +8,7 @@ import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
-type Params = { params: { id: string } }
+type Params = { params: Promise<{ id: string }> }
 
 /**
  * Get Food Item (Admin)
@@ -27,7 +27,8 @@ export const GET = withErrorHandler(
   async (_request: NextRequest, { params }: Params) => {
     await requireAdmin(_request)
 
-    const itemId = Number(params.id)
+    const { id } = await params
+    const itemId = Number(id)
     if (Number.isNaN(itemId)) {
       return ApiResponse.badRequest('Invalid item id')
     }
@@ -102,7 +103,8 @@ export const PATCH = withErrorHandler(
   async (request: NextRequest, { params }: Params) => {
     const authRequest = await requireAdmin(request)
 
-    const itemId = Number(params.id)
+    const { id } = await params
+    const itemId = Number(id)
     if (Number.isNaN(itemId)) {
       return ApiResponse.badRequest('Invalid item id')
     }
@@ -248,7 +250,8 @@ export const DELETE = withErrorHandler(
   async (request: NextRequest, { params }: Params) => {
     const authRequest = await requireAdmin(request)
 
-    const itemId = Number(params.id)
+    const { id } = await params
+    const itemId = Number(id)
     if (Number.isNaN(itemId)) {
       return ApiResponse.badRequest('Invalid item id')
     }

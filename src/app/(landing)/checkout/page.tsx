@@ -1,7 +1,10 @@
-import { CheckoutPage } from '@/src/components/checkout/checkout-page'
+import { CheckoutPageEnhance } from '@/src/components/checkout/checkout-page'
 
-export default function CheckoutRoute() {
-  return <CheckoutPage />
+export const metadata = {
+  title: 'Checkout | Total Supply',
+  description: 'Complete your order securely',
 }
 
-
+export default function Checkout() {
+  return <CheckoutPageEnhance />
+}

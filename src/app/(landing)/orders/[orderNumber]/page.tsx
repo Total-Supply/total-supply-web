@@ -1,7 +1,10 @@
-import { OrderTrackingPage } from '@/src/components/orders/order-tracking-page'
+import { OrderTrackingEnhanced } from '@/src/components/orders/customer/order-tracking-page'
 
-export default function OrderTrackingRoute() {
-  return <OrderTrackingPage />
+export const metadata = {
+  title: 'Track Order | Total Supply',
+  description: 'View your order status and delivery details',
 }
 
-
+export default function OrderTracking() {
+  return <OrderTrackingEnhanced />
+}

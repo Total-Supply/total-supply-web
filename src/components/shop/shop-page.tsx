@@ -1,20 +1,22 @@
 'use client'
 
-import { BackgroundGradient } from '@/src/components/gradients/background-gradient'
-import { MotionBox } from '@/src/components/motion/box'
 import { showAddToCartToast } from '@/src/components/cart/cart-toast'
-import { addToCart } from '@/src/store/slices/cartSlice'
-import { Button, Container, HStack, Stack, Text } from '@chakra-ui/react'
+import { MotionBox } from '@/src/components/motion/box'
 import { useToast } from '@/src/hooks/use-toast'
+import { addToCart } from '@/src/store/slices/cartSlice'
+import { Container } from '@chakra-ui/react'
+import { Filter, Search, ShoppingCart, Sparkles, Store } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { ShopGrid } from './shop-grid'
-import { ShopSkeleton } from './shop-skeleton'
-import { ShopItem } from './shop-card'
-import { CategoryFilter, ShopFilters } from './shop-filters'
-import { ShopPriceFilter } from './shop-price-filter'
-import { ShopSearch } from './shop-search'
+
+import { useEffect, useState } from 'react'
+
+import { ShopEmptyState } from './shop-empty-state'
+import { ShopFiltersPanel } from './shop-filters-panel'
+import { ShopHeader } from './shop-header'
+import { ShopLoadingSkeleton } from './shop-loading-skeleton'
+import { ShopProductGrid } from './shop-product-grid'
+import type { CategoryFilter, ShopItem } from './types'
 
 type ShopResponse = {
   data: {
@@ -34,16 +36,17 @@ type ShopResponse = {
   }
 }
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 24
 const PRICE_RANGE_MIN = 0
 const PRICE_RANGE_MAX = 10000
 const RECENT_KEY = 'total-supply-recent-searches'
 
-export function ShopPage() {
+export function ShopPageEnhanced() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const dispatch = useDispatch()
   const toast = useToast()
+
   const selectedFromUrl = searchParams.get('categories') || ''
   const minFromUrl = searchParams.get('minPrice')
   const maxFromUrl = searchParams.get('maxPrice')
@@ -62,12 +65,15 @@ export function ShopPage() {
   const [searchInput, setSearchInput] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [showFilters, setShowFilters] = useState(false)
+
   const hasFilters =
     selectedCategories.length > 0 ||
     minPrice !== PRICE_RANGE_MIN ||
     maxPrice !== PRICE_RANGE_MAX ||
     debouncedSearch.length > 0
 
+  // Initialize from URL params
   useEffect(() => {
     const nextCategories = selectedFromUrl
       .split(',')
@@ -87,10 +93,12 @@ export function ShopPage() {
     loadItems(1, true, nextCategories, nextMin, nextMax, searchFromUrl)
   }, [selectedFromUrl, minFromUrl, maxFromUrl, searchFromUrl])
 
+  // Load categories
   useEffect(() => {
     loadCategories()
   }, [])
 
+  // Load recent searches
   useEffect(() => {
     const stored = localStorage.getItem(RECENT_KEY)
     if (!stored) return
@@ -104,6 +112,7 @@ export function ShopPage() {
     }
   }, [])
 
+  // Debounce search
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchInput.trim())
@@ -111,12 +120,14 @@ export function ShopPage() {
     return () => clearTimeout(handler)
   }, [searchInput])
 
+  // Update URL on search change
   useEffect(() => {
     if (debouncedSearch === searchFromUrl) return
     setPage(1)
     updateUrl(selectedCategories, minPrice, maxPrice, debouncedSearch)
   }, [debouncedSearch])
 
+  // Save recent searches
   useEffect(() => {
     if (!debouncedSearch) return
     const updated = [
@@ -171,6 +182,12 @@ export function ShopPage() {
       setTotalItems(data.meta?.total || mappedItems.length)
     } catch (error) {
       console.error('Failed to load food items', error)
+      toast({
+        title: 'Failed to load products',
+        description: 'Please try again later',
+        status: 'error',
+        duration: 3000,
+      })
     } finally {
       setIsLoading(false)
       setIsLoadingMore(false)
@@ -192,7 +209,14 @@ export function ShopPage() {
 
   const handleShowMore = () => {
     if (page >= totalPages || isLoadingMore) return
-    loadItems(page + 1, false, selectedCategories, minPrice, maxPrice, debouncedSearch)
+    loadItems(
+      page + 1,
+      false,
+      selectedCategories,
+      minPrice,
+      maxPrice,
+      debouncedSearch,
+    )
   }
 
   const updateUrl = (
@@ -215,7 +239,7 @@ export function ShopPage() {
       params.set('search', nextSearch)
     }
     const query = params.toString()
-    router.replace(query ? `/shop?${query}` : '/shop')
+    router.replace(query ? `/shop?${query}` : '/shop', { scroll: false })
   }
 
   const handleToggleCategory = (slug: string) => {
@@ -254,7 +278,12 @@ export function ShopPage() {
     setMinPrice(PRICE_RANGE_MIN)
     setMaxPrice(PRICE_RANGE_MAX)
     setPage(1)
-    updateUrl(selectedCategories, PRICE_RANGE_MIN, PRICE_RANGE_MAX, debouncedSearch)
+    updateUrl(
+      selectedCategories,
+      PRICE_RANGE_MIN,
+      PRICE_RANGE_MAX,
+      debouncedSearch,
+    )
   }
 
   const handleSearchChange = (value: string) => {
@@ -284,121 +313,104 @@ export function ShopPage() {
     )
     showAddToCartToast(toast, {
       title: 'Added to cart',
-      description: `Added 1x ${item.name}`,
+      description: `${item.name} added successfully`,
       onViewCart: () => router.push('/cart'),
     })
   }
 
   return (
-    <Stack gap={10}>
-      <BackgroundGradient height="320px" />
-
-      <Container maxW="container.xl" pt={{ base: 10, md: 16 }} pb={14}>
-        <Stack gap={3} textAlign={{ base: 'left', md: 'center' }}>
-          <MotionBox
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Text fontSize={{ base: '2xl', md: '3xl' }} fontWeight="bold">
-              Browse the Total Supply catalog
-            </Text>
-          </MotionBox>
-          <Text color="muted" fontSize={{ base: 'sm', md: 'md' }}>
-            Fresh ingredients and quality food items, updated daily.
-          </Text>
-        </Stack>
-
-        <Stack gap={8} mt={10}>
-          <ShopSearch
-            value={searchInput}
-            onChange={handleSearchChange}
-            onClear={handleClearSearch}
-            resultsCount={debouncedSearch ? totalItems : undefined}
-            recent={recentSearches}
+    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+      {/* Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-purple-500/10 to-background border-b border-border/60">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+        <Container
+          maxW="container.xl"
+          className="relative px-8 sm:px-10 lg:px-12 pt-20 sm:pt-24 lg:pt-28"
+        >
+          <ShopHeader
+            searchValue={searchInput}
+            onSearchChange={handleSearchChange}
+            onClearSearch={handleClearSearch}
+            recentSearches={recentSearches}
             onSelectRecent={handleSelectRecent}
+            resultsCount={debouncedSearch ? totalItems : undefined}
+            hasFilters={hasFilters}
+            onClearAll={handleClearAll}
+            onToggleFilters={() => setShowFilters(!showFilters)}
+            showFilters={showFilters}
           />
-          {hasFilters && (
-            <HStack justify="flex-end">
-              <Button size="sm" variant="ghost" onClick={handleClearAll}>
-                Clear all filters
-              </Button>
-            </HStack>
-          )}
+        </Container>
+      </div>
 
-          <Stack gap={8} direction={{ base: 'column', lg: 'row' }}>
-            <Stack
-              gap={6}
-              minW={{ base: 'full', lg: '240px' }}
-              maxW={{ base: 'full', lg: '260px' }}
-            >
-              <ShopFilters
-                categories={categories}
-                selected={selectedCategories}
-                onToggle={handleToggleCategory}
-                onClear={handleClearFilters}
+      {/* Main Content */}
+      <Container
+        maxW="container.xl"
+        className="relative px-4 sm:px-6 lg:px-8 pt-2 py-6 lg:py-8"
+      >
+        <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
+          {/* Filters Sidebar */}
+          <ShopFiltersPanel
+            categories={categories}
+            selectedCategories={selectedCategories}
+            onToggleCategory={handleToggleCategory}
+            onClearFilters={handleClearFilters}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            priceRangeMin={PRICE_RANGE_MIN}
+            priceRangeMax={PRICE_RANGE_MAX}
+            onPriceChange={handlePriceChange}
+            onResetPrice={handleResetPrice}
+            isVisible={showFilters}
+          />
+
+          {/* Products Grid */}
+          <div className="space-y-6">
+            {isLoading ? (
+              <ShopLoadingSkeleton count={24} />
+            ) : items.length === 0 ? (
+              <ShopEmptyState
+                hasFilters={hasFilters}
+                searchQuery={debouncedSearch}
+                onClearFilters={handleClearAll}
               />
-              <ShopPriceFilter
-                minValue={minPrice}
-                maxValue={maxPrice}
-                rangeMin={PRICE_RANGE_MIN}
-                rangeMax={PRICE_RANGE_MAX}
-                onChange={handlePriceChange}
-                onReset={handleResetPrice}
-              />
-            </Stack>
+            ) : (
+              <>
+                <ShopProductGrid
+                  items={items}
+                  onItemClick={(slug: string) => router.push(`/shop/${slug}`)}
+                  onAddToCart={handleAddToCart}
+                  highlight={debouncedSearch}
+                />
 
-            <Stack gap={6} flex="1">
-              {isLoading ? (
-                <ShopSkeleton count={12} />
-              ) : items.length === 0 ? (
-                <Stack
-                  gap={2}
-                  align="center"
-                  py={16}
-                  borderRadius="2xl"
-                  borderWidth="1px"
-                  borderStyle="dashed"
-                >
-                  <Text fontSize="lg" fontWeight="600">
-                    No results found
-                  </Text>
-                  <Text color="muted" fontSize="sm">
-                    Try adjusting your filters or searching a different keyword.
-                  </Text>
-                </Stack>
-              ) : (
-                <>
-                  <ShopGrid
-                    items={items}
-                    onItemClick={(slug) => router.push(`/shop/${slug}`)}
-                    highlight={debouncedSearch}
-                    onAddToCart={handleAddToCart}
-                  />
-                  {isLoadingMore ? <ShopSkeleton count={6} /> : null}
-                </>
-              )}
+                {isLoadingMore && <ShopLoadingSkeleton count={12} />}
 
-              {items.length > 0 && page < totalPages && (
-                <HStack justify="center">
-                  <Button
-                    onClick={handleShowMore}
-                    loading={isLoadingMore}
-                    size="lg"
-                    variant="outline"
-                  >
-                    Show more
-                  </Button>
-                </HStack>
-              )}
-            </Stack>
-          </Stack>
-        </Stack>
+                {page < totalPages && (
+                  <div className="flex justify-center pt-6">
+                    <button
+                      onClick={handleShowMore}
+                      disabled={isLoadingMore}
+                      className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary to-primary/80 px-8 py-3 font-semibold text-white shadow-lg shadow-primary/30 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-primary/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoadingMore ? (
+                        <>
+                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          Loading...
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingCart className="h-5 w-5" />
+                          Load More Products
+                          <Sparkles className="h-4 w-4 transition-transform group-hover:rotate-12" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
       </Container>
-    </Stack>
+    </div>
   )
 }
-
-
-
-

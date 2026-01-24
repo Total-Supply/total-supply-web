@@ -1,4 +1,4 @@
-import ServiceRequestDetailPage from '@/src/components/services/service-request-detail-page'
+import ServiceRequestDetailPage from '@/src/components/services/details/service-request-detail-page'
 
 export default function ServiceRequestDetailRoute() {
   return <ServiceRequestDetailPage />

@@ -1,0 +1,7268 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Documentation",
+    "version": "1.0.0",
+    "description": "This is the OpenAPI specification for your project."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Local development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "error"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid request parameters"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "BAD_REQUEST"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "error"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication required"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "UNAUTHORIZED"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "error"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access denied"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "FORBIDDEN"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "success",
+                "error"
+              ],
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "type": "object",
+                  "required": [
+                    "message"
+                  ],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "An unexpected error occurred"
+                    },
+                    "code": {
+                      "type": "string",
+                      "example": "INTERNAL_ERROR"
+                    },
+                    "details": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ListCategoriesQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Items per page"
+          },
+          "search": {
+            "type": "string",
+            "nullable": true,
+            "description": "Search by name or slug"
+          }
+        },
+        "required": [
+          "page",
+          "limit"
+        ]
+      },
+      "CreateCategoryBody": {
+        "$ref": "#/components/schemas/createFoodCategorySchema"
+      },
+      "CategoryIdParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Category id"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "UpdateCategoryBody": {
+        "$ref": "#/components/schemas/updateFoodCategorySchema"
+      },
+      "ListItemsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Items per page"
+          },
+          "search": {
+            "type": "string",
+            "nullable": true,
+            "description": "Search by name / slug / sku"
+          },
+          "categoryId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true,
+            "description": "Filter by category id"
+          },
+          "isActive": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ],
+            "nullable": true,
+            "description": "Filter by active status"
+          }
+        },
+        "required": [
+          "page",
+          "limit"
+        ]
+      },
+      "CreateItemBody": {
+        "$ref": "#/components/schemas/createFoodItemSchema"
+      },
+      "ItemIdParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Item id"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "UpdateItemBody": {
+        "$ref": "#/components/schemas/updateFoodItemSchema"
+      },
+      "DataRetentionQuery": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional cron token (alternative to x-cron-token header). Must match DATA_RETENTION_CRON_SECRET"
+          }
+        },
+        "description": "Query parameters for triggering data retention"
+      },
+      "CreateServiceOfferingBody": {},
+      "ServiceOfferingIdParams": {},
+      "UpdateServiceOfferingBody": {},
+      "ListAdminServicesQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Items per page (max 100)"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceStatusEnum"
+              }
+            ],
+            "description": "Filter by status"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceTypeEnum"
+              }
+            ],
+            "description": "Filter by type"
+          },
+          "priority": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServicePriorityEnum"
+              }
+            ],
+            "description": "Filter by priority"
+          },
+          "search": {
+            "type": "string",
+            "nullable": true,
+            "description": "Search by title / description / requestNumber"
+          }
+        },
+        "required": [
+          "page",
+          "limit"
+        ],
+        "description": "Query parameters for listing service requests (Admin)"
+      },
+      "CreateServiceRequestBody": {
+        "type": "object"
+      },
+      "ServiceIdParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Service request ID"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "description": "Path parameters for service routes"
+      },
+      "AssignServiceBody": {
+        "type": "object"
+      },
+      "CompleteServiceBody": {
+        "type": "object"
+      },
+      "ItCompleteBody": {
+        "type": "object"
+      },
+      "ItProgressBody": {
+        "type": "object"
+      },
+      "ProgressServiceBody": {
+        "type": "object"
+      },
+      "UpdateServiceRequestBody": {
+        "type": "object"
+      },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "totalPages": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages"
+        ]
+      },
+      "cancelSchema": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "AddressResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "Unique address identifier"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true,
+            "description": "Address label (e.g., \"Home\", \"Office\") or null"
+          },
+          "line1": {
+            "type": "string",
+            "description": "Primary address line (street address)"
+          },
+          "line2": {
+            "type": "string",
+            "nullable": true,
+            "description": "Secondary address line (apartment, suite, etc.) or null"
+          },
+          "city": {
+            "type": "string",
+            "description": "City or town name"
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "Postal or ZIP code"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country name (e.g., \"Sri Lanka\")"
+          },
+          "isDefault": {
+            "type": "boolean",
+            "description": "Whether this is the default delivery address"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when address was created"
+          }
+        },
+        "required": [
+          "id",
+          "line1",
+          "city",
+          "postalCode",
+          "country",
+          "isDefault",
+          "createdAt"
+        ],
+        "description": "Single address object"
+      },
+      "AddressesListData": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/AddressResponse"
+        },
+        "description": "Array of user addresses, sorted by default first, then newest"
+      },
+      "ListAddressesSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/AddressesListData"
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total number of addresses"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "total"
+        ],
+        "description": "Successful addresses list response"
+      },
+      "ListAddressesQuery": {
+        "type": "object",
+        "properties": {
+          "includeDefault": {
+            "type": "string",
+            "nullable": true,
+            "description": "If \"true\", only return the default address"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "default",
+              "newest",
+              "oldest"
+            ],
+            "nullable": true,
+            "description": "Sort order: \"default\" (isDefault first, then newest), \"newest\", or \"oldest\""
+          }
+        },
+        "description": "Query parameters for listing addresses"
+      },
+      "AnalyticsQuery": {
+        "type": "object",
+        "properties": {
+          "fromDate": {
+            "type": "string",
+            "nullable": true,
+            "description": "Start date in ISO 8601 format (e.g., \"2024-01-01T00:00:00Z\")"
+          },
+          "toDate": {
+            "type": "string",
+            "nullable": true,
+            "description": "End date in ISO 8601 format (e.g., \"2024-12-31T23:59:59Z\")"
+          }
+        },
+        "description": "Optional date range filter for analytics data"
+      },
+      "AnalyticsOverview": {
+        "type": "object",
+        "properties": {
+          "totalUsers": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total count of all users"
+          },
+          "activeUsers": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Users with ACTIVE status"
+          },
+          "pendingUsers": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Users with PENDING_APPROVAL status"
+          },
+          "suspendedUsers": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Users with SUSPENDED status"
+          },
+          "customerCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Users with CUSTOMER role"
+          },
+          "staffCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Users with staff roles (ADMIN, SALESMAN, DRIVER, CLEANER, IT_STAFF)"
+          },
+          "totalOrders": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total orders in date range"
+          },
+          "pendingOrders": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Orders with PENDING status"
+          },
+          "deliveredOrders": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Orders with DELIVERED status"
+          },
+          "canceledOrders": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Orders with CANCELED status"
+          },
+          "totalRevenue": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Total revenue from delivered orders (LKR)"
+          },
+          "totalServiceRequests": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total service requests"
+          },
+          "receivedServiceRequests": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Service requests with RECEIVED status"
+          },
+          "resolvedServiceRequests": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Service requests with RESOLVED status"
+          },
+          "canceledServiceRequests": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Service requests with CANCELED status"
+          },
+          "cleaningServices": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Service requests with CLEANING type"
+          },
+          "itServices": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Service requests with IT_SUPPORT type"
+          },
+          "totalMessages": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total contact messages"
+          },
+          "openMessages": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Contact messages with OPEN status"
+          },
+          "resolvedMessages": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Contact messages with RESOLVED status"
+          }
+        },
+        "required": [
+          "totalUsers",
+          "activeUsers",
+          "pendingUsers",
+          "suspendedUsers",
+          "customerCount",
+          "staffCount",
+          "totalOrders",
+          "pendingOrders",
+          "deliveredOrders",
+          "canceledOrders",
+          "totalRevenue",
+          "totalServiceRequests",
+          "receivedServiceRequests",
+          "resolvedServiceRequests",
+          "canceledServiceRequests",
+          "cleaningServices",
+          "itServices",
+          "totalMessages",
+          "openMessages",
+          "resolvedMessages"
+        ],
+        "description": "High-level overview metrics"
+      },
+      "TopProduct": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Food item ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Product name"
+          },
+          "price": {
+            "type": "number",
+            "description": "Current product price (LKR)"
+          },
+          "categoryId": {
+            "type": "integer",
+            "description": "Category ID"
+          },
+          "totalSold": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total quantity sold"
+          },
+          "orderCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of orders containing this product"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "price",
+          "categoryId",
+          "totalSold",
+          "orderCount"
+        ],
+        "description": "Top-selling product statistics"
+      },
+      "OrderStatusStat": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Order status (PENDING, ACCEPTED, PREPARING, OUT_FOR_DELIVERY, DELIVERED, CANCELED)"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of orders with this status"
+          }
+        },
+        "required": [
+          "status",
+          "count"
+        ],
+        "description": "Order count grouped by status"
+      },
+      "ServiceTypeStat": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Service type (CLEANING, IT_SUPPORT)"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of service requests of this type"
+          }
+        },
+        "required": [
+          "type",
+          "count"
+        ],
+        "description": "Service request count grouped by type"
+      },
+      "DailyRevenue": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format"
+          },
+          "revenue": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Total revenue for this date (LKR)"
+          },
+          "orders": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of delivered orders for this date"
+          }
+        },
+        "required": [
+          "date",
+          "revenue",
+          "orders"
+        ],
+        "description": "Daily revenue statistics"
+      },
+      "DailyUserGrowth": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of new users registered on this date"
+          }
+        },
+        "required": [
+          "date",
+          "count"
+        ],
+        "description": "Daily user registration statistics"
+      },
+      "RecentActivity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Audit log ID"
+          },
+          "entityType": {
+            "type": "string",
+            "description": "Type of entity (USER, ORDER, SERVICE_REQUEST, CONTACT_MESSAGE, FOOD_ITEM, FOOD_CATEGORY)"
+          },
+          "entityId": {
+            "type": "integer",
+            "description": "ID of the affected entity"
+          },
+          "action": {
+            "type": "string",
+            "description": "Action performed (CREATE, UPDATE, DELETE, STATUS_CHANGE, LOGIN, LOGOUT)"
+          },
+          "actorId": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of user who performed the action"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "IP address of the actor"
+          },
+          "userAgent": {
+            "type": "string",
+            "nullable": true,
+            "description": "User agent string"
+          },
+          "details": {
+            "nullable": true,
+            "description": "Additional JSON details about the action"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when action occurred"
+          },
+          "actor": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Actor user ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "Actor user name"
+              },
+              "email": {
+                "type": "string",
+                "description": "Actor user email"
+              },
+              "role": {
+                "type": "string",
+                "description": "Actor user role"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "email",
+              "role"
+            ],
+            "nullable": true,
+            "description": "User who performed the action"
+          }
+        },
+        "required": [
+          "id",
+          "entityType",
+          "entityId",
+          "action",
+          "createdAt"
+        ],
+        "description": "Audit log entry"
+      },
+      "AnalyticsData": {
+        "type": "object",
+        "properties": {
+          "overview": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AnalyticsOverview"
+              }
+            ],
+            "description": "Summary metrics across users, orders, services, and messages"
+          },
+          "topProducts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TopProduct"
+            },
+            "description": "Top 10 products by quantity sold"
+          },
+          "ordersByStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderStatusStat"
+            },
+            "description": "Order counts grouped by status"
+          },
+          "servicesByType": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceTypeStat"
+            },
+            "description": "Service request counts grouped by type"
+          },
+          "dailyRevenue": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyRevenue"
+            },
+            "description": "Daily revenue for last 30 days"
+          },
+          "dailyUsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DailyUserGrowth"
+            },
+            "description": "Daily new user registrations for last 30 days"
+          },
+          "recentActivity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RecentActivity"
+            },
+            "description": "10 most recent audit log entries"
+          }
+        },
+        "required": [
+          "overview",
+          "topProducts",
+          "ordersByStatus",
+          "servicesByType",
+          "dailyRevenue",
+          "dailyUsers",
+          "recentActivity"
+        ],
+        "description": "Complete analytics data"
+      },
+      "AnalyticsSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/AnalyticsData"
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Successful analytics response"
+      },
+      "AuditEntityTypeEnum": {
+        "type": "string",
+        "enum": [
+          "USER",
+          "ORDER",
+          "SERVICE_REQUEST",
+          "CONTACT_MESSAGE",
+          "FOOD_ITEM",
+          "FOOD_CATEGORY"
+        ],
+        "description": "Type of entity that was affected by the action"
+      },
+      "AuditActionEnum": {
+        "type": "string",
+        "enum": [
+          "CREATE",
+          "UPDATE",
+          "DELETE",
+          "STATUS_CHANGE",
+          "LOGIN",
+          "LOGOUT"
+        ],
+        "description": "Type of action performed"
+      },
+      "AuditLogsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "string",
+            "nullable": true,
+            "description": "Page number (default: 1)"
+          },
+          "limit": {
+            "type": "string",
+            "nullable": true,
+            "description": "Number of logs per page (default: 20, max: 100)"
+          },
+          "entityType": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by entity type (USER, ORDER, SERVICE_REQUEST, CONTACT_MESSAGE, FOOD_ITEM, FOOD_CATEGORY) or \"ALL\""
+          },
+          "action": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by action (CREATE, UPDATE, DELETE, STATUS_CHANGE, LOGIN, LOGOUT) or \"ALL\""
+          },
+          "actorId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by user ID who performed the action"
+          },
+          "fromDate": {
+            "type": "string",
+            "nullable": true,
+            "description": "Start date in ISO 8601 format (e.g., \"2024-01-01T00:00:00Z\")"
+          },
+          "toDate": {
+            "type": "string",
+            "nullable": true,
+            "description": "End date in ISO 8601 format (e.g., \"2024-12-31T23:59:59Z\")"
+          },
+          "search": {
+            "type": "string",
+            "nullable": true,
+            "description": "Search by IP address, user agent, actor name, or actor email"
+          }
+        },
+        "description": "Query parameters for filtering and paginating audit logs"
+      },
+      "AuditActor": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email"
+          },
+          "role": {
+            "type": "string",
+            "description": "User role (CUSTOMER, ADMIN, SALESMAN, DRIVER, CLEANER, IT_STAFF)"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "role"
+        ],
+        "description": "User who performed the action"
+      },
+      "AuditLogEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Audit log ID"
+          },
+          "entityType": {
+            "$ref": "#/components/schemas/AuditEntityTypeEnum"
+          },
+          "entityId": {
+            "type": "integer",
+            "description": "ID of the affected entity"
+          },
+          "action": {
+            "$ref": "#/components/schemas/AuditActionEnum"
+          },
+          "actorId": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of user who performed the action (null for system actions)"
+          },
+          "ipAddress": {
+            "type": "string",
+            "nullable": true,
+            "description": "IP address of the actor"
+          },
+          "userAgent": {
+            "type": "string",
+            "nullable": true,
+            "description": "User agent string"
+          },
+          "details": {
+            "nullable": true,
+            "description": "Additional JSON details about the action"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when action occurred"
+          },
+          "actor": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AuditActor"
+              }
+            ],
+            "description": "User who performed the action (null if actorId is null)"
+          }
+        },
+        "required": [
+          "id",
+          "entityType",
+          "entityId",
+          "action",
+          "createdAt"
+        ],
+        "description": "Single audit log entry"
+      },
+      "AuditLogsSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditLogEntry"
+            },
+            "description": "Array of audit log entries for current page"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
+        "description": "Successful audit logs response with pagination"
+      },
+      "AuthUserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "description": "User ID"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email"
+          },
+          "name": {
+            "type": "string",
+            "description": "User full name"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Phone number (nullable)"
+          },
+          "role": {
+            "type": "string",
+            "description": "User role"
+          },
+          "status": {
+            "type": "string",
+            "description": "Account status"
+          },
+          "profileImage": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Profile image URL (nullable)"
+          },
+          "emailVerified": {
+            "type": "string",
+            "nullable": true,
+            "description": "Email verified timestamp (nullable)"
+          },
+          "createdAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "nullable": true,
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "role",
+          "status"
+        ],
+        "description": "User profile returned by authentication APIs"
+      },
+      "LoginBody": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1,
+            "description": "User password"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "description": "Login request body"
+      },
+      "LoginSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AuthUserResponse"
+                  }
+                ],
+                "description": "Authenticated user profile"
+              }
+            },
+            "required": [
+              "user"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Successful login response"
+      },
+      "MeSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true,
+                "description": "User ID"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "User email"
+              },
+              "name": {
+                "type": "string",
+                "description": "User full name"
+              },
+              "phone": {
+                "type": "string",
+                "nullable": true,
+                "description": "Phone number (nullable)"
+              },
+              "role": {
+                "type": "string",
+                "description": "User role"
+              },
+              "status": {
+                "type": "string",
+                "description": "Account status"
+              },
+              "profileImage": {
+                "type": "string",
+                "format": "uri",
+                "nullable": true,
+                "description": "Profile image URL (nullable)"
+              },
+              "emailVerified": {
+                "type": "string",
+                "nullable": true,
+                "description": "Email verified timestamp (nullable)"
+              },
+              "createdAt": {
+                "type": "string",
+                "nullable": true,
+                "description": "Creation timestamp"
+              },
+              "updatedAt": {
+                "type": "string",
+                "nullable": true,
+                "description": "Last update timestamp"
+              },
+              "_count": {
+                "type": "object",
+                "properties": {
+                  "orders": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Total orders count"
+                  },
+                  "serviceRequests": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Total service requests count"
+                  },
+                  "addresses": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Total saved addresses count"
+                  }
+                },
+                "required": [
+                  "orders",
+                  "serviceRequests",
+                  "addresses"
+                ],
+                "description": "Entity count summary"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "name",
+              "role",
+              "status",
+              "_count"
+            ],
+            "description": "User profile returned by authentication APIs"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Authenticated user full profile response"
+      },
+      "ForgotPasswordBody": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "description": "Forgot password request body"
+      },
+      "ForgotPasswordSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Requested email address"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Forgot password response (always returns success even if email does not exist)"
+      },
+      "RegisterBody": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "User password"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "description": "User name"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Phone number (optional)"
+          },
+          "recaptchaToken": {
+            "type": "string",
+            "nullable": true,
+            "description": "reCAPTCHA token (optional)"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "name"
+        ],
+        "description": "User registration request body"
+      },
+      "RegisterSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true,
+                "description": "New user ID"
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Registered email"
+              },
+              "name": {
+                "type": "string",
+                "description": "Registered name"
+              },
+              "role": {
+                "type": "string",
+                "description": "Assigned role"
+              },
+              "status": {
+                "type": "string",
+                "description": "Assigned status"
+              },
+              "createdAt": {
+                "type": "string",
+                "description": "Created timestamp"
+              }
+            },
+            "required": [
+              "id",
+              "email",
+              "name",
+              "role",
+              "status",
+              "createdAt"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Successful registration response"
+      },
+      "ResendVerificationBody": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          }
+        },
+        "required": [
+          "email"
+        ],
+        "description": "Resend verification request body"
+      },
+      "ResendVerificationSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "Requested email address"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Resend verification response"
+      },
+      "ResetPasswordBody": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 10,
+            "description": "Password reset token"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "description": "New password"
+          }
+        },
+        "required": [
+          "token",
+          "password"
+        ],
+        "description": "Reset password request body"
+      },
+      "ResetPasswordSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "User email address"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Reset password response"
+      },
+      "VerifyEmailBody": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "minLength": 10,
+            "description": "Email verification token"
+          }
+        },
+        "required": [
+          "token"
+        ],
+        "description": "Verify email request body"
+      },
+      "VerifyEmailSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "User email address"
+              },
+              "alreadyVerified": {
+                "type": "boolean",
+                "nullable": true,
+                "description": "True if email was already verified"
+              }
+            },
+            "required": [
+              "email"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Verify email response"
+      },
+      "UpdateProfileBody": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "nullable": true,
+            "description": "Updated name"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "description": "Updated phone"
+          },
+          "profileImage": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Profile image URL"
+          }
+        },
+        "description": "Update profile request body"
+      },
+      "UpdateProfileSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/AuthUserResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Update profile response"
+      },
+      "SignoutSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "null"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Signout response"
+      },
+      "CategoryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ListCategoriesSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CategoryWithCountResponse"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ]
+      },
+      "GetCategorySuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/CategoryWithCountResponse"
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "CreateCategorySuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/CategoryResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "UpdateCategorySuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/CategoryResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "DeleteCategorySuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "ItemCategoryMini": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "ItemImageResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "url": {
+            "type": "string"
+          },
+          "position": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "position"
+        ]
+      },
+      "DecimalLike": {
+        "oneOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "ItemSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "price": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DecimalLike"
+              }
+            ],
+            "description": "Decimal may serialize as string"
+          },
+          "stock": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "mainImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemCategoryMini"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "price",
+          "stock",
+          "isActive",
+          "createdAt",
+          "updatedAt",
+          "categories"
+        ]
+      },
+      "ItemDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "ingredients": {
+            "type": "string",
+            "nullable": true
+          },
+          "nutritionInfo": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "$ref": "#/components/schemas/DecimalLike"
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "stock": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "mainImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemCategoryMini"
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemImageResponse"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "price",
+          "stock",
+          "isActive",
+          "categories",
+          "images",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ItemDbResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "ingredients": {
+            "type": "string",
+            "nullable": true
+          },
+          "nutritionInfo": {
+            "type": "string",
+            "nullable": true
+          },
+          "price": {
+            "$ref": "#/components/schemas/DecimalLike"
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "stock": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "mainImageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "price",
+          "stock",
+          "isActive",
+          "categoryId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ListItemsSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemSummaryResponse"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ]
+      },
+      "GetItemSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ItemDetailsResponse"
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "CreateItemSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ItemDbResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "UpdateItemSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ItemDbResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "DeleteItemSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "CategoryWithCountResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "itemCount": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "createdAt",
+          "updatedAt",
+          "itemCount"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Human-readable error message"
+              },
+              "code": {
+                "type": "string",
+                "nullable": true,
+                "description": "Machine-readable error code"
+              },
+              "details": {
+                "nullable": true,
+                "description": "Additional error context"
+              }
+            },
+            "required": [
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "success",
+          "error"
+        ]
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              false
+            ]
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Validation error message"
+              },
+              "code": {
+                "type": "string",
+                "enum": [
+                  "VALIDATION_ERROR"
+                ]
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "Zod error code"
+                    },
+                    "path": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ]
+                      },
+                      "description": "Field path"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Field-specific error message"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "path",
+                    "message"
+                  ]
+                },
+                "description": "Array of validation issues"
+              }
+            },
+            "required": [
+              "message",
+              "code",
+              "details"
+            ]
+          }
+        },
+        "required": [
+          "success",
+          "error"
+        ],
+        "description": "Validation failed on request body or parameters"
+      },
+      "DataRetentionJobResult": {
+        "type": "object",
+        "properties": {
+          "anonymizedCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How many users were anonymized"
+          },
+          "purgedCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How many users were purged"
+          }
+        },
+        "required": [
+          "anonymizedCount",
+          "purgedCount"
+        ],
+        "description": "Data retention job result summary"
+      },
+      "DataRetentionSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/DataRetentionJobResult"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true,
+            "description": "Optional response message"
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Successful execution of data retention job"
+      },
+      "OrderStatusEnum": {
+        "type": "string",
+        "description": "Order status (PENDING, ACCEPTED, PREPARING, OUT_FOR_DELIVERY, DELIVERED, CANCELED)"
+      },
+      "CreateOrderBody": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "foodItemId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "exclusiveMinimum": true,
+                  "description": "Food item ID"
+                },
+                "quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Quantity (min 1)"
+                }
+              },
+              "required": [
+                "foodItemId",
+                "quantity"
+              ]
+            },
+            "minItems": 1,
+            "description": "Order items"
+          },
+          "deliveryAddressId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true,
+            "description": "Existing saved address ID"
+          },
+          "deliveryAddress": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "nullable": true,
+                "description": "Address label (Home/Office)"
+              },
+              "line1": {
+                "type": "string",
+                "description": "Street address line 1"
+              },
+              "line2": {
+                "type": "string",
+                "nullable": true,
+                "description": "Street address line 2"
+              },
+              "city": {
+                "type": "string",
+                "description": "City"
+              },
+              "postalCode": {
+                "type": "string",
+                "description": "Postal code"
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Country"
+              },
+              "isDefault": {
+                "type": "boolean",
+                "nullable": true,
+                "description": "Set as default address"
+              }
+            },
+            "required": [
+              "line1",
+              "city",
+              "postalCode"
+            ],
+            "nullable": true,
+            "description": "Inline address payload"
+          },
+          "saveAsDefault": {
+            "type": "boolean",
+            "nullable": true,
+            "description": "If true, make selected/created address default"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 500,
+            "nullable": true,
+            "description": "Customer notes"
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Optional order photo URL"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "description": "Create order request body"
+      },
+      "ListCustomerOrdersQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Items per page"
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatusEnum"
+              }
+            ],
+            "description": "Filter by order status"
+          },
+          "sortBy": {
+            "type": "string",
+            "enum": [
+              "createdAt",
+              "totalPrice",
+              "orderNumber"
+            ],
+            "default": "createdAt",
+            "description": "Sort field"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "default": "desc",
+            "description": "Sort order"
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "sortBy",
+          "sortOrder"
+        ],
+        "description": "Query parameters for listing customer orders"
+      },
+      "OrderIdParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Order ID"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "description": "Path params for order details"
+      },
+      "OrderItemResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Order item ID"
+          },
+          "foodItemId": {
+            "type": "integer",
+            "description": "Food item ID"
+          },
+          "quantity": {
+            "type": "integer",
+            "description": "Quantity"
+          },
+          "unitPrice": {
+            "type": "number",
+            "description": "Unit price snapshot (LKR)"
+          },
+          "foodItem": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "slug": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "slug"
+            ],
+            "nullable": true,
+            "description": "Food item minimal details"
+          }
+        },
+        "required": [
+          "id",
+          "foodItemId",
+          "quantity",
+          "unitPrice"
+        ],
+        "description": "Order item response"
+      },
+      "OrderDeliveryAddressResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "line1": {
+            "type": "string"
+          },
+          "line2": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "line1",
+          "city",
+          "postalCode",
+          "country"
+        ],
+        "nullable": true,
+        "description": "Delivery address used for this order"
+      },
+      "OrderResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Order ID"
+          },
+          "orderNumber": {
+            "type": "string",
+            "description": "Human-friendly order number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatusEnum"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true,
+            "description": "Customer notes"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Order image URL"
+          },
+          "totalPrice": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Total price (LKR)"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Created timestamp (ISO)"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Updated timestamp (ISO)"
+          },
+          "deliveryAddress": {
+            "$ref": "#/components/schemas/OrderDeliveryAddressResponse"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemResponse"
+            },
+            "description": "Order items"
+          }
+        },
+        "required": [
+          "id",
+          "orderNumber",
+          "status",
+          "totalPrice",
+          "createdAt",
+          "updatedAt",
+          "deliveryAddress",
+          "items"
+        ],
+        "description": "Full order response"
+      },
+      "PaginatedMeta": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "total",
+          "totalPages"
+        ],
+        "description": "Pagination meta"
+      },
+      "ListCustomerOrdersSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderResponse"
+            }
+          },
+          "meta": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PaginatedMeta"
+              }
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "List customer orders success response"
+      },
+      "CreateOrderSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/OrderResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Create order success response"
+      },
+      "GetOrderSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/OrderResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Get order success response"
+      },
+      "ListCustomerServicesQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 10,
+            "description": "Items per page (max 100)"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by status"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by service type"
+          },
+          "priority": {
+            "type": "string",
+            "nullable": true,
+            "description": "Filter by priority"
+          }
+        },
+        "required": [
+          "page",
+          "limit"
+        ],
+        "description": "Customer service list query parameters"
+      },
+      "ServicePhotoResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "type": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "url",
+          "type",
+          "createdAt"
+        ],
+        "description": "Service photo (BEFORE/PROGRESS/AFTER)"
+      },
+      "AssignmentSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "staffId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "assignedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "staffId",
+          "status",
+          "assignedAt"
+        ],
+        "description": "Latest staff assignment summary (if assigned)"
+      },
+      "CustomerServiceRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "requestNumber": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "addressId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "requestedDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServicePhotoResponse"
+            },
+            "description": "Service photos"
+          },
+          "latestAssignment": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssignmentSummaryResponse"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "requestNumber",
+          "type",
+          "status",
+          "priority",
+          "title",
+          "description",
+          "photos",
+          "createdAt",
+          "updatedAt"
+        ],
+        "description": "Customer service request response"
+      },
+      "ListCustomerServicesSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerServiceRequestResponse"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
+        "description": "List customer services success response"
+      },
+      "CreateCustomerServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/CustomerServiceRequestResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Create customer service success response"
+      },
+      "ServiceRatingResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "serviceId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "customerId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "staffId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "review": {
+            "type": "string",
+            "nullable": true
+          },
+          "wouldRecommend": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "serviceId",
+          "customerId",
+          "score",
+          "wouldRecommend",
+          "createdAt"
+        ],
+        "description": "Service rating response"
+      },
+      "RateServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceRatingResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Rate service success response"
+      },
+      "ServiceTypeEnum": {
+        "type": "string"
+      },
+      "ServiceStatusEnum": {
+        "type": "string"
+      },
+      "ServicePriorityEnum": {
+        "type": "string"
+      },
+      "ServiceCategoryEnum": {
+        "type": "string"
+      },
+      "ServiceRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "requestNumber": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/ServiceTypeEnum"
+          },
+          "category": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ServiceCategoryEnum"
+              }
+            ]
+          },
+          "serviceOfferingId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "status": {
+            "$ref": "#/components/schemas/ServiceStatusEnum"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/ServicePriorityEnum"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "addressId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "requestedDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "requestNumber",
+          "customerId",
+          "type",
+          "status",
+          "priority",
+          "title",
+          "description",
+          "createdAt",
+          "updatedAt"
+        ],
+        "description": "Service request object"
+      },
+      "ListServicesSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceRequestResponse"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
+        "description": "List service requests response"
+      },
+      "CreateServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceRequestResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Service request created response"
+      },
+      "UpdateServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceRequestResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Service request updated response"
+      },
+      "DeleteServiceSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Service request deleted/canceled response"
+      },
+      "ServiceAssignmentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "staffId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "assignedById": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "assignedAt": {
+            "type": "string"
+          },
+          "acceptedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeSpentMinutes": {
+            "type": "integer",
+            "nullable": true
+          },
+          "completionNotes": {
+            "type": "string",
+            "nullable": true
+          },
+          "solutionSummary": {
+            "type": "string",
+            "nullable": true
+          },
+          "followUpRecommendations": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "staffId",
+          "assignedAt",
+          "status"
+        ]
+      },
+      "ServiceRequestAdminDetailResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "requestNumber": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "type": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "serviceOfferingId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "status": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "addressId": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "nullable": true
+          },
+          "requestedDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "photos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServicePhotoResponse"
+            }
+          },
+          "assignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceAssignmentResponse"
+            }
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "requestNumber",
+          "customerId",
+          "type",
+          "status",
+          "priority",
+          "title",
+          "description",
+          "photos",
+          "assignments",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ServiceActionSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/ServiceRequestAdminDetailResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Service action success response (Admin detail view)"
+      },
+      "UserRoleEnum": {
+        "type": "string",
+        "description": "User role (CUSTOMER, ADMIN, SALESMAN, DRIVER, CLEANER, IT_STAFF)"
+      },
+      "UserStatusEnum": {
+        "type": "string",
+        "description": "User status (PENDING_APPROVAL, ACTIVE, SUSPENDED, REJECTED)"
+      },
+      "UserIdParams": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "User ID"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "description": "Path params containing the user id"
+      },
+      "AdminUserListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRoleEnum"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UserStatusEnum"
+          },
+          "emailVerified": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "role",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ],
+        "description": "Admin user list item"
+      },
+      "AdminUserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 0,
+            "exclusiveMinimum": true
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "profileImage": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRoleEnum"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UserStatusEnum"
+          },
+          "emailVerified": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "role",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ],
+        "description": "Admin user detail response"
+      },
+      "CreateAdminUserSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/AdminUserResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Admin create user success response"
+      },
+      "GetAdminUserSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/AdminUserResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Admin get user by id success response"
+      },
+      "DeleteAdminUserSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 0,
+                "exclusiveMinimum": true,
+                "description": "Deleted user id"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Admin delete user success response"
+      },
+      "ListAdminUsersSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminUserListItem"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "meta"
+        ],
+        "description": "Admin users list success response"
+      },
+      "UpdateAdminUserSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/AdminUserResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Admin user updated success response"
+      },
+      "SuspendUserSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/AdminUserResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "User suspended success response"
+      },
+      "ReactivateUserSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "data": {
+            "$ref": "#/components/schemas/AdminUserResponse"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "User reactivated success response"
+      },
+      "openapi": "3.0.0",
+      "info": {
+        "title": "API Documentation",
+        "version": "1.0.0",
+        "description": "Shared OpenAPI response components used by next-openapi-gen"
+      },
+      "components": {
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid request parameters"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "BAD_REQUEST"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Authentication required"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "UNAUTHORIZED"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Access denied"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "FORBIDDEN"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Resource not found"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "NOT_FOUND"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Resource already exists"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "CONFLICT"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message",
+                        "code",
+                        "details"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "Validation failed"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "VALIDATION_ERROR"
+                        },
+                        "details": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "path",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "example": "invalid_type"
+                              },
+                              "path": {
+                                "type": "array",
+                                "items": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    }
+                                  ]
+                                },
+                                "example": [
+                                  "items",
+                                  0,
+                                  "quantity"
+                                ]
+                              },
+                              "message": {
+                                "type": "string",
+                                "example": "Quantity must be at least 1"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "success",
+                    "error"
+                  ],
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "enum": [
+                        false
+                      ]
+                    },
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "message"
+                      ],
+                      "properties": {
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred"
+                        },
+                        "code": {
+                          "type": "string",
+                          "example": "INTERNAL_ERROR"
+                        },
+                        "details": {
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/addresses": {
+      "get": {
+        "operationId": "get-addresses",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Addresses"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/analytics": {
+      "get": {
+        "operationId": "get-admin-analytics",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/audit-logs": {
+      "get": {
+        "operationId": "get-admin-audit-logs",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/data-retention": {
+      "post": {
+        "operationId": "post-admin-data-retention",
+        "summary": "Run Data Retention Job",
+        "description": "Runs your data retention process (anonymize + purge).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "schema": {
+              "type": "string",
+              "description": "Optional cron token (alternative to x-cron-token header). Must match DATA_RETENTION_CRON_SECRET"
+            },
+            "required": false,
+            "description": "Optional cron token (alternative to x-cron-token header). Must match DATA_RETENTION_CRON_SECRET"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataRetentionSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services": {
+      "get": {
+        "operationId": "get-admin-services",
+        "summary": "List Service Requests (Admin)\r",
+        "description": "Lists service requests with pagination + filters (Admin only).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Page number"
+            },
+            "required": false,
+            "description": "Page number"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "Items per page (max 100)"
+            },
+            "required": false,
+            "description": "Items per page (max 100)"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "description": "Filter by status"
+            },
+            "required": false,
+            "description": "Filter by status"
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "description": "Filter by type"
+            },
+            "required": false,
+            "description": "Filter by type"
+          },
+          {
+            "in": "query",
+            "name": "priority",
+            "schema": {
+              "description": "Filter by priority"
+            },
+            "required": false,
+            "description": "Filter by priority"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "description": "Search by title / description / requestNumber"
+            },
+            "required": false,
+            "description": "Search by title / description / requestNumber"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListServicesSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-services",
+        "summary": "Create Service Request (Admin)\r",
+        "description": "Creates a service request (Admin only).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateServiceSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "operationId": "get-admin-users",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-users",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/catalog/categories": {
+      "get": {
+        "operationId": "get-admin-catalog-categories",
+        "summary": "List Food Categories (Admin)",
+        "description": "Returns paginated list of categories with itemCount.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Page number"
+            },
+            "required": false,
+            "description": "Page number"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "Items per page"
+            },
+            "required": false,
+            "description": "Items per page"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "description": "Search by name or slug"
+            },
+            "required": false,
+            "description": "Search by name or slug"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCategoriesSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-catalog-categories",
+        "summary": "Create Food Category (Admin)",
+        "description": "Creates a category (slug must be unique).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCategorySuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/catalog/items": {
+      "get": {
+        "operationId": "get-admin-catalog-items",
+        "summary": "List Food Items (Admin)",
+        "description": "Returns paginated food items with merged categories.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "description": "Page number"
+            },
+            "required": false,
+            "description": "Page number"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "description": "Items per page"
+            },
+            "required": false,
+            "description": "Items per page"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "description": "Search by name / slug / sku"
+            },
+            "required": false,
+            "description": "Search by name / slug / sku"
+          },
+          {
+            "in": "query",
+            "name": "categoryId",
+            "schema": {
+              "type": "integer",
+              "description": "Filter by category id"
+            },
+            "required": false,
+            "description": "Filter by category id"
+          },
+          {
+            "in": "query",
+            "name": "isActive",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "description": "Filter by active status"
+            },
+            "required": false,
+            "description": "Filter by active status"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListItemsSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-catalog-items",
+        "summary": "Create Food Item (Admin)",
+        "description": "Creates a food item with optional extra categories + images.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateItemSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/offerings": {
+      "get": {
+        "operationId": "get-admin-services-offerings",
+        "summary": "List Service Offerings",
+        "description": "Returns all service offerings (ADMIN only).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListServiceOfferingsSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-admin-services-offerings",
+        "summary": "Create Service Offering",
+        "description": "Creates a new service offering (ADMIN only).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateServiceOfferingBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateServiceOfferingSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/{id}": {
+      "put": {
+        "operationId": "put-admin-services-{id}",
+        "summary": "Update Service Request (Admin)\r",
+        "description": "Updates a service request by ID (Admin only).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateServiceSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-services-{id}",
+        "summary": "Cancel Service Request (Admin)\r",
+        "description": "Cancels a service request by setting status = CANCELED.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteServiceSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/bulk-approve": {
+      "post": {
+        "operationId": "post-admin-users-bulk-approve",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/{id}": {
+      "get": {
+        "operationId": "get-admin-users-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-admin-users-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-users-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/catalog/categories/{id}": {
+      "get": {
+        "operationId": "get-admin-catalog-categories-{id}",
+        "summary": "Get Food Category (Admin)",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Category id"
+            },
+            "required": true,
+            "description": "Category id",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCategorySuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-admin-catalog-categories-{id}",
+        "summary": "Update Food Category (Admin)",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Category id"
+            },
+            "required": true,
+            "description": "Category id",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCategorySuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-catalog-categories-{id}",
+        "summary": "Delete Food Category (Admin)",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Category id"
+            },
+            "required": true,
+            "description": "Category id",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteCategorySuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/catalog/items/{id}": {
+      "get": {
+        "operationId": "get-admin-catalog-items-{id}",
+        "summary": "Get Food Item (Admin)",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Item id"
+            },
+            "required": true,
+            "description": "Item id",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetItemSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-admin-catalog-items-{id}",
+        "summary": "Update Food Item (Admin)",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Item id"
+            },
+            "required": true,
+            "description": "Item id",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateItemSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-catalog-items-{id}",
+        "summary": "Delete Food Item (Admin)",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Item id"
+            },
+            "required": true,
+            "description": "Item id",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteItemSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/offerings/{id}": {
+      "get": {
+        "operationId": "get-admin-services-offerings-{id}",
+        "summary": "Get Service Offering by ID",
+        "description": "Fetch a single service offering (ADMIN only).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetServiceOfferingSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-admin-services-offerings-{id}",
+        "summary": "Update Service Offering",
+        "description": "Updates a service offering by ID (ADMIN only).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateServiceOfferingBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateServiceOfferingSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-admin-services-offerings-{id}",
+        "summary": "Delete Service Offering",
+        "description": "Deletes a service offering by ID (ADMIN only).",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteServiceOfferingSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/assign": {
+      "post": {
+        "operationId": "post-admin-services-{id}-assign",
+        "summary": "Assign Service Request (Admin)\r",
+        "description": "Assigns a staff member to a service request.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignServiceBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/complete": {
+      "post": {
+        "operationId": "post-admin-services-{id}-complete",
+        "summary": "Complete Service Request (Cleaning) - Admin\r",
+        "description": "Marks the service request as RESOLVED and saves AFTER photos.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteServiceBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/it-complete": {
+      "post": {
+        "operationId": "post-admin-services-{id}-it-complete",
+        "summary": "Complete Service Request (IT) - Admin\r",
+        "description": "Marks IT service request as RESOLVED and stores completion details.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItCompleteBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/it-progress": {
+      "post": {
+        "operationId": "post-admin-services-{id}-it-progress",
+        "summary": "IT Progress Update (Admin)\r",
+        "description": "Adds IT progress update including time spent and photos.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItProgressBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/services/{id}/progress": {
+      "post": {
+        "operationId": "post-admin-services-{id}-progress",
+        "summary": "Progress Service Request (Admin)\r",
+        "description": "Adds progress notes/photos and sets status to IN_PROGRESS.",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "description": "Service request ID"
+            },
+            "required": true,
+            "description": "Service request ID",
+            "example": "123"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProgressServiceBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceActionSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/approve/{id}": {
+      "post": {
+        "operationId": "post-admin-users-approve-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/reactivate/{id}": {
+      "post": {
+        "operationId": "post-admin-users-reactivate-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/reject/{id}": {
+      "post": {
+        "operationId": "post-admin-users-reject-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/admin/users/suspend/{id}": {
+      "post": {
+        "operationId": "post-admin-users-suspend-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "operationId": "post-auth-forgot-password",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "post-auth-login",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "get-auth-me",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "operationId": "post-auth-register",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/resend-verification": {
+      "post": {
+        "operationId": "post-auth-resend-verification",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "post-auth-reset-password",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/signout": {
+      "post": {
+        "operationId": "post-auth-signout",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/update-profile": {
+      "put": {
+        "operationId": "put-auth-update-profile",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/verify-email": {
+      "post": {
+        "operationId": "post-auth-verify-email",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/contact": {
+      "post": {
+        "operationId": "post-contact",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Contact"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/cron/data-retention": {
+      "post": {
+        "operationId": "post-cron-data-retention",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Cron"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/orders": {
+      "get": {
+        "operationId": "get-customer-orders",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-customer-orders",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services": {
+      "get": {
+        "operationId": "get-customer-services",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-customer-services",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/orders/{id}": {
+      "get": {
+        "operationId": "get-customer-orders-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services/{id}": {
+      "get": {
+        "operationId": "get-customer-services-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services/{id}/cancel": {
+      "put": {
+        "operationId": "put-customer-services-{id}-cancel",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services/{id}/rate": {
+      "post": {
+        "operationId": "post-customer-services-{id}-rate",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/customer/services/{id}/timeline": {
+      "get": {
+        "operationId": "get-customer-services-{id}-timeline",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Customer"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/food-categories": {
+      "get": {
+        "operationId": "get-food-categories",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Food-categories"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/food-items": {
+      "get": {
+        "operationId": "get-food-items",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Food-items"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/food-items/{slug}": {
+      "get": {
+        "operationId": "get-food-items-{slug}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Food-items"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "operationId": "post-orders",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "get": {
+        "operationId": "get-orders",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/orders/{orderNumber}": {
+      "get": {
+        "operationId": "get-orders-{orderNumber}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-orders-{orderNumber}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/orders/{orderNumber}/cancel": {
+      "post": {
+        "operationId": "post-orders-{orderNumber}-cancel",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Orders"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "operationId": "get-profile",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "operationId": "put-profile",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile/delete": {
+      "post": {
+        "operationId": "post-profile-delete",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile/export": {
+      "get": {
+        "operationId": "get-profile-export",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile/marketing": {
+      "put": {
+        "operationId": "put-profile-marketing",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/profile/restore": {
+      "post": {
+        "operationId": "post-profile-restore",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/service-requests": {
+      "post": {
+        "operationId": "post-service-requests",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Service-requests"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "get": {
+        "operationId": "get-service-requests",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Service-requests"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/service-requests/{id}": {
+      "get": {
+        "operationId": "get-service-requests-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Service-requests"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "operationId": "post-service-requests-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Service-requests"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "patch-service-requests-{id}",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Service-requests"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/services/offerings": {
+      "get": {
+        "operationId": "get-services-offerings",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Services"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services": {
+      "get": {
+        "operationId": "get-staff-cleaner-services",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/stats": {
+      "get": {
+        "operationId": "get-staff-cleaner-stats",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/driver/deliveries": {
+      "get": {
+        "operationId": "get-staff-driver-deliveries",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/driver/stats": {
+      "get": {
+        "operationId": "get-staff-driver-stats",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/services": {
+      "get": {
+        "operationId": "get-staff-it-services",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/stats": {
+      "get": {
+        "operationId": "get-staff-it-stats",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/orders": {
+      "get": {
+        "operationId": "get-staff-salesman-orders",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/stats": {
+      "get": {
+        "operationId": "get-staff-salesman-stats",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services/{id}/accept": {
+      "post": {
+        "operationId": "post-staff-cleaner-services-{id}-accept",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services/{id}/complete": {
+      "post": {
+        "operationId": "post-staff-cleaner-services-{id}-complete",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services/{id}/progress": {
+      "post": {
+        "operationId": "post-staff-cleaner-services-{id}-progress",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/cleaner/services/{id}/start": {
+      "post": {
+        "operationId": "post-staff-cleaner-services-{id}-start",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/driver/deliveries/{orderNumber}/accept": {
+      "post": {
+        "operationId": "post-staff-driver-deliveries-{orderNumber}-accept",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/driver/deliveries/{orderNumber}/confirm": {
+      "post": {
+        "operationId": "post-staff-driver-deliveries-{orderNumber}-confirm",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/services/{id}/accept": {
+      "post": {
+        "operationId": "post-staff-it-services-{id}-accept",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/services/{id}/complete": {
+      "post": {
+        "operationId": "post-staff-it-services-{id}-complete",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/it/services/{id}/progress": {
+      "post": {
+        "operationId": "post-staff-it-services-{id}-progress",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/orders/{orderNumber}/accept": {
+      "post": {
+        "operationId": "post-staff-salesman-orders-{orderNumber}-accept",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/orders/{orderNumber}/decline": {
+      "post": {
+        "operationId": "post-staff-salesman-orders-{orderNumber}-decline",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/staff/salesman/orders/{orderNumber}/prepare": {
+      "post": {
+        "operationId": "post-staff-salesman-orders-{orderNumber}-prepare",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Staff"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/test-db": {
+      "get": {
+        "operationId": "get-test-db",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Test-db"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/unsubscribe": {
+      "get": {
+        "operationId": "get-unsubscribe",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Unsubscribe"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "operationId": "post-upload",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Upload"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "get-users",
+        "summary": "",
+        "description": "",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  }
+}

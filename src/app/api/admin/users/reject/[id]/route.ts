@@ -8,14 +8,34 @@ import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
+/**
+ * Reject User
+ *
+ * @description Rejects a user and sends a rejection email. Admin only.
+ *
+ * @params UserIdParams
+ * @body RejectUserBody
+ * @response 200 - RejectUserSuccessResponse - User rejected
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag Users
+ * @openapi
+ */
 async function handler(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const authRequest = await requireAdmin(request)
-  const adminId = parseInt(authRequest.user.id)
+  const adminId = parseInt(authRequest.user.id, 10)
+
   const { id } = await params
-  const userId = parseInt(id)
+  const userId = parseInt(id, 10)
+
+  if (!Number.isFinite(userId)) {
+    return ApiResponse.badRequest('Invalid user id')
+  }
 
   const body = await request.json()
   const data = await validateBody(body, rejectUserSchema)
@@ -48,6 +68,7 @@ async function handler(
   })
 
   const ip = request.headers.get('x-forwarded-for') || 'unknown'
+
   await prisma.auditLog.create({
     data: {
       entityType: 'USER',
@@ -70,6 +91,7 @@ async function handler(
     name: updatedUser.name,
     reason: data.reason,
   })
+
   await sendEmail({
     to: updatedUser.email,
     subject: 'Your account was rejected',
@@ -81,5 +103,3 @@ async function handler(
 }
 
 export const POST = withErrorHandler(handler)
-
-

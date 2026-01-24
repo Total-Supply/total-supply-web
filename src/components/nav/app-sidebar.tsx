@@ -57,7 +57,7 @@ const navMain = [
     items: [
       {
         title: 'Assigned Queue',
-        url: '/dashboard/salesman',
+        url: '/dashboard/salesman/orders',
         roles: ['SALESMAN'],
       },
     ],
@@ -86,12 +86,42 @@ const navMain = [
     ],
   },
   {
+    title: 'Services',
+    url: '/dashboard/cleaner/services',
+    icon: Wrench,
+    roles: ['CLEANER'],
+    items: [
+      {
+        title: 'Service Requests',
+        url: '/dashboard/cleaner/services',
+        roles: ['CLEANER'],
+      },
+    ],
+  },
+  {
+    title: 'Deliveries',
+    url: '/dashboard/driver/deliveries',
+    icon: Truck,
+    roles: ['DRIVER'],
+    items: [
+      {
+        title: 'Delivery Requests',
+        url: '/dashboard/driver/deliveries',
+        roles: ['DRIVER'],
+      },
+    ],
+  },
+  {
     title: 'IT Services',
     url: '/dashboard/it',
     icon: Wrench,
     roles: ['IT_STAFF'],
     items: [
-      { title: 'My IT Services', url: '/dashboard/it', roles: ['IT_STAFF'] },
+      {
+        title: 'My IT Services',
+        url: '/dashboard/it/services',
+        roles: ['IT_STAFF'],
+      },
       { title: 'Tickets', url: '/dashboard/it/tickets', roles: ['IT_STAFF'] },
     ],
   },

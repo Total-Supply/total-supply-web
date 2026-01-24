@@ -6,17 +6,34 @@ import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
+/**
+ * Approve User
+ *
+ * @description Approves a pending user (email must be verified). Admin only.
+ *
+ * @params UserIdParams
+ * @response 200 - ApproveUserSuccessResponse - User approved
+ * @responseSet adminCrud
+ *
+ * @auth bearer
+ * @tag Admin
+ * @tag Users
+ * @openapi
+ */
 async function handler(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  // Require admin authentication
   const authRequest = await requireAdmin(request)
-  const adminId = parseInt(authRequest.user.id)
-  const { id } = await params
-  const userId = parseInt(id)
+  const adminId = parseInt(authRequest.user.id, 10)
 
-  // Find user
+  const { id } = await params
+  const userId = parseInt(id, 10)
+
+  if (!Number.isFinite(userId)) {
+    return ApiResponse.badRequest('Invalid user id')
+  }
+
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -33,10 +50,9 @@ async function handler(
   }
 
   if (!user.emailVerified) {
-    throw new NotFoundError('User email not verified')
+    return ApiResponse.badRequest('User email not verified')
   }
 
-  // Update user status to ACTIVE
   const updatedUser = await prisma.user.update({
     where: { id: userId },
     data: { status: 'ACTIVE' },
@@ -50,8 +66,8 @@ async function handler(
     },
   })
 
-  // Create audit log
   const ip = request.headers.get('x-forwarded-for') || 'unknown'
+
   await prisma.auditLog.create({
     data: {
       entityType: 'USER',
@@ -81,5 +97,3 @@ async function handler(
 }
 
 export const POST = withErrorHandler(handler)
-
-

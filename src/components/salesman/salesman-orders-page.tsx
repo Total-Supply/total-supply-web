@@ -1,30 +1,15 @@
 'use client'
 
-import { MotionBox } from '@/src/components/motion/box'
-import { AppSelect } from '@/src/components/ui/app-select'
-import { Button } from '@/src/components/ui/button'
-import { Checkbox } from '@/src/components/ui/checkbox'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/src/components/ui/collapsible'
-import { Input } from '@/src/components/ui/input'
-import { Separator } from '@/src/components/ui/separator'
-import { Badge, Textarea } from '@chakra-ui/react'
-import { ChevronDown } from 'lucide-react'
+import { useToast } from '@/src/hooks/use-toast'
+import { AlertCircle } from 'lucide-react'
 
 import { useEffect, useMemo, useState } from 'react'
 
-type OrderItem = {
-  id: number
-  quantity: number
-  unitPrice: number
-  foodItem: {
-    id: number
-    name: string
-  }
-}
+import { AcceptOrderDialog } from './dash/accept-order-dialog'
+import { DeclineOrderDialog } from './dash/decline-order-dialog'
+import { OrderCard } from './dash/order-card'
+import { OrdersHeader } from './dash/orders-header'
+import { PrepareOrderDialog } from './dash/prepare-order-dialog'
 
 type SalesmanOrder = {
   id: number
@@ -44,30 +29,34 @@ type SalesmanOrder = {
     city: string
     postalCode: string
   } | null
-  items: OrderItem[]
+  items: Array<{
+    id: number
+    quantity: number
+    unitPrice: number
+    foodItem: {
+      id: number
+      name: string
+    }
+  }>
 }
 
-const STATUS_OPTIONS = ['ALL', 'PENDING', 'ACCEPTED', 'PREPARING']
-const DECLINE_REASONS = ['Out of stock', 'Not enough time', 'Other'] as const
 const STORAGE_KEY = 'total-supply-salesman-last-seen'
 
-export function SalesmanOrdersPage() {
+export default function SalesmanOrdersPage() {
+  const toast = useToast()
+
   const [orders, setOrders] = useState<SalesmanOrder[]>([])
   const [status, setStatus] = useState('ALL')
   const [isLoading, setIsLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState<number | null>(null)
-  const [actionMessage, setActionMessage] = useState<Record<number, string>>({})
-  const [prepareNotes, setPrepareNotes] = useState<Record<number, string>>({})
-  const [prepareFiles, setPrepareFiles] = useState<Record<number, File | null>>(
-    {},
-  )
-  const [declineReasons, setDeclineReasons] = useState<Record<number, string>>(
-    {},
-  )
-  const [declineNotes, setDeclineNotes] = useState<Record<number, string>>({})
-  const [declineNotify, setDeclineNotify] = useState<Record<number, boolean>>(
-    {},
-  )
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [actionLoading, setActionLoading] = useState(false)
+
+  // Dialog states
+  const [acceptDialogOpen, setAcceptDialogOpen] = useState(false)
+  const [declineDialogOpen, setDeclineDialogOpen] = useState(false)
+  const [prepareDialogOpen, setPrepareDialogOpen] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState<SalesmanOrder | null>(null)
+
   const [lastSeen, setLastSeen] = useState<number>(() => {
     if (typeof window === 'undefined') return 0
     const stored = window.localStorage.getItem(STORAGE_KEY)
@@ -75,35 +64,61 @@ export function SalesmanOrdersPage() {
   })
 
   const fetchOrders = async () => {
-    setIsLoading(true)
     try {
       const params = new URLSearchParams()
-      if (status !== 'ALL') {
-        params.set('status', status)
-      }
+      if (status !== 'ALL') params.set('status', status)
+
       const response = await fetch(
         `/api/staff/salesman/orders?${params.toString()}`,
       )
       const data = await response.json()
+
       if (!response.ok) {
         throw new Error(data.error?.message || 'Failed to load orders')
       }
+
       setOrders(data.data || [])
     } catch (error) {
-      console.error('Failed to load orders', error)
-    } finally {
-      setIsLoading(false)
+      toast({
+        title: 'Failed to load orders',
+        description:
+          error instanceof Error ? error.message : 'Please try again.',
+        status: 'error',
+        duration: 3000,
+      })
     }
   }
 
   useEffect(() => {
-    fetchOrders()
+    const load = async () => {
+      setIsLoading(true)
+      await fetchOrders()
+      setIsLoading(false)
+    }
+    load()
   }, [status])
 
-  useEffect(() => {
-    const interval = setInterval(fetchOrders, 15000)
-    return () => clearInterval(interval)
-  }, [status])
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    await fetchOrders()
+    setIsRefreshing(false)
+    toast({
+      title: 'Orders refreshed',
+      status: 'success',
+      duration: 2000,
+    })
+  }
+
+  const markAllSeen = () => {
+    const latestTime = Date.now()
+    setLastSeen(latestTime)
+    window.localStorage.setItem(STORAGE_KEY, String(latestTime))
+    toast({
+      title: 'All marked as read',
+      status: 'success',
+      duration: 2000,
+    })
+  }
 
   const newCount = useMemo(() => {
     if (!lastSeen) return 0
@@ -111,48 +126,6 @@ export function SalesmanOrdersPage() {
       (order) => new Date(order.createdAt).getTime() > lastSeen,
     ).length
   }, [orders, lastSeen])
-
-  const markSeen = () => {
-    const latest = orders[0]?.createdAt
-    const latestTime = latest ? new Date(latest).getTime() : Date.now()
-    setLastSeen(latestTime)
-    window.localStorage.setItem(STORAGE_KEY, String(latestTime))
-  }
-
-  const handleAccept = async (order: SalesmanOrder) => {
-    setActionLoading(order.id)
-    setActionMessage((prev) => ({ ...prev, [order.id]: '' }))
-    try {
-      const response = await fetch(
-        `/api/staff/salesman/orders/${order.orderNumber}/accept`,
-        { method: 'POST' },
-      )
-      const data = await response.json()
-      if (!response.ok) {
-        throw new Error(data.error?.message || 'Accept failed')
-      }
-      setActionMessage((prev) => ({
-        ...prev,
-        [order.id]: 'Order accepted. Start preparing.',
-      }))
-      await fetchOrders()
-    } catch (error) {
-      console.error('Failed to accept order', error)
-      setActionMessage((prev) => ({
-        ...prev,
-        [order.id]: 'Unable to accept this order right now.',
-      }))
-    } finally {
-      setActionLoading(null)
-      window.setTimeout(() => {
-        setActionMessage((prev) => {
-          const next = { ...prev }
-          delete next[order.id]
-          return next
-        })
-      }, 4000)
-    }
-  }
 
   const uploadPreparationPhoto = async (file: File) => {
     const safeFilename = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
@@ -171,9 +144,7 @@ export function SalesmanOrdersPage() {
     }
     const uploadResponse = await fetch(data.data.uploadUrl, {
       method: 'PUT',
-      headers: {
-        'Content-Type': file.type,
-      },
+      headers: { 'Content-Type': file.type },
       body: file,
     })
     if (!uploadResponse.ok) {
@@ -182,346 +153,252 @@ export function SalesmanOrdersPage() {
     return data.data.publicUrl as string
   }
 
-  const handlePrepare = async (order: SalesmanOrder) => {
-    setActionLoading(order.id)
-    setActionMessage((prev) => ({ ...prev, [order.id]: '' }))
+  const handleAccept = async () => {
+    if (!selectedOrder) return
+
+    setActionLoading(true)
     try {
-      const file = prepareFiles[order.id]
-      const note = prepareNotes[order.id]?.trim()
-      let photoUrl: string | undefined
-      if (file) {
-        photoUrl = await uploadPreparationPhoto(file)
-      }
       const response = await fetch(
-        `/api/staff/salesman/orders/${order.orderNumber}/prepare`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            notes: note || undefined,
-            photoUrl,
-          }),
-        },
+        `/api/staff/salesman/orders/${selectedOrder.orderNumber}/accept`,
+        { method: 'POST' },
       )
       const data = await response.json()
+
       if (!response.ok) {
-        throw new Error(data.error?.message || 'Prepare failed')
+        throw new Error(data.error?.message || 'Failed to accept order')
       }
-      setPrepareNotes((prev) => ({ ...prev, [order.id]: '' }))
-      setPrepareFiles((prev) => ({ ...prev, [order.id]: null }))
-      setActionMessage((prev) => ({
-        ...prev,
-        [order.id]: 'Order marked as preparing.',
-      }))
+
+      toast({
+        title: 'Order accepted',
+        description: 'Start preparing when ready',
+        status: 'success',
+        duration: 2500,
+      })
+
+      setAcceptDialogOpen(false)
+      setSelectedOrder(null)
       await fetchOrders()
     } catch (error) {
-      console.error('Failed to mark order as preparing', error)
-      setActionMessage((prev) => ({
-        ...prev,
-        [order.id]: 'Unable to update this order right now.',
-      }))
+      toast({
+        title: 'Action failed',
+        description:
+          error instanceof Error ? error.message : 'Please try again.',
+        status: 'error',
+        duration: 3000,
+      })
     } finally {
-      setActionLoading(null)
-      window.setTimeout(() => {
-        setActionMessage((prev) => {
-          const next = { ...prev }
-          delete next[order.id]
-          return next
-        })
-      }, 4000)
+      setActionLoading(false)
     }
   }
 
-  const handleDecline = async (order: SalesmanOrder) => {
-    setActionLoading(order.id)
-    setActionMessage((prev) => ({ ...prev, [order.id]: '' }))
+  const handlePrepare = async (data: { notes?: string; photoUrl?: string }) => {
+    if (!selectedOrder) return
+
+    setActionLoading(true)
     try {
       const response = await fetch(
-        `/api/staff/salesman/orders/${order.orderNumber}/decline`,
+        `/api/staff/salesman/orders/${selectedOrder.orderNumber}/prepare`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            reason: declineReasons[order.id] || DECLINE_REASONS[0],
-            notes: declineNotes[order.id]?.trim() || undefined,
-            notifyCustomer: declineNotify[order.id] ?? true,
-          }),
+          body: JSON.stringify(data),
         },
       )
-      const data = await response.json()
+      const result = await response.json()
+
       if (!response.ok) {
-        throw new Error(data.error?.message || 'Decline failed')
+        throw new Error(result.error?.message || 'Failed to update order')
       }
-      setActionMessage((prev) => ({
-        ...prev,
-        [order.id]: 'Order declined and reassigned.',
-      }))
+
+      toast({
+        title: 'Order marked as preparing',
+        description: 'Customer has been notified',
+        status: 'success',
+        duration: 2500,
+      })
+
+      setPrepareDialogOpen(false)
+      setSelectedOrder(null)
       await fetchOrders()
     } catch (error) {
-      console.error('Failed to decline order', error)
-      setActionMessage((prev) => ({
-        ...prev,
-        [order.id]: 'Unable to decline this order right now.',
-      }))
+      toast({
+        title: 'Update failed',
+        description:
+          error instanceof Error ? error.message : 'Please try again.',
+        status: 'error',
+        duration: 3000,
+      })
     } finally {
-      setActionLoading(null)
-      window.setTimeout(() => {
-        setActionMessage((prev) => {
-          const next = { ...prev }
-          delete next[order.id]
-          return next
-        })
-      }, 4000)
+      setActionLoading(false)
+    }
+  }
+
+  const handleDecline = async (data: {
+    reason: string
+    notes?: string
+    notifyCustomer: boolean
+  }) => {
+    if (!selectedOrder) return
+
+    setActionLoading(true)
+    try {
+      const response = await fetch(
+        `/api/staff/salesman/orders/${selectedOrder.orderNumber}/decline`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        },
+      )
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error?.message || 'Failed to decline order')
+      }
+
+      toast({
+        title: 'Order declined',
+        description: 'Order has been reassigned',
+        status: 'success',
+        duration: 2500,
+      })
+
+      setDeclineDialogOpen(false)
+      setSelectedOrder(null)
+      await fetchOrders()
+    } catch (error) {
+      toast({
+        title: 'Decline failed',
+        description:
+          error instanceof Error ? error.message : 'Please try again.',
+        status: 'error',
+        duration: 3000,
+      })
+    } finally {
+      setActionLoading(false)
     }
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6 pt-2">
-      <MotionBox
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="flex items-center justify-between"
-      >
-        <div>
-          <h1 className="text-2xl font-semibold">My Orders</h1>
-          <p className="text-sm text-muted-foreground">
-            Orders assigned to you for preparation.
-          </p>
-        </div>
-        <Button variant="outline" onClick={markSeen}>
-          Mark all as read
-        </Button>
-      </MotionBox>
-
-      <div className="flex flex-wrap items-center gap-3">
-        {STATUS_OPTIONS.map((option) => (
-          <Button
-            key={option}
-            variant={status === option ? 'solid' : 'outline'}
-            size="sm"
-            onClick={() => setStatus(option)}
-          >
-            {option.replace(/_/g, ' ')}
-          </Button>
-        ))}
-        {newCount > 0 && <Badge variant="subtle">{newCount} new</Badge>}
-      </div>
+    <div className="container mx-auto space-y-6 px-4 pb-10 pt-6 sm:px-6 lg:px-10">
+      <OrdersHeader
+        newCount={newCount}
+        status={status}
+        onStatusChange={setStatus}
+        onRefresh={handleRefresh}
+        onMarkAllRead={markAllSeen}
+        isRefreshing={isRefreshing}
+      />
 
       {isLoading ? (
-        <div className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          Loading orders...
-        </div>
-      ) : orders.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          No assigned orders yet.
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {orders.map((order) => (
-            <Collapsible
-              key={order.id}
-              className="rounded-xl border border-border/60 bg-card"
-            >
-              <CollapsibleTrigger asChild>
-                <button className="flex w-full items-center justify-between gap-4 p-4 text-left">
-                  <div>
-                    <p className="text-sm font-semibold">{order.orderNumber}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {order.customer.name} -{' '}
-                      {new Date(order.createdAt).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="outline">
-                      {order.status.toLowerCase().replace(/_/g, ' ')}
-                    </Badge>
-                    {new Date(order.createdAt).getTime() > lastSeen && (
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    )}
-                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                </button>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <Separator />
-                <div className="grid gap-4 p-4 md:grid-cols-2">
-                  <div>
-                    <p className="text-sm font-medium">Items to prepare</p>
-                    <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
-                      {order.items.map((item) => (
-                        <li key={item.id} className="flex justify-between">
-                          <span>{item.foodItem.name}</span>
-                          <span>x{item.quantity}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <p className="font-medium">Customer</p>
-                      <p className="text-muted-foreground">
-                        {order.customer.name} -{' '}
-                        {order.customer.phone || order.customer.email}
-                      </p>
-                    </div>
-                    {order.deliveryAddress && (
-                      <div>
-                        <p className="font-medium">Delivery address</p>
-                        <p className="text-muted-foreground">
-                          {order.deliveryAddress.line1}
-                          {order.deliveryAddress.line2
-                            ? `, ${order.deliveryAddress.line2}`
-                            : ''}
-                          , {order.deliveryAddress.city}{' '}
-                          {order.deliveryAddress.postalCode}
-                        </p>
-                      </div>
-                    )}
-                    {order.notes && (
-                      <div>
-                        <p className="font-medium">Special notes</p>
-                        <p className="text-muted-foreground">{order.notes}</p>
-                      </div>
-                    )}
-                  </div>
-                  <div className="md:col-span-2">
-                    <div className="flex flex-wrap items-center gap-3">
-                      {order.status === 'PENDING' ? (
-                        <Button
-                          size="sm"
-                          onClick={() => handleAccept(order)}
-                          disabled={actionLoading === order.id}
-                        >
-                          Accept
-                        </Button>
-                      ) : order.status === 'ACCEPTED' ? (
-                        <Button
-                          size="sm"
-                          onClick={() => handlePrepare(order)}
-                          disabled={actionLoading === order.id}
-                        >
-                          Mark as Preparing
-                        </Button>
-                      ) : (
-                        <Button size="sm" variant="outline" disabled>
-                          Ready for Pickup
-                        </Button>
-                      )}
-                      {['PENDING', 'ACCEPTED'].includes(order.status) && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDecline(order)}
-                          disabled={actionLoading === order.id}
-                        >
-                          Decline
-                        </Button>
-                      )}
-                      {actionMessage[order.id] && (
-                        <span className="text-xs text-muted-foreground">
-                          {actionMessage[order.id]}
-                        </span>
-                      )}
-                      <span className="text-xs text-muted-foreground">
-                        {order.status === 'PENDING'
-                          ? 'Accept to start preparing.'
-                          : order.status === 'ACCEPTED'
-                            ? 'Add optional notes or a photo before preparing.'
-                            : 'Preparation step coming next.'}
-                      </span>
-                    </div>
-                  </div>
-                  {order.status === 'ACCEPTED' && (
-                    <div className="md:col-span-2">
-                      <div className="grid gap-3 md:grid-cols-2">
-                        <Textarea
-                          placeholder="Preparation notes (optional)"
-                          value={prepareNotes[order.id] || ''}
-                          onChange={(event) =>
-                            setPrepareNotes((prev) => ({
-                              ...prev,
-                              [order.id]: event.target.value,
-                            }))
-                          }
-                        />
-                        <div className="space-y-2">
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={(event) =>
-                              setPrepareFiles((prev) => ({
-                                ...prev,
-                                [order.id]: event.target.files?.[0] || null,
-                              }))
-                            }
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Optional photo of items being prepared.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {['PENDING', 'ACCEPTED'].includes(order.status) && (
-                    <div className="md:col-span-2">
-                      <div className="rounded-lg border border-border/60 bg-muted/30 p-4">
-                        <div className="flex flex-col gap-3">
-                          <div className="flex flex-wrap items-center gap-3">
-                            <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                              Decline reason
-                            </p>
-                            <div className="min-w-[180px]">
-                              <AppSelect
-                                value={
-                                  declineReasons[order.id] || DECLINE_REASONS[0]
-                                }
-                                onChange={(value) =>
-                                  setDeclineReasons((prev) => ({
-                                    ...prev,
-                                    [order.id]: value,
-                                  }))
-                                }
-                                options={DECLINE_REASONS.map((reason) => ({
-                                  label: reason,
-                                  value: reason,
-                                }))}
-                              />
-                            </div>
-                          </div>
-                          <Textarea
-                            placeholder="Additional notes (optional)"
-                            value={declineNotes[order.id] || ''}
-                            onChange={(event) =>
-                              setDeclineNotes((prev) => ({
-                                ...prev,
-                                [order.id]: event.target.value,
-                              }))
-                            }
-                          />
-                          <div className="flex items-center gap-2">
-                            <Checkbox
-                              checked={declineNotify[order.id] ?? true}
-                              onCheckedChange={(value) =>
-                                setDeclineNotify((prev) => ({
-                                  ...prev,
-                                  [order.id]: Boolean(value),
-                                }))
-                              }
-                            />
-                            <label className="text-xs">
-                              Notify customer about delay
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-[520px] animate-pulse rounded-xl bg-muted/50"
+            />
           ))}
         </div>
+      ) : orders.length === 0 ? (
+        <div className="rounded-2xl border border-border/60 bg-gradient-to-br from-card/90 to-card/60 p-12 text-center shadow-lg">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted/50 mb-4">
+            <AlertCircle className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <p className="text-lg font-semibold">No orders found</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {status !== 'ALL' ? 'Try adjusting your filters' : 'All caught up!'}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {orders.map((order) => (
+            <OrderCard
+              key={order.id}
+              order={{
+                id: order.id,
+                orderNumber: order.orderNumber,
+                status: order.status,
+                createdAt: order.createdAt,
+                notes: order.notes,
+                customer: {
+                  name: order.customer.name,
+                  phone: order.customer.phone,
+                },
+                deliveryAddress: order.deliveryAddress
+                  ? {
+                      line1: order.deliveryAddress.line1,
+                      city: order.deliveryAddress.city,
+                    }
+                  : null,
+                items: order.items.map((item) => ({
+                  id: item.id,
+                  quantity: item.quantity,
+                  unitPrice: item.unitPrice,
+                  foodItem: {
+                    id: item.foodItem.id,
+                    name: item.foodItem.name,
+                  },
+                })),
+              }}
+              onAccept={() => {
+                setSelectedOrder(order)
+                setAcceptDialogOpen(true)
+              }}
+              onPrepare={() => {
+                setSelectedOrder(order)
+                setPrepareDialogOpen(true)
+              }}
+              onDecline={() => {
+                setSelectedOrder(order)
+                setDeclineDialogOpen(true)
+              }}
+              isLoading={actionLoading}
+              isNew={new Date(order.createdAt).getTime() > lastSeen}
+            />
+          ))}
+        </div>
+      )}
+
+      {selectedOrder && (
+        <>
+          <AcceptOrderDialog
+            isOpen={acceptDialogOpen}
+            onClose={() => {
+              setAcceptDialogOpen(false)
+              setSelectedOrder(null)
+            }}
+            onConfirm={handleAccept}
+            isSubmitting={actionLoading}
+            order={{
+              orderNumber: selectedOrder.orderNumber,
+              customer: selectedOrder.customer,
+              deliveryAddress: selectedOrder.deliveryAddress ?? null,
+              items: selectedOrder.items,
+            }}
+          />
+
+          <DeclineOrderDialog
+            isOpen={declineDialogOpen}
+            onClose={() => {
+              setDeclineDialogOpen(false)
+              setSelectedOrder(null)
+            }}
+            onSubmit={handleDecline}
+            isSubmitting={actionLoading}
+            orderNumber={selectedOrder.orderNumber}
+          />
+
+          <PrepareOrderDialog
+            isOpen={prepareDialogOpen}
+            onClose={() => {
+              setPrepareDialogOpen(false)
+              setSelectedOrder(null)
+            }}
+            onSubmit={handlePrepare}
+            isSubmitting={actionLoading}
+            orderNumber={selectedOrder.orderNumber}
+          />
+        </>
       )}
     </div>
   )

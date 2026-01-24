@@ -1,163 +1,299 @@
+'use client'
+
+import { MotionBox } from '@/src/components/motion/box'
+import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar'
 import siteConfig from '@/src/data/config'
-import { useColorModeValue } from '@/src/hooks/color-mode'
+import { useColorMode } from '@/src/hooks/color-mode'
 import useRouteChanged from '@/src/hooks/use-route-changed'
 import {
-  Box,
-  CloseButton,
-  Flex,
-  HStack,
-  IconButton,
-  IconButtonProps,
-  Link,
-  LinkProps,
-  Stack,
-  useBreakpointValue,
-  useUpdateEffect,
-} from '@chakra-ui/react'
+  ChevronRight,
+  Heart,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  Moon,
+  Package,
+  ShoppingBag,
+  Sun,
+  User,
+  X,
+} from 'lucide-react'
+import { Session } from 'next-auth'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { AiOutlineMenu } from 'react-icons/ai'
 import { RemoveScroll } from 'react-remove-scroll'
 
-import * as React from 'react'
+import { useEffect } from 'react'
 
-import { Logo } from '../layout/logo'
-
-interface NavLinkProps extends LinkProps {
-  label: string
-  href?: string
-  isActive?: boolean
+type MobileNavContentProps = {
+  isOpen: boolean
+  onClose: () => void
+  session: Session | null
+  onSignOut: () => void
 }
 
-interface NavLinkConfig extends Omit<NavLinkProps, 'href' | 'label'> {
-  href?: string
-  label: string
-  id?: string
+// Icon mapping for navigation items
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Home: Home,
+  Shop: ShoppingBag,
+  Orders: Package,
+  Services: Package,
+  About: Mail,
+  Contact: Mail,
 }
 
-function NavLink({ href, children, isActive, ...rest }: NavLinkProps) {
+export function MobileNavContent({
+  isOpen,
+  onClose,
+  session,
+  onSignOut,
+}: MobileNavContentProps) {
   const pathname = usePathname()
-  const bgActiveHoverColor = useColorModeValue('gray.100', 'whiteAlpha.100')
-
-  const [, group] = href?.split('/') || []
-  isActive = isActive ?? pathname?.includes(group)
-
-  return (
-    <Link
-      href={href}
-      display="inline-flex"
-      flex="1"
-      minH="40px"
-      px="8"
-      py="3"
-      transition="0.2s all"
-      fontWeight={isActive ? 'semibold' : 'medium'}
-      borderColor={isActive ? 'purple.400' : undefined}
-      borderBottomWidth="1px"
-      color={isActive ? 'white' : undefined}
-      _hover={{
-        bg: isActive ? 'purple.500' : bgActiveHoverColor,
-      }}
-      {...rest}
-    >
-      {children}
-    </Link>
-  )
-}
-
-interface MobileNavContentProps {
-  isOpen?: boolean
-  onClose?: () => void
-}
-
-export function MobileNavContent(props: MobileNavContentProps) {
-  const { isOpen, onClose = () => {} } = props
-  const closeBtnRef = React.useRef<HTMLButtonElement>(null)
-  const pathname = usePathname()
-  const bgColor = useColorModeValue('whiteAlpha.900', 'blackAlpha.900')
+  const { colorMode, toggleColorMode } = useColorMode()
+  const isAuthenticated = Boolean(session?.user)
+  const showDashboardLink =
+    session?.user?.role && session.user.role !== 'CUSTOMER'
 
   useRouteChanged(onClose)
-  console.log({ isOpen })
-  /**
-   * Scenario: Menu is open on mobile, and user resizes to desktop/tablet viewport.
-   * Result: We'll close the menu
-   */
-  const showOnBreakpoint = useBreakpointValue({ base: true, lg: false })
 
-  React.useEffect(() => {
-    if (showOnBreakpoint == false) {
-      onClose()
-    }
-  }, [showOnBreakpoint, onClose])
-
-  useUpdateEffect(() => {
+  useEffect(() => {
     if (isOpen) {
-      requestAnimationFrame(() => {
-        closeBtnRef.current?.focus()
-      })
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
     }
   }, [isOpen])
 
+  if (!isOpen) return null
+
+  // Filter nav items (exclude Login/Sign Up if authenticated)
+  const navItems = siteConfig.header.links
+    .filter(
+      (link) =>
+        (link.label !== 'Login' && link.label !== 'Sign Up') ||
+        !isAuthenticated,
+    )
+    .map((link) => ({
+      ...link,
+      icon: iconMap[link.label] || Home,
+    }))
+
   return (
-    <>
-      {isOpen && (
-        <RemoveScroll forwardProps>
-          <Flex
-            direction="column"
-            w="100%"
-            bg={bgColor}
-            h="100vh"
-            overflow="auto"
-            pos="absolute"
-            inset="0"
-            zIndex="modal"
-            pb="8"
-            backdropFilter="blur(5px)"
-          >
-            <Box>
-              <Flex justify="space-between" px="8" pt="4" pb="4">
-                {siteConfig.header.links.map(
-                  ({ href, id, label, ...props }, i) => {
-                    return (
-                      <NavLink
-                        href={href || `/#${id}`}
-                        key={i}
-                        {...(props as NavLinkConfig)}
-                      >
-                        {label}
-                      </NavLink>
-                    )
-                  },
-                )}
-                <CloseButton
-                  ref={closeBtnRef}
-                  aria-label="Close Menu"
+    <RemoveScroll forwardProps>
+      <MotionBox
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden"
+        onClick={onClose}
+      >
+        <MotionBox
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          onClick={(e) => e.stopPropagation()}
+          className="fixed right-0 top-0 bottom-0 w-full max-w-sm bg-card border-l border-border shadow-2xl overflow-hidden"
+        >
+          <div className="flex h-full flex-col">
+            {/* Header with Logo */}
+            <div className="flex items-center justify-between border-b border-border p-5 sm:p-6">
+              <div className="flex items-center gap-3">
+                <div className="relative h-10 w-10 rounded-xl overflow-hidden ring-2 ring-primary/20">
+                  <Image
+                    src="/images/logo/logo.png"
+                    alt="Total Supply"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold">Total Supply</h2>
+                  <p className="text-xs text-muted-foreground">Navigation</p>
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 active:scale-95"
+                aria-label="Close menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* User Profile Section (if authenticated) */}
+            {isAuthenticated && session?.user && (
+              <div className="border-b border-border p-5 sm:p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <Avatar className="h-12 w-12 ring-2 ring-primary/20">
+                    <AvatarImage
+                      src={session.user.image || undefined}
+                      alt={session.user.name || 'User'}
+                    />
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-base font-semibold text-primary">
+                      {session.user.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">
+                      {session.user.name || 'User'}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {session.user.email}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href="/profile"
                   onClick={onClose}
-                />
-              </Flex>
-            </Box>
-          </Flex>
-        </RemoveScroll>
-      )}
-    </>
+                  className="flex items-center justify-between w-full rounded-lg bg-muted/50 px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
+                >
+                  <span>View Profile</span>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                </a>
+              </div>
+            )}
+
+            {/* Main Navigation */}
+            <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+              {navItems.map((item, index) => {
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== '/' && pathname?.startsWith(item.href || ''))
+                const Icon = item.icon
+
+                return (
+                  <a
+                    key={index}
+                    href={item.href || `/#${item.id}`}
+                    onClick={onClose}
+                    className={`group relative flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 ${
+                      isActive
+                        ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary font-semibold shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    }`}
+                  >
+                    <div
+                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-200 ${
+                        isActive
+                          ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
+                          : 'bg-muted group-hover:bg-muted/70 group-hover:scale-105'
+                      }`}
+                    >
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <span className="text-base flex-1">{item.label}</span>
+                    {isActive && (
+                      <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                    )}
+                  </a>
+                )
+              })}
+
+              {/* Authenticated User Links */}
+              {isAuthenticated && (
+                <>
+                  <div className="h-px bg-border my-3" />
+
+                  <a
+                    href="/wishlist"
+                    onClick={onClose}
+                    className={`group relative flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 ${
+                      pathname === '/wishlist'
+                        ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary font-semibold shadow-sm'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    }`}
+                  >
+                    <div
+                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-200 ${
+                        pathname === '/wishlist'
+                          ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
+                          : 'bg-muted group-hover:bg-muted/70 group-hover:scale-105'
+                      }`}
+                    >
+                      <Heart className="h-5 w-5" />
+                    </div>
+                    <span className="text-base flex-1">Wishlist</span>
+                  </a>
+
+                  {showDashboardLink && (
+                    <a
+                      href="/dashboard"
+                      onClick={onClose}
+                      className={`group relative flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 ${
+                        pathname === '/dashboard'
+                          ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary font-semibold shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                      }`}
+                    >
+                      <div
+                        className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-200 ${
+                          pathname === '/dashboard'
+                            ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
+                            : 'bg-muted group-hover:bg-muted/70 group-hover:scale-105'
+                        }`}
+                      >
+                        <LayoutDashboard className="h-5 w-5" />
+                      </div>
+                      <span className="text-base flex-1">Dashboard</span>
+                    </a>
+                  )}
+                </>
+              )}
+            </nav>
+
+            {/* Footer Actions */}
+            <div className="border-t border-border p-4 space-y-2">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggleColorMode}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200 active:scale-98"
+              >
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted">
+                  {colorMode === 'light' ? (
+                    <Moon className="h-5 w-5" />
+                  ) : (
+                    <Sun className="h-5 w-5" />
+                  )}
+                </div>
+                <span className="text-base flex-1 text-left">
+                  {colorMode === 'light' ? 'Dark Mode' : 'Light Mode'}
+                </span>
+              </button>
+
+              {/* Sign Out Button */}
+              {isAuthenticated && (
+                <button
+                  onClick={() => {
+                    onClose()
+                    onSignOut()
+                  }}
+                  className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-destructive hover:bg-destructive/10 transition-all duration-200 active:scale-98"
+                >
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-destructive/10">
+                    <LogOut className="h-5 w-5" />
+                  </div>
+                  <span className="text-base flex-1 text-left font-medium">
+                    Sign Out
+                  </span>
+                </button>
+              )}
+
+              {/* Copyright */}
+              <div className="rounded-lg bg-muted/50 p-3 text-center mt-2">
+                <p className="text-xs text-muted-foreground">
+                  © 2026 Total Supply. All rights reserved.
+                </p>
+              </div>
+            </div>
+          </div>
+        </MotionBox>
+      </MotionBox>
+    </RemoveScroll>
   )
 }
-
-export const MobileNavButton = React.forwardRef(
-  (props: IconButtonProps, ref: React.Ref<HTMLButtonElement>) => {
-    return (
-      <IconButton
-        ref={ref}
-        display={{ base: 'flex', md: 'none' }}
-        fontSize="20px"
-        color={useColorModeValue('gray.800', 'inherit')}
-        variant="ghost"
-        {...props}
-        aria-label="Open menu"
-      >
-        <AiOutlineMenu />
-      </IconButton>
-    )
-  },
-)
-
-MobileNavButton.displayName = 'MobileNavButton'

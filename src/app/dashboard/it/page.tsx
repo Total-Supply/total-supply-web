@@ -1,5 +1,5 @@
-import { ITDashboardPage as ITDashboardPageComponent } from '@/src/components/it/it-dashboard-page'
+import ITDashboardPage from '@/src/components/it/it-dashboard-page'
 
-export default function ITDashboardPage() {
-  return <ITDashboardPageComponent />
+export default function ITDashboard() {
+  return <ITDashboardPage />
 }

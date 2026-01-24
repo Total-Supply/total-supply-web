@@ -41,7 +41,7 @@ export function useToast() {
       id: id ? String(id) : getToastId(),
       title,
       description,
-      type: status,
+      type: status || 'info', // <-- Ensure 'type' is always set
       duration,
       closable: isClosable,
       meta: render ? { render } : undefined,

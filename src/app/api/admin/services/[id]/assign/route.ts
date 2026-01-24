@@ -10,6 +10,8 @@ import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
+type Params = { params: Promise<{ id: string }> }
+
 /**
  * Assign Service Request (Admin)
  *
@@ -28,12 +30,13 @@ import { NextRequest } from 'next/server'
  */
 export const POST = withErrorHandler(async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: Params,
 ) {
   const authRequest = await requireAdmin(request)
-  ServiceIdParams.parse(params)
+  const { id } = await params
+  ServiceIdParams.parse({ id })
 
-  const serviceId = Number(params.id)
+  const serviceId = Number(id)
   if (Number.isNaN(serviceId)) {
     return ApiResponse.badRequest('Invalid service id')
   }

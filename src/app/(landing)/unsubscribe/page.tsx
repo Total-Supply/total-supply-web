@@ -1,12 +1,15 @@
-import { UnsubscribePage } from '@/src/components/marketing/unsubscribe-page'
+import { UnsubscribePageEnhanced } from '@/src/components/unsubscribe/unsubscribe-page-enhanced'
 import { Suspense } from 'react'
 
-export default function Unsubscribe() {
+export const metadata = {
+  title: 'Unsubscribe | Total Supply',
+  description: 'Manage your email preferences',
+}
+
+export default function UnsubscribePage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
-      <UnsubscribePage />
+    <Suspense fallback={<div />}>
+      <UnsubscribePageEnhanced />
     </Suspense>
   )
 }
-
-

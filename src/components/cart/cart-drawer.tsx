@@ -1,19 +1,10 @@
 'use client'
 
-import { useColorModeValue } from '@/src/hooks/color-mode'
+import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
 import { RootState } from '@/src/store'
-import {
-  Box,
-  Button,
-  CloseButton,
-  Drawer,
-  HStack,
-  Image,
-  Portal,
-  Separator,
-  Stack,
-  Text,
-} from '@chakra-ui/react'
+import { Drawer } from '@chakra-ui/react'
+import { ArrowRight, Eye, Package, ShoppingCart, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useSelector } from 'react-redux'
 
@@ -22,16 +13,13 @@ type CartDrawerProps = {
   onClose: () => void
 }
 
-export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
+export function CartDrawerEnhanced({ isOpen, onClose }: CartDrawerProps) {
   const router = useRouter()
   const items = useSelector((state: RootState) => state.cart.items)
   const total = useSelector((state: RootState) => state.cart.total)
-  const cardBg = useColorModeValue('whiteAlpha.900', 'gray.900')
-  const cardBorder = useColorModeValue('whiteAlpha.200', 'whiteAlpha.200')
-  const muted = useColorModeValue('gray.600', 'gray.300')
 
   const tax = 0
-  const deliveryFee = total > 0 ? 0 : 0
+  const deliveryFee = total > 0 ? 250 : 0
   const grandTotal = total + tax + deliveryFee
 
   const handleNavigate = (path: string) => {
@@ -43,145 +31,164 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     <Drawer.Root
       open={isOpen}
       placement="end"
-      size="sm"
+      size="md"
       onOpenChange={(details) => {
-        if (!details.open) {
-          onClose()
-        }
+        if (!details.open) onClose()
       }}
     >
-      <Portal>
-        <Drawer.Backdrop />
-        <Drawer.Positioner>
-          <Drawer.Content bg={cardBg}>
-            <Drawer.Header>
-              <Drawer.Title>Your cart</Drawer.Title>
+      <Drawer.Backdrop className="bg-black/50 backdrop-blur-sm" />
+      <Drawer.Positioner>
+        <Drawer.Content className="bg-card border-l border-border">
+          {/* Header */}
+          <Drawer.Header className="border-b border-border p-5 sm:p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 ring-1 ring-primary/30">
+                  <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
+                </div>
+                <div>
+                  <Drawer.Title className="text-base sm:text-lg font-semibold">
+                    Shopping Cart
+                  </Drawer.Title>
+                  <p className="text-xs text-muted-foreground">
+                    {items.length} {items.length === 1 ? 'item' : 'items'}
+                  </p>
+                </div>
+              </div>
               <Drawer.CloseTrigger asChild>
-                <CloseButton size="sm" />
+                <button className="rounded-lg p-2 transition-colors hover:bg-muted active:scale-95">
+                  <X className="h-5 w-5" />
+                </button>
               </Drawer.CloseTrigger>
-            </Drawer.Header>
-            <Drawer.Body>
-              {items.length === 0 ? (
-                <Stack gap={3} align="center" mt={8}>
-                  <Text fontWeight="600">Your cart is empty</Text>
-                  <Text fontSize="sm" color={muted} textAlign="center">
-                    Add fresh items from the catalog to get started.
-                  </Text>
-                  <Button
-                    colorPalette="primary"
-                    onClick={() => handleNavigate('/shop')}
+            </div>
+          </Drawer.Header>
+
+          {/* Body */}
+          <Drawer.Body className="p-4 sm:p-6">
+            {items.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 sm:py-16">
+                <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full bg-muted mb-4">
+                  <Package className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" />
+                </div>
+                <p className="font-semibold text-base mb-2">
+                  Your cart is empty
+                </p>
+                <p className="text-sm text-muted-foreground text-center mb-6 max-w-xs">
+                  Add fresh items from the catalog to get started
+                </p>
+                <Button
+                  colorPalette="primary"
+                  onClick={() => handleNavigate('/shop')}
+                  size="lg"
+                >
+                  <Package className="mr-2 h-4 w-4" />
+                  Browse Products
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3 sm:space-y-4">
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex gap-3 sm:gap-4 rounded-xl border border-border/60 bg-gradient-to-br from-card/50 to-card/30 p-3 transition-all duration-200 hover:shadow-md"
                   >
-                    Browse catalog
-                  </Button>
-                </Stack>
-              ) : (
-                <Stack gap={4}>
-                  {items.map((item) => (
-                    <HStack
-                      key={item.id}
-                      gap={3}
-                      borderWidth="1px"
-                      borderColor={cardBorder}
-                      borderRadius="xl"
-                      p={3}
-                      align="flex-start"
-                    >
-                      <Box
-                        boxSize="60px"
-                        borderRadius="lg"
-                        overflow="hidden"
-                        bg="gray.100"
-                      >
-                        {item.image ? (
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            w="full"
-                            h="full"
-                            objectFit="cover"
-                          />
-                        ) : (
-                          <Box
-                            w="full"
-                            h="full"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            color="gray.400"
-                            fontSize="xs"
-                          >
-                            No image
-                          </Box>
-                        )}
-                      </Box>
-                      <Stack gap={1} flex="1">
-                        <Text fontSize="sm" fontWeight="600">
+                    <div className="relative h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted ring-1 ring-border">
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center">
+                          <Package className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex flex-1 flex-col justify-between min-w-0">
+                      <div>
+                        <h4 className="font-semibold text-sm line-clamp-1">
                           {item.name}
-                        </Text>
-                        <Text fontSize="xs" color={muted}>
-                          LKR {item.price.toFixed(2)}
-                        </Text>
-                        <Text fontSize="xs" color={muted}>
-                          Qty {item.quantity}
-                        </Text>
+                        </h4>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          LKR {item.price.toFixed(2)} × {item.quantity}
+                        </p>
                         {item.stock !== undefined &&
                           item.stock !== null &&
                           item.stock <= 0 && (
-                            <Text fontSize="xs" color="red.400">
+                            <Badge
+                              variant="subtle"
+                              colorPalette="red"
+                              className="mt-1.5"
+                            >
                               Out of stock
-                            </Text>
+                            </Badge>
                           )}
-                      </Stack>
-                      <Text fontSize="sm" fontWeight="600">
+                      </div>
+                      <p className="text-sm font-bold text-primary">
                         LKR {(item.price * item.quantity).toFixed(2)}
-                      </Text>
-                    </HStack>
-                  ))}
-                </Stack>
-              )}
-            </Drawer.Body>
-            {items.length > 0 && (
-              <Drawer.Footer>
-                <Stack gap={3} w="full">
-                  <Separator />
-                  <HStack justify="space-between">
-                    <Text color={muted}>Subtotal</Text>
-                    <Text fontWeight="600">LKR {total.toFixed(2)}</Text>
-                  </HStack>
-                  <HStack justify="space-between">
-                    <Text color={muted}>Tax</Text>
-                    <Text fontWeight="600">LKR {tax.toFixed(2)}</Text>
-                  </HStack>
-                  <HStack justify="space-between">
-                    <Text color={muted}>Delivery fee</Text>
-                    <Text fontWeight="600">LKR {deliveryFee.toFixed(2)}</Text>
-                  </HStack>
-                  <HStack justify="space-between">
-                    <Text fontWeight="600">Total</Text>
-                    <Text fontWeight="700">LKR {grandTotal.toFixed(2)}</Text>
-                  </HStack>
-                  <HStack gap={3} pt={2}>
-                    <Button
-                      variant="outline"
-                      flex="1"
-                      onClick={() => handleNavigate('/cart')}
-                    >
-                      View cart
-                    </Button>
-                    <Button
-                      colorPalette="primary"
-                      flex="1"
-                      onClick={() => handleNavigate('/checkout')}
-                    >
-                      Checkout
-                    </Button>
-                  </HStack>
-                </Stack>
-              </Drawer.Footer>
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
-          </Drawer.Content>
-        </Drawer.Positioner>
-      </Portal>
+          </Drawer.Body>
+
+          {/* Footer */}
+          {items.length > 0 && (
+            <Drawer.Footer className="border-t border-border p-4 sm:p-6">
+              <div className="space-y-4 w-full">
+                {/* Summary */}
+                <div className="space-y-2 rounded-xl border border-border/60 bg-muted/20 p-3 sm:p-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="font-semibold">
+                      LKR {total.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Delivery</span>
+                    <span className="font-semibold">
+                      {deliveryFee > 0
+                        ? `LKR ${deliveryFee.toFixed(2)}`
+                        : 'FREE'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-border pt-2">
+                    <span className="font-semibold">Total</span>
+                    <span className="text-lg font-bold text-primary">
+                      LKR {grandTotal.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleNavigate('/cart')}
+                    size="lg"
+                  >
+                    <Eye className="mr-2 h-4 w-4" />
+                    <span className="hidden sm:inline">View Cart</span>
+                    <span className="sm:hidden">View</span>
+                  </Button>
+                  <Button
+                    colorPalette="primary"
+                    onClick={() => handleNavigate('/checkout')}
+                    size="lg"
+                  >
+                    <span>Checkout</span>
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </Drawer.Footer>
+          )}
+        </Drawer.Content>
+      </Drawer.Positioner>
     </Drawer.Root>
   )
 }

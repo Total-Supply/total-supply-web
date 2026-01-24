@@ -1,4 +1,13 @@
 import { Button, Link } from '@chakra-ui/react'
+import {
+  Home,
+  Info,
+  type LucideIcon,
+  Mail,
+  Package,
+  ShoppingBag,
+  User,
+} from 'lucide-react'
 import { FaGithub, FaTwitter } from 'react-icons/fa'
 import { FiCheck } from 'react-icons/fi'
 
@@ -46,18 +55,44 @@ const siteConfig = {
   termsUrl: '#',
   privacyUrl: '#',
   header: {
+    // primaryNav: [
+    //   { label: 'Home', href: '/', icon: Home },
+    //   { label: 'Shop', href: '/shop', icon: ShoppingBag },
+    //   { label: 'Orders', href: '/orders', icon: Package },
+    //   { label: 'Profile', href: '/profile', icon: User },
+    //   { label: 'About', href: '/about', icon: Info },
+    //   { label: 'Contact', href: '/contact', icon: Mail },
+    // ],
     links: [
+      // {
+      //   id: 'home',
+      //   label: 'Home',
+      //   href: '/',
+      // },
       {
-        id: 'features',
-        label: 'Features',
+        id: 'shop',
+        label: 'Shop',
+        href: '/shop',
+      },
+      // {
+      //   id: 'orders',
+      //   label: 'Orders',
+      //   href: '/orders',
+      // },
+      {
+        id: 'services',
+        label: 'Services',
+        href: '/services',
       },
       {
-        id: 'pricing',
-        label: 'Pricing',
+        id: 'about',
+        label: 'About',
+        href: '/about',
       },
       {
-        id: 'faq',
-        label: 'FAQ',
+        id: 'contact',
+        label: 'Contact',
+        href: '/contact',
       },
       {
         label: 'Login',
@@ -74,7 +109,7 @@ const siteConfig = {
     copyright: (
       <>
         Built by{' '}
-        <Link href="https://twitter.com/Pagebakers">Eelco Wiersma</Link>
+        <Link href="https://linkedin.com/in/ifhammohamed">Ifham Mohamed</Link>
       </>
     ),
     links: [

@@ -8,17 +8,25 @@ import { getRateLimitKey, rateLimiters } from '@/src/middleware/rate-limit'
 import { compare } from 'bcryptjs'
 import { NextRequest } from 'next/server'
 
+/**
+ * Login
+ * @description Authenticates a user with email/password and returns the user profile.
+ * @body LoginBody
+ * @response LoginSuccessResponse
+ * @responseSet public
+ * @add 401:UnauthorizedResponse
+ * @add 403:ForbiddenResponse
+ * @tag Auth
+ * @openapi
+ */
 async function handler(request: NextRequest) {
-  // Rate limiting
   const ip = request.headers.get('x-forwarded-for') || 'unknown'
   const rateLimitKey = getRateLimitKey(undefined, ip, 'login')
   rateLimiters.auth(rateLimitKey)
 
-  // Validate request body
   const body = await request.json()
   const data = await validateBody(body, loginSchema)
 
-  // Find user
   const user = await prisma.user.findUnique({
     where: { email: data.email },
     select: {
@@ -33,35 +41,19 @@ async function handler(request: NextRequest) {
     },
   })
 
-  if (!user) {
-    throw new UnauthorizedError('Invalid email or password')
-  }
+  if (!user) throw new UnauthorizedError('Invalid email or password')
 
-  // Verify password
   const isPasswordValid = await compare(data.password, user.passwordHash)
+  if (!isPasswordValid) throw new UnauthorizedError('Invalid email or password')
 
-  if (!isPasswordValid) {
-    throw new UnauthorizedError('Invalid email or password')
-  }
-
-  // Check account status
-  if (!user.emailVerified) {
-    throw new ForbiddenError('Email not verified')
-  }
-
-  if (user.status === 'SUSPENDED') {
+  if (!user.emailVerified) throw new ForbiddenError('Email not verified')
+  if (user.status === 'SUSPENDED')
     throw new ForbiddenError('Your account has been suspended')
-  }
-
-  if (user.status === 'REJECTED') {
+  if (user.status === 'REJECTED')
     throw new ForbiddenError('Your account has been rejected')
-  }
-
-  if (user.status === 'PENDING_APPROVAL') {
+  if (user.status === 'PENDING_APPROVAL')
     throw new ForbiddenError('Your account is pending admin approval')
-  }
 
-  // Create audit log
   await prisma.auditLog.create({
     data: {
       entityType: 'USER',
@@ -70,19 +62,12 @@ async function handler(request: NextRequest) {
       actorId: user.id,
       ipAddress: ip,
       userAgent: request.headers.get('user-agent') || undefined,
-      details: {
-        result: 'SUCCESS',
-        actorName: user.name,
-      },
+      details: { result: 'SUCCESS', actorName: user.name },
     },
   })
 
-  // Return user data (NextAuth will handle session creation)
   const { passwordHash, ...userWithoutPassword } = user
-
   return ApiResponse.success({ user: userWithoutPassword }, 'Login successful')
 }
 
 export const POST = withErrorHandler(handler)
-
-

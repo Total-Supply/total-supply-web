@@ -1,12 +1,15 @@
-import { CheckoutSuccess } from '@/src/components/checkout/checkout-success'
+import { CheckoutSuccess } from '@/src/components/checkout/success/checkout-success'
 import { Suspense } from 'react'
 
-export default function CheckoutSuccessRoute() {
+export const metadata = {
+  title: 'Order Confirmed | Total Supply',
+  description: 'Your order has been placed successfully',
+}
+
+export default function CheckoutSuccessPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<div />}>
       <CheckoutSuccess />
     </Suspense>
   )
 }
-
-

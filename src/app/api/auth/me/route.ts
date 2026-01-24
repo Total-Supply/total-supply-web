@@ -4,12 +4,19 @@ import { requireAuth } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
+/**
+ * Current User Profile
+ * @description Returns the authenticated user profile (includes counts).
+ * @auth bearer
+ * @response MeSuccessResponse
+ * @responseSet auth
+ * @tag Auth
+ * @openapi
+ */
 async function handler(request: NextRequest) {
-  // Get authenticated user
   const authRequest = await requireAuth(request)
   const userId = parseInt(authRequest.user.id)
 
-  // Fetch full user profile
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -24,11 +31,7 @@ async function handler(request: NextRequest) {
       createdAt: true,
       updatedAt: true,
       _count: {
-        select: {
-          orders: true,
-          serviceRequests: true,
-          addresses: true,
-        },
+        select: { orders: true, serviceRequests: true, addresses: true },
       },
     },
   })
@@ -37,5 +40,3 @@ async function handler(request: NextRequest) {
 }
 
 export const GET = withErrorHandler(handler)
-
-

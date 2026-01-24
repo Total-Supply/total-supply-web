@@ -1,7 +1,5 @@
-import { DriverDeliveriesPage } from '@/src/components/driver/driver-deliveries-page'
+import DeliveriesPage from '@/src/components/driver/deliveries/delivaries'
 
 export default function DriverDeliveriesRoute() {
-  return <DriverDeliveriesPage />
+  return <DeliveriesPage />
 }
-
-
