@@ -15,7 +15,7 @@ type FoodItem = {
   id: number
   name: string
   slug: string
-  price: string | number // Can be string or number from API
+  price: string | number
   stock: number
   mainImageUrl: string | null
   category:
@@ -24,7 +24,7 @@ type FoodItem = {
         name: string
         slug: string
       }
-    | string // Can be object or string
+    | string
 }
 
 export function LandingFeaturedProducts() {
@@ -87,30 +87,30 @@ export function LandingFeaturedProducts() {
   }
 
   return (
-    <div className="py-20 sm:py-28 px-8 sm:px-10 lg:px-12">
+    <div className="py-16 sm:py-20 lg:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl text-center mb-16">
+        <div className="mx-auto max-w-2xl text-center mb-12 sm:mb-16">
           <MotionBox
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-3 sm:mb-4">
               Featured Products
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base sm:text-lg text-muted-foreground">
               Check out our most popular and fresh items
             </p>
           </MotionBox>
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="h-96 animate-pulse rounded-xl bg-muted/50"
+                className="h-80 sm:h-96 animate-pulse rounded-xl bg-muted/50"
               />
             ))}
           </div>
@@ -122,7 +122,7 @@ export function LandingFeaturedProducts() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
               {products.map((product, index) => {
                 const price = formatPrice(product.price)
                 const categoryName = getCategoryName(product.category)
@@ -149,13 +149,13 @@ export function LandingFeaturedProducts() {
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
-                            <ShoppingCart className="h-16 w-16 text-muted-foreground" />
+                            <ShoppingCart className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground" />
                           </div>
                         )}
                         {product.stock <= 5 && product.stock > 0 && (
                           <Badge
                             variant="subtle"
-                            className="absolute top-3 right-3 bg-amber-500/90 text-white"
+                            className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-amber-500/90 text-white text-xs"
                           >
                             Low Stock
                           </Badge>
@@ -163,14 +163,14 @@ export function LandingFeaturedProducts() {
                       </div>
 
                       {/* Content */}
-                      <div className="p-4 space-y-3">
+                      <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                         <div>
                           <p className="text-xs text-muted-foreground mb-1">
                             {categoryName}
                           </p>
                           <h3
                             onClick={() => router.push(`/shop/${product.slug}`)}
-                            className="font-semibold line-clamp-2 cursor-pointer hover:text-primary transition-colors"
+                            className="font-semibold text-sm line-clamp-2 cursor-pointer hover:text-primary transition-colors"
                           >
                             {product.name}
                           </h3>
@@ -178,7 +178,7 @@ export function LandingFeaturedProducts() {
 
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-2xl font-bold text-primary">
+                            <p className="text-lg sm:text-2xl font-bold text-primary">
                               LKR {price.toFixed(2)}
                             </p>
                             <p className="text-xs text-muted-foreground">
@@ -194,8 +194,10 @@ export function LandingFeaturedProducts() {
                           className="w-full"
                           size="sm"
                         >
-                          <ShoppingCart className="mr-2 h-4 w-4" />
-                          Add to Cart
+                          <ShoppingCart className="mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                          <span className="text-xs sm:text-sm">
+                            Add to Cart
+                          </span>
                         </Button>
                       </div>
                     </div>
@@ -209,7 +211,7 @@ export function LandingFeaturedProducts() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="text-center mt-12"
+              className="text-center mt-10 sm:mt-12"
             >
               <Button
                 size="lg"
@@ -218,7 +220,7 @@ export function LandingFeaturedProducts() {
                 className="group"
               >
                 View All Products
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </MotionBox>
           </>

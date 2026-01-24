@@ -214,7 +214,7 @@ export function HeaderEnhanced() {
               {/* Theme Toggle */}
               <button
                 onClick={toggleColorMode}
-                className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
+                className="hidden sm:flex cursor-pointer items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                 aria-label="Toggle theme"
               >
                 {colorMode === 'light' ? (
@@ -227,7 +227,7 @@ export function HeaderEnhanced() {
               {/* Cart Button */}
               <button
                 onClick={cartDrawer.onOpen}
-                className="relative flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
+                className="relative flex cursor-pointer items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                 aria-label="View cart"
               >
                 <ShoppingCart className="h-4 w-4" />
@@ -243,7 +243,7 @@ export function HeaderEnhanced() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
-                      className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
+                      className="hidden sm:flex cursor-pointer items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                       aria-label="Account"
                     >
                       <User className="h-4 w-4" />

@@ -1,4 +1,5 @@
 import { OrdersPageEnhanced } from '@/src/components/orders/customer/orders-page'
+import { Suspense } from 'react'
 
 export const metadata = {
   title: 'My Orders | Total Supply',
@@ -6,5 +7,9 @@ export const metadata = {
 }
 
 export default function Orders() {
-  return <OrdersPageEnhanced />
+  return (
+    <Suspense fallback={<div />}>
+      <OrdersPageEnhanced />
+    </Suspense>
+  )
 }

@@ -9,6 +9,10 @@ import {
   createServiceRequestSchema,
   rateServiceSchema,
 } from '@/src/lib/validations/service.schema'
+import {
+  serviceOfferingCreateSchema,
+  serviceOfferingUpdateSchema,
+} from '@/src/lib/validations/service-offering.schema'
 import { z } from 'zod'
 
 import {
@@ -155,6 +159,66 @@ export const RateServiceSuccessResponse = z
     message: z.string().optional(),
   })
   .describe('Rate service success response')
+
+/**
+ * -----------------------------
+ * Service Offerings (Admin)
+ * -----------------------------
+ */
+export const DecimalLike = z.union([z.number(), z.string()])
+
+export const ServiceOfferingResponse = z.object({
+  id: z.number().int().positive(),
+  name: z.string(),
+  slug: z.string(),
+  type: z.nativeEnum(ServiceType),
+  category: z.nativeEnum(ServiceCategory).nullable().optional(),
+  description: z.string().nullable().optional(),
+  basePrice: DecimalLike.nullable().optional(),
+  isActive: z.boolean(),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+})
+
+export const ServiceOfferingIdParams = z.object({
+  id: z.string().describe('Service offering id'),
+})
+
+export const CreateServiceOfferingBody = serviceOfferingCreateSchema.describe(
+  'Create service offering body (Admin)',
+)
+
+export const UpdateServiceOfferingBody = serviceOfferingUpdateSchema.describe(
+  'Update service offering body (Admin)',
+)
+
+export const ListServiceOfferingsSuccessResponse = z.object({
+  success: z.literal(true),
+  data: z.array(ServiceOfferingResponse),
+})
+
+export const GetServiceOfferingSuccessResponse = z.object({
+  success: z.literal(true),
+  data: ServiceOfferingResponse,
+})
+
+export const CreateServiceOfferingSuccessResponse = z.object({
+  success: z.literal(true),
+  data: ServiceOfferingResponse,
+  message: z.string().optional(),
+})
+
+export const UpdateServiceOfferingSuccessResponse = z.object({
+  success: z.literal(true),
+  data: ServiceOfferingResponse,
+  message: z.string().optional(),
+})
+
+export const DeleteServiceOfferingSuccessResponse = z.object({
+  success: z.literal(true),
+  data: z.object({ id: z.number().int().positive() }),
+  message: z.string().optional(),
+})
 
 /**
  * -----------------------------

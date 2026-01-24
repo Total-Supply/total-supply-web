@@ -13,6 +13,8 @@ import { requireAdmin } from '@/src/middleware/auth'
 import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
+type Params = { params: Promise<{ id: string }> }
+
 /**
  * Get Service Offering by ID
  *
@@ -29,12 +31,13 @@ import { NextRequest } from 'next/server'
  */
 export const GET = withErrorHandler(async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: Params,
 ) {
   await requireAdmin(request)
 
-  ServiceOfferingIdParams.parse(params)
-  const offeringId = parseInt(params.id, 10)
+  const { id } = await params
+  ServiceOfferingIdParams.parse({ id })
+  const offeringId = parseInt(id, 10)
 
   if (!Number.isFinite(offeringId)) {
     return ApiResponse.badRequest('Invalid service offering ID')
@@ -71,12 +74,13 @@ export const GET = withErrorHandler(async function GET(
  */
 export const PATCH = withErrorHandler(async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: Params,
 ) {
   await requireAdmin(request)
 
-  ServiceOfferingIdParams.parse(params)
-  const offeringId = parseInt(params.id, 10)
+  const { id } = await params
+  ServiceOfferingIdParams.parse({ id })
+  const offeringId = parseInt(id, 10)
 
   if (!Number.isFinite(offeringId)) {
     return ApiResponse.badRequest('Invalid service offering ID')
@@ -137,12 +141,13 @@ export const PATCH = withErrorHandler(async function PATCH(
  */
 export const DELETE = withErrorHandler(async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: Params,
 ) {
   await requireAdmin(request)
 
-  ServiceOfferingIdParams.parse(params)
-  const offeringId = parseInt(params.id, 10)
+  const { id } = await params
+  ServiceOfferingIdParams.parse({ id })
+  const offeringId = parseInt(id, 10)
 
   if (!Number.isFinite(offeringId)) {
     return ApiResponse.badRequest('Invalid service offering ID')

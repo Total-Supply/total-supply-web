@@ -1,4 +1,5 @@
 import { UnsubscribePageEnhanced } from '@/src/components/unsubscribe/unsubscribe-page-enhanced'
+import { Suspense } from 'react'
 
 export const metadata = {
   title: 'Unsubscribe | Total Supply',
@@ -6,5 +7,9 @@ export const metadata = {
 }
 
 export default function UnsubscribePage() {
-  return <UnsubscribePageEnhanced />
+  return (
+    <Suspense fallback={<div />}>
+      <UnsubscribePageEnhanced />
+    </Suspense>
+  )
 }

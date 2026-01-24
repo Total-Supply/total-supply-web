@@ -7,7 +7,7 @@ import { withErrorHandler } from '@/src/middleware/error-handler'
 import { NextRequest } from 'next/server'
 
 type Params = {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 /**
@@ -30,7 +30,8 @@ async function handler(request: NextRequest, { params }: Params) {
   const authRequest = await requireAuth(request)
   const customerId = Number(authRequest.user.id)
 
-  const serviceId = Number(params.id)
+  const { id } = await params
+  const serviceId = Number(id)
   if (Number.isNaN(serviceId)) {
     return ApiResponse.badRequest('Invalid service id')
   }

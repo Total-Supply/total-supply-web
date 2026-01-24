@@ -44,9 +44,9 @@ export function LandingStats({ stats }: LandingStatsProps) {
   ]
 
   return (
-    <div className="border-y border-border bg-muted/20 py-16 px-8 sm:px-10 lg:px-12">
-      <div className="container">
-        <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+    <div className="border-y border-border bg-muted/20 py-12 sm:py-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
           {statCards.map((stat, index) => (
             <MotionBox
               key={index}
@@ -57,14 +57,14 @@ export function LandingStats({ stats }: LandingStatsProps) {
             >
               <div className="group text-center">
                 <div
-                  className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br ring-1 transition-transform duration-300 group-hover:scale-110 ${stat.color}`}
+                  className={`mx-auto mb-3 sm:mb-4 flex h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 items-center justify-center rounded-xl bg-gradient-to-br ring-1 transition-transform duration-300 group-hover:scale-110 ${stat.color}`}
                 >
-                  <stat.icon className="h-8 w-8" />
+                  <stat.icon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8" />
                 </div>
-                <div className="text-3xl font-bold tabular-nums sm:text-4xl">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold tabular-nums">
                   {stat.value.toLocaleString()}+
                 </div>
-                <div className="mt-1 text-sm text-muted-foreground">
+                <div className="mt-1 text-xs sm:text-sm text-muted-foreground">
                   {stat.label}
                 </div>
               </div>

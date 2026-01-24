@@ -64,21 +64,21 @@ const siteConfig = {
     //   { label: 'Contact', href: '/contact', icon: Mail },
     // ],
     links: [
-      {
-        id: 'home',
-        label: 'Home',
-        href: '/',
-      },
+      // {
+      //   id: 'home',
+      //   label: 'Home',
+      //   href: '/',
+      // },
       {
         id: 'shop',
         label: 'Shop',
         href: '/shop',
       },
-      {
-        id: 'orders',
-        label: 'Orders',
-        href: '/orders',
-      },
+      // {
+      //   id: 'orders',
+      //   label: 'Orders',
+      //   href: '/orders',
+      // },
       {
         id: 'services',
         label: 'Services',

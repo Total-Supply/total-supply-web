@@ -1,4 +1,5 @@
 import { CheckoutSuccess } from '@/src/components/checkout/success/checkout-success'
+import { Suspense } from 'react'
 
 export const metadata = {
   title: 'Order Confirmed | Total Supply',
@@ -6,5 +7,9 @@ export const metadata = {
 }
 
 export default function CheckoutSuccessPage() {
-  return <CheckoutSuccess />
+  return (
+    <Suspense fallback={<div />}>
+      <CheckoutSuccess />
+    </Suspense>
+  )
 }
