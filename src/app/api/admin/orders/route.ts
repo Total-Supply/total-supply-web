@@ -1,7 +1,6 @@
 import { ApiResponse } from '@/src/lib/api/response'
 import prisma from '@/src/lib/prisma'
 import {
-  ListOrdersSuccessResponse,
   ListCustomerOrdersQuery,
 } from '@/src/lib/schemas/orders'
 import { requireAdmin } from '@/src/middleware/auth'
