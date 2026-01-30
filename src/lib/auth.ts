@@ -177,11 +177,32 @@ export const authOptions: NextAuthOptions = {
     },
   },
   events: {
-    async signOut({ token }: { token: { sessionToken?: string } }) {
+    async signOut({ token }: { token: any }) {
       if (token?.sessionToken) {
+        const userId = token.id
+
+        // Clean up session in DB
         await prisma.session.deleteMany({
           where: { token: String(token.sessionToken) },
         })
+
+        // Create Audit Log
+        // Note: In events, we might not have access to Request headers for IP/UserAgent easily without invasive changes.
+        // We will log what we can.
+        if (userId) {
+             const numericId = parseInt(String(userId))
+             if (!isNaN(numericId)) {
+                await prisma.auditLog.create({
+                    data: {
+                    entityType: 'USER',
+                    entityId: numericId,
+                    action: 'LOGOUT',
+                    actorId: numericId,
+                    details: { result: 'SUCCESS', method: 'NextAuth Event' },
+                    },
+                })
+             }
+        }
       }
     },
   },

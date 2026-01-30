@@ -1,5 +1,4 @@
 import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react'
-import '@fontsource-variable/inter'
 
 import { fontSizes } from './foundations/typography'
 

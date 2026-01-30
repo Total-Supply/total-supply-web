@@ -1,14 +1,26 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 
-import { LandingCTAEnhanced } from './landing-cta'
-import { LandingFeaturedProducts } from './landing-featured-products'
-import { LandingFeatures } from './landing-features'
 import { LandingHero } from './landing-hero'
-import { LandingServices } from './landing-services'
 import { LandingStats } from './landing-stats'
-import { LandingTestimonials } from './landing-testimonials'
+import { LandingFeatures } from './landing-features'
+import { LandingServices } from './landing-services'
+
+// Lazy load below-the-fold sections for better initial load performance
+const LandingFeaturedProducts = dynamic(
+  () => import('./landing-featured-products').then((mod) => mod.LandingFeaturedProducts),
+  { ssr: true }
+)
+const LandingTestimonials = dynamic(
+  () => import('./landing-testimonials').then((mod) => mod.LandingTestimonials),
+  { ssr: true }
+)
+const LandingCTAEnhanced = dynamic(
+  () => import('./landing-cta').then((mod) => mod.LandingCTAEnhanced),
+  { ssr: true }
+)
 
 type LandingStats = {
   totalOrders: number

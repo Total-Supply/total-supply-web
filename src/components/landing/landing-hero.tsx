@@ -35,11 +35,11 @@ export function LandingHero() {
               </div>
             </MotionBox>
 
-            {/* Main Heading */}
+            {/* Main Heading - No delay for LCP optimization */}
             <MotionBox
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              transition={{ duration: 0.3 }}
             >
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mb-4 sm:mb-6">
                 Your Complete
@@ -55,11 +55,11 @@ export function LandingHero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <p className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 px-4 sm:px-0">
-                Order fresh food, schedule professional cleaning services, and
-                get expert IT support—all in one platform. Fast, reliable, and
-                convenient.
-              </p>
+            <p className="mx-auto max-w-2xl text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 px-4 sm:px-0">
+              Order fresh food, schedule professional cleaning services, and
+              get expert IT support—all in one platform. Fast, reliable, and
+              convenient.
+            </p>
             </MotionBox>
 
             {/* CTA Buttons */}
