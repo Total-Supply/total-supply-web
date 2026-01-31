@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import NextImage from 'next/image'
 import { usePathname } from 'next/navigation'
 
 import * as React from 'react'
@@ -262,8 +263,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <Link href="/dashboard">
                 {/* Brand Icon */}
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105 group-hover:rotate-[2deg]">
-                  <ShoppingBasket className="size-4 transition-transform duration-200 group-hover:scale-110" />
+                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-xl overflow-hidden transition-transform duration-200 group-hover:scale-105 group-hover:rotate-[2deg]">
+                  <NextImage
+                    src="/images/logo/logo.png"
+                    alt="Total Supply"
+                    width={36}
+                    height={36}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
 
                 {/* Text */}
