@@ -94,8 +94,10 @@ export function Footer() {
                   <Image
                     src="/images/logo/logo.png"
                     alt="Total Supply Logo"
-                    fill
-                    className="object-cover"
+                    width={48}
+                    height={48}
+                    className="object-cover w-full h-full"
+                    quality={75}
                   />
                 </div>
                 <div>

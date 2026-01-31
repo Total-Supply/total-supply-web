@@ -174,10 +174,30 @@ export const ServiceOfferingResponse = z.object({
   type: z.nativeEnum(ServiceType),
   category: z.nativeEnum(ServiceCategory).nullable().optional(),
   description: z.string().nullable().optional(),
-  basePrice: DecimalLike.nullable().optional(),
+  basePrice: z
+    .custom<any>((val) => {
+      return (
+        typeof val === 'number' ||
+        typeof val === 'string' ||
+        (typeof val === 'object' && val !== null && 'toNumber' in val)
+      )
+    })
+    .transform((val) => {
+      if (typeof val === 'number') return val
+      if (typeof val === 'string') return parseFloat(val)
+      if (val && typeof val.toNumber === 'function')
+        return val.toNumber() as number
+      return Number(val)
+    })
+    .nullable()
+    .optional(),
   isActive: z.boolean(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z
+    .union([z.string(), z.date()])
+    .transform((val) => new Date(val).toISOString()),
+  updatedAt: z
+    .union([z.string(), z.date()])
+    .transform((val) => new Date(val).toISOString()),
 })
 
 export const ServiceOfferingIdParams = z.object({

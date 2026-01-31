@@ -3,11 +3,18 @@ import { Provider } from '@/src/components/ui/provider'
 import { AppToaster } from '@/src/components/ui/toaster'
 import { ReduxProvider } from '@/src/providers/redux-provider'
 import { SessionProvider } from '@/src/providers/session-provider'
-import '@fontsource-variable/inter'
+import { Inter } from 'next/font/google'
 import { Metadata } from 'next'
-import 'swagger-ui-react/swagger-ui.css'
 
 import './globals.css'
+
+// Optimized font loading with next/font - automatic font-display: swap
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -32,8 +39,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased" suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className="antialiased font-sans" suppressHydrationWarning>
         <Provider>
           <SessionProvider>
             <ReduxProvider>

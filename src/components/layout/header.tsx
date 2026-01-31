@@ -27,6 +27,7 @@ import {
   ShoppingCart,
   Sun,
   User,
+  UserPlus,
 } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
@@ -36,8 +37,18 @@ import { useSelector } from 'react-redux'
 
 import { useEffect, useRef, useState } from 'react'
 
-import { CartDrawerEnhanced } from '../cart/cart-drawer'
-import { MobileNavContent } from '../mobile-nav'
+import dynamic from 'next/dynamic'
+
+// Lazy load heavy drawer components - not needed on initial render
+const CartDrawerEnhanced = dynamic(
+  () => import('../cart/cart-drawer').then((mod) => mod.CartDrawerEnhanced),
+  { ssr: false }
+)
+
+const MobileNavContent = dynamic(
+  () => import('../mobile-nav').then((mod) => mod.MobileNavContent),
+  { ssr: false }
+)
 
 export function HeaderEnhanced() {
   const ref = useRef<HTMLDivElement>(null)
@@ -146,9 +157,12 @@ export function HeaderEnhanced() {
                 <Image
                   src="/images/logo/logo.png"
                   alt="Total Supply Logo"
-                  fill
-                  className="object-cover"
+                  width={48}
+                  height={48}
+                  sizes="(max-width: 640px) 36px, (max-width: 768px) 40px, 48px"
+                  className="object-cover w-full h-full"
                   priority
+                  quality={75}
                 />
               </div>
               <div className="hidden sm:block">
@@ -324,7 +338,7 @@ export function HeaderEnhanced() {
                   className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-muted-foreground hover:text-primary hover:bg-muted/50 transition-all duration-200 active:scale-95"
                   aria-label="Log in"
                 >
-                  <User className="h-4 w-4" />
+                  <UserPlus className="h-4 w-4" />
                 </Link>
               )}
 

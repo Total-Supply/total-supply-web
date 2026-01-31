@@ -63,8 +63,10 @@ export function MobileNavContent({ isOpen, onClose }: MobileNavContentProps) {
                   <Image
                     src="/images/logo/logo.png"
                     alt="Total Supply"
-                    fill
-                    className="object-cover"
+                    width={40}
+                    height={40}
+                    className="object-cover w-full h-full"
+                    quality={75}
                   />
                 </div>
                 <div>

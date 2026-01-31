@@ -37,11 +37,15 @@ export function LogoImage({
       <Image
         src="/images/logo/logo.png"
         alt="Total Supply Logo"
-        fill
+        width={size}
+        height={size}
+        sizes={`${size}px`}
         className="object-cover"
         priority={priority}
+        quality={75}
         onError={() => setImageError(true)}
       />
     </div>
   )
 }
+
